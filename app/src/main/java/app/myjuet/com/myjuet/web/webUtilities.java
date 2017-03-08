@@ -15,13 +15,6 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import app.myjuet.com.myjuet.AttendenceActivity;
-
-import static android.R.id.input;
-
-/**
- * Created by Shrey on 08-Mar-17.
- */
 
 public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
@@ -101,17 +94,70 @@ public class webUtilities extends AppCompatActivity {
 
         //get the table body of atendence
         subPart[0] = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
-        for (int j = 0; j < 8; j++) {
-            subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr>"), subPart[0].indexOf("</tr>") + 5);
+        //rows looping
+        for (int j = 0; j < 15; j++) {
+            if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
+
+                subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
+
+            } else
+                break;
             String temp = subPart[1];
-            for (int i = 0; i < 7 & (subPart[1] != "" || subPart[1] != null); i++) {
-                if (subPart[1].contains("<td>") & subPart[1].contains("</td>")) {
-                    subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td") + 5);
-                    subPart[1] = subPart[1].replace(subPart[2], "");
-                    Log.v("String", subPart[2]);
-                } else break;
+
+            //loop for columns
+            for (int i = 0; i < 7; i++) {
+
+                if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
+
+                    subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td>") + 5);
+
+                    String tempData = dataExtractor(subPart[2], i);
+
+                    subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
+
+                    Log.v("String", tempData);
+                } else
+                    break;
             }
             subPart[0] = subPart[0].replace(temp, "");
         }
+    }
+
+    //method to extract data from the html tag as argument @AttendenceCrawler
+    private static String dataExtractor(String data, int num) {
+        String extracted = "";
+        String Url;
+        switch (num) {
+            case 1:
+                extracted = data.substring(data.indexOf("<td") + 4, data.indexOf("-"));
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+
+                if (data.contains("&nbsp;"))
+                    extracted = "N/A";
+                else if (data.contains("align")) {
+                    if (data.contains("<font"))
+                        extracted = data.substring(data.indexOf("</font></a></td>") - 3, data.indexOf("</font></a></td>"));
+                    else
+                        extracted = data.substring(data.indexOf("</a></td>") - 3, data.indexOf("</a></td>"));
+
+                    if (extracted.contains(">"))
+                        extracted = extracted.replace(">", "");
+                } else if (data.contains("<td>")) {
+
+                    extracted = data.substring(data.indexOf("<td>") + 4, data.indexOf("</td>"));
+                }
+                break;
+            default:
+
+                extracted = "N/A";
+
+        }
+        return extracted;
+
     }
 }

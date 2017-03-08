@@ -50,7 +50,6 @@ public class AttendenceActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.v("Activity Shrey",s);
             text.setText(s);
             super.onPostExecute(s);
         }
