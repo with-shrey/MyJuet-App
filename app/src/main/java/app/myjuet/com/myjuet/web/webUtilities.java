@@ -1,5 +1,9 @@
 package app.myjuet.com.myjuet.web;
 
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,13 +15,15 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import app.myjuet.com.myjuet.AttendenceActivity;
+
 import static android.R.id.input;
 
 /**
  * Created by Shrey on 08-Mar-17.
  */
 
-public class webUtilities {
+public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
     private static HttpURLConnection conn = null;
 
@@ -83,6 +89,29 @@ public class webUtilities {
             response.append(inputLine);
         }
         in.close();
+        AttendenceCrawler(response.toString());
         return response.toString();
+
+    }
+
+    public static void AttendenceCrawler(String Result) {
+        String subPart[] = new String[5];
+        boolean login = true;
+        Result = Result.trim();
+
+        //get the table body of atendence
+        subPart[0] = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
+        for (int j = 0; j < 8; j++) {
+            subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr>"), subPart[0].indexOf("</tr>") + 5);
+            String temp = subPart[1];
+            for (int i = 0; i < 7 & (subPart[1] != "" || subPart[1] != null); i++) {
+                if (subPart[1].contains("<td>") & subPart[1].contains("</td>")) {
+                    subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td") + 5);
+                    subPart[1] = subPart[1].replace(subPart[2], "");
+                    Log.v("String", subPart[2]);
+                } else break;
+            }
+            subPart[0] = subPart[0].replace(temp, "");
+        }
     }
 }
