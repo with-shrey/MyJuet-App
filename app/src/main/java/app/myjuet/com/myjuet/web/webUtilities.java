@@ -12,14 +12,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import app.myjuet.com.myjuet.data.AttendenceData;
+
+import static android.R.attr.data;
+import static android.R.id.list;
 
 
 public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
     private static HttpURLConnection conn = null;
-
+    private static int[] count = new int[2];
     // Creating url and catching exception
     private static URL UrlCreator(String url) {
         URL link = null;
@@ -82,14 +88,14 @@ public class webUtilities extends AppCompatActivity {
             response.append(inputLine);
         }
         in.close();
-        AttendenceCrawler(response.toString());
         return response.toString();
 
     }
 
-    public static void AttendenceCrawler(String Result) {
+    public static ArrayList<AttendenceData> AttendenceCrawler(String Result) {
+        String[] datas = new String[5];
         String subPart[] = new String[5];
-        boolean login = true;
+        ArrayList<AttendenceData> list = new ArrayList<>();
         Result = Result.trim();
 
         //get the table body of atendence
@@ -105,22 +111,34 @@ public class webUtilities extends AppCompatActivity {
             String temp = subPart[1];
 
             //loop for columns
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 6; i++) {
 
                 if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
 
                     subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td>") + 5);
 
                     String tempData = dataExtractor(subPart[2], i);
+                    if (tempData.equals("N/A"))
+                        tempData = "--";
+                    if (i == 1)  //name
+                        datas[0] = tempData;
+                    else if (i == 2 || (i == 5 && datas[1].equals("--")))  //lec+tut
+                        datas[1] = tempData;
+                    else if (i == 3)  //lec
+                        datas[2] = tempData;
+                    else if (i == 4)  //tut
+                        datas[3] = tempData;
 
+                    if (i == 5)
+                        list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3]));
                     subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
 
-                    Log.v("String", tempData);
                 } else
                     break;
             }
             subPart[0] = subPart[0].replace(temp, "");
         }
+        return list;
     }
 
     //method to extract data from the html tag as argument @AttendenceCrawler
@@ -132,6 +150,13 @@ public class webUtilities extends AppCompatActivity {
                 extracted = data.substring(data.indexOf("<td") + 4, data.indexOf("-"));
                 break;
             case 2:
+                if (data.contains("href")) {
+                    Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
+                    Url = Url.replace("amp;", "");
+                    CountofAttendence(Url);
+                    Log.v(String.valueOf(count[0]), String.valueOf(count[1]));
+
+                }
             case 3:
             case 4:
             case 5:
@@ -157,7 +182,21 @@ public class webUtilities extends AppCompatActivity {
                 extracted = "N/A";
 
         }
+
         return extracted;
 
     }
+
+    private static void CountofAttendence(String link) {
+
+        String Content;
+        try {
+            Content = GetPageContent(link);
+            count[0] = Content.split("Present").length - 1;
+            count[1] = Content.split("Absent").length - 2;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
