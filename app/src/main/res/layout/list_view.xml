@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ListView
     android:id="@+id/list_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-</ListView>
+    <TextView
+        android:id="@+id/emptyview_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <ProgressBar
+        android:id="@+id/progress_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+
+</LinearLayout>

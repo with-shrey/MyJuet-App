@@ -1,7 +1,12 @@
 package app.myjuet.com.myjuet;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,21 +30,58 @@ import app.myjuet.com.myjuet.web.webUtilities;
 
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 
-public class AttendenceActivity extends AppCompatActivity {
+public class AttendenceActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
     public static AttendenceAdapter adapter;
     public static AttendenceData tempData;
+    TextView EmptyView;
+    ProgressBar progressBar;
+    private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
+    private String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=161B222&txtPIN=Password%2FPin&Password=jaishriram&BTNSubmit=Submit";
+
+
+    @Override
+    public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
+        return new AttendenceLoader(this, Url, PostParam);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
+        adapter.clear();
+        if (adapter != null)
+            adapter.addAll(AttendenceDatas);
+        if (adapter.isEmpty()) {
+            EmptyView.setText("No Earthquakes Found");
+        }
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
+        adapter.clear();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
         ListView list = (ListView) findViewById(R.id.list_view);
+        EmptyView = (TextView) findViewById(R.id.emptyview_main);
+        progressBar = (ProgressBar) findViewById(R.id.progress_main);
         adapter = new AttendenceAdapter(AttendenceActivity.this, new ArrayList<AttendenceData>());
         list.setAdapter(adapter);
-        CookieHandler.setDefault(new CookieManager());
-        extractor con = new extractor();
-        con.execute();
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (isConnected) {
+            CookieHandler.setDefault(new CookieManager());
+            LoaderManager loader = getLoaderManager();
+            loader.initLoader(0, null, this);
+        }
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -49,36 +92,5 @@ public class AttendenceActivity extends AppCompatActivity {
         });
     }
 
-    private class extractor extends AsyncTask<Void, Void, ArrayList<AttendenceData>> {
 
-        @Override
-        protected ArrayList<AttendenceData> doInBackground(Void... voids) {
-            ArrayList<AttendenceData> DataAttendence;
-            String Url="https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-            String PostParam="txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=161B222&txtPIN=Password%2FPin&Password=jaishriram&BTNSubmit=Submit";
-        String Attendence="https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
-            String Content="";
-            try {
-                webUtilities.sendPost(Url, PostParam);
-                Content = webUtilities.GetPageContent(Attendence);
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            DataAttendence = AttendenceCrawler(Content);
-            return DataAttendence;
-
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<AttendenceData> s) {
-            adapter.clear();
-            if (adapter != null)
-                adapter.addAll(s);
-            super.onPostExecute(s);
-        }
-
-
-    }
 }
