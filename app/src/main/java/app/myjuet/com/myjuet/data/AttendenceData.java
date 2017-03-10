@@ -1,15 +1,18 @@
 package app.myjuet.com.myjuet.data;
 
 
+import java.util.ArrayList;
+
 public class AttendenceData {
     private String mLecTut, mTut, mLec, mName;
     private int mCountPresent, mCountAbsent;
     private int mOnNext, mOnLeaving;
+    private ArrayList<AttendenceDetails> mData;
 /*
 public constructor
  */
 
-    public AttendenceData(String Name, int CountAbsent, int CountPresent, String LecTut, String Lec, String Tut) {
+    public AttendenceData(String Name, int CountAbsent, int CountPresent, String LecTut, String Lec, String Tut, ArrayList<AttendenceDetails> Data) {
         this.mName = Name;
         this.mCountAbsent = CountAbsent;
         this.mCountPresent = CountPresent;
@@ -18,6 +21,11 @@ public constructor
         this.mLec = Lec;
         this.mLecTut = LecTut;
         this.mTut = Tut;
+        mData = Data;
+    }
+
+    public ArrayList<AttendenceDetails> getmList() {
+        return mData;
     }
 
     public String getmName() {

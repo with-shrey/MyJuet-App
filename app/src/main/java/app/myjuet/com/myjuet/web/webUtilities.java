@@ -1,13 +1,9 @@
 package app.myjuet.com.myjuet.web;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -17,13 +13,16 @@ import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.AttendenceDetails;
 
 import static android.R.attr.data;
-import static android.R.id.list;
+import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
 
 
 public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
+    public static ArrayList<AttendenceData> list = new ArrayList<>();
+    private static ArrayList<AttendenceDetails> listDetails;
     private static HttpURLConnection conn = null;
     private static int[] count = new int[2];
     // Creating url and catching exception
@@ -95,7 +94,6 @@ public class webUtilities extends AppCompatActivity {
     public static ArrayList<AttendenceData> AttendenceCrawler(String Result) {
         String[] datas = new String[5];
         String subPart[] = new String[5];
-        ArrayList<AttendenceData> list = new ArrayList<>();
         Result = Result.trim();
 
         //get the table body of atendence
@@ -116,7 +114,6 @@ public class webUtilities extends AppCompatActivity {
                 if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
 
                     subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td>") + 5);
-
                     String tempData = dataExtractor(subPart[2], i);
                     if (tempData.equals("N/A"))
                         tempData = "--";
@@ -130,7 +127,7 @@ public class webUtilities extends AppCompatActivity {
                         datas[3] = tempData;
 
                     if (i == 5)
-                        list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3]));
+                        list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3], listDetails));
                     subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
 
                 } else
@@ -153,8 +150,7 @@ public class webUtilities extends AppCompatActivity {
                 if (data.contains("href")) {
                     Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
                     Url = Url.replace("amp;", "");
-                    CountofAttendence(Url);
-                    Log.v(String.valueOf(count[0]), String.valueOf(count[1]));
+                    listDetails = AttendenceDetailsFinder(Url);
 
                 }
             case 3:
@@ -187,9 +183,9 @@ public class webUtilities extends AppCompatActivity {
 
     }
 
-    private static void CountofAttendence(String link) {
+    private static ArrayList<AttendenceDetails> AttendenceDetailsFinder(String link) {
 
-        String Content;
+        String Content = "";
         try {
             Content = GetPageContent(link);
             count[0] = Content.split("Present").length - 1;
@@ -197,6 +193,68 @@ public class webUtilities extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return DetailsCrawler(Content);
+    }
+
+    private static ArrayList<AttendenceDetails> DetailsCrawler(String Result) {
+        String subPart[] = new String[5];
+        ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
+        String[] data = new String[3];
+        Result = Result.trim();
+        //get the table body of atendence
+        subPart[0] = Result.substring(Result.indexOf("</thead><tbody>") + 8, Result.indexOf("</tbody>"));
+        //rows looping
+        while (subPart[0].contains("<tr")) {
+            if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
+
+                subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
+
+            } else
+                break;
+            String temp = subPart[1];
+
+            //loop for columns
+            for (int i = 0; i < 6; i++) {
+
+                if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
+                    if (i < 3)
+                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") + 24, subPart[1].indexOf("</td>"));
+                    else if (i == 3) {
+                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") - 1, subPart[1].indexOf("</td>"));
+                        if (subPart[2].contains("Present"))
+                            subPart[2] = "Present";
+                        else
+                            subPart[2] = "Absent";
+                    } else if (i == 4)
+                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td>") + 4, subPart[1].indexOf("</td>"));
+                    else
+                        subPart[2] = subPart[1].substring(subPart[1].indexOf("color=\"\">") + 9, subPart[1].indexOf("</font></b></td>"));
+
+                    subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
+                    switch (i) {
+                        case 1:
+                            data[0] = subPart[2];
+                            break;
+                        case 3:
+                            data[1] = subPart[2];
+                            break;
+                        case 5:
+                            data[2] = subPart[2];
+                            break;
+                        default:
+                    }
+                    if (i == 5) {
+                        AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
+                        listDetails.add(dataDetailed);
+
+                    }
+                } else
+                    break;
+            }
+            subPart[0] = subPart[0].replace(temp, "");
+        }
+        return listDetails;
     }
 
 }

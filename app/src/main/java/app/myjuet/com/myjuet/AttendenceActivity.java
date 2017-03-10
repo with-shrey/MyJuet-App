@@ -1,10 +1,13 @@
 package app.myjuet.com.myjuet;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,7 +27,7 @@ import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 public class AttendenceActivity extends AppCompatActivity {
 
     public static AttendenceAdapter adapter;
-
+    public static AttendenceData tempData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,14 @@ public class AttendenceActivity extends AppCompatActivity {
         CookieHandler.setDefault(new CookieManager());
         extractor con = new extractor();
         con.execute();
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                tempData = adapter.getItem(i);
+                Intent intent = new Intent(AttendenceActivity.this, AttendenceDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private class extractor extends AsyncTask<Void, Void, ArrayList<AttendenceData>> {
@@ -67,6 +78,7 @@ public class AttendenceActivity extends AppCompatActivity {
                 adapter.addAll(s);
             super.onPostExecute(s);
         }
+
 
     }
 }
