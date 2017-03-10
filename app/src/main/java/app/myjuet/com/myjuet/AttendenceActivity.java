@@ -51,9 +51,6 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         adapter.clear();
         if (adapter != null)
             adapter.addAll(AttendenceDatas);
-        if (adapter.isEmpty()) {
-            EmptyView.setText("No Earthquakes Found");
-        }
         progressBar.setVisibility(View.GONE);
     }
 
@@ -81,6 +78,9 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
             CookieHandler.setDefault(new CookieManager());
             LoaderManager loader = getLoaderManager();
             loader.initLoader(0, null, this);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            EmptyView.setText("No Internet Connections");
         }
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
