@@ -10,6 +10,8 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +49,8 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     public static AttendenceAdapter adapter;
     public static AttendenceData tempData;
+    public static ArrayList<AttendenceData> listdata;
+
 
     TextView EmptyView;
     ProgressBar progressBar;
@@ -94,11 +98,13 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                adapter.clear();
+                listdata.clear();
+                adapter.notifyDataSetChanged();
                 refreshData();
                 return true;
             case R.id.clear:
-                adapter.clear();
+                listdata.clear();
+                adapter.notifyDataSetChanged();
                 File directoryFile = new File(this.getFilesDir().getAbsolutePath()
                         + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
                 directoryFile.delete();
@@ -111,9 +117,11 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
         write(AttendenceActivity.this, AttendenceDatas);
-        adapter.clear();
+        listdata.clear();
+        adapter.notifyDataSetChanged();
         try {
-            adapter.addAll(AttendenceDatas);
+            listdata.addAll(AttendenceDatas);
+            adapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,39 +130,36 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
-        adapter.clear();
+        listdata.clear();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
-        ListView list = (ListView) findViewById(R.id.list_view);
+        RecyclerView list = (RecyclerView) findViewById(R.id.list_view);
         EmptyView = (TextView) findViewById(R.id.emptyview_main);
         progressBar = (ProgressBar) findViewById(R.id.progress_main);
-        adapter = new AttendenceAdapter(AttendenceActivity.this, new ArrayList<AttendenceData>());
+        listdata = new ArrayList<>();
+        adapter = new AttendenceAdapter(AttendenceActivity.this, listdata);
         list.setAdapter(adapter);
+        list.setLayoutManager(new LinearLayoutManager(this));
         progressBar.setVisibility(View.GONE);
         File directory = new File(this.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.exists()) {
             try {
 
-                adapter.addAll(read(AttendenceActivity.this));
+                listdata.addAll(read(AttendenceActivity.this));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             refreshData();
         }
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                tempData = adapter.getItem(i);
-                Intent intent = new Intent(AttendenceActivity.this, AttendenceDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
+
     }
 
     private ArrayList<AttendenceData> read(Context context) throws Exception {
