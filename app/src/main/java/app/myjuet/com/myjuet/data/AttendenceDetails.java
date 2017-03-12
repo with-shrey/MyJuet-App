@@ -4,7 +4,7 @@ package app.myjuet.com.myjuet.data;
  * Created by Shrey on 10-Mar-17.
  */
 
-public class AttendenceDetails {
+public class AttendenceDetails implements java.io.Serializable {
     private String mDate;
     private String mStatus;
     private String mType;

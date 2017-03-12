@@ -3,7 +3,7 @@ package app.myjuet.com.myjuet.data;
 
 import java.util.ArrayList;
 
-public class AttendenceData {
+public class AttendenceData implements java.io.Serializable {
     private String mLecTut, mTut, mLec, mName;
     private int mCountPresent, mCountAbsent;
     private int mOnNext, mOnLeaving;

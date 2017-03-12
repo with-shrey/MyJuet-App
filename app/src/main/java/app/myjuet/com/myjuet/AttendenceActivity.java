@@ -19,6 +19,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
@@ -29,6 +38,7 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.webUtilities;
 
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
+import static java.security.AccessController.getContext;
 
 public class AttendenceActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
@@ -39,6 +49,28 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
     private String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=161B222&txtPIN=Password%2FPin&Password=jaishriram&BTNSubmit=Submit";
 
+    public static void write(Context context, ArrayList<AttendenceData> nameOfClass) {
+        File directory = new File(context.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization");
+        directory.delete();
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String filename = "MessgeScreenList.srl";
+        ObjectOutput out = null;
+
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(directory
+                    + File.separator + filename));
+            out.writeObject(nameOfClass);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
@@ -48,9 +80,13 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
+        write(AttendenceActivity.this, AttendenceDatas);
         adapter.clear();
-        if (adapter != null)
-            adapter.addAll(AttendenceDatas);
+        try {
+            adapter.addAll(read(AttendenceActivity.this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         progressBar.setVisibility(View.GONE);
     }
 
@@ -90,6 +126,20 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
                 startActivity(intent);
             }
         });
+    }
+
+    private ArrayList<AttendenceData> read(Context context) throws Exception {
+        String filename = "MessgeScreenList.srl";
+        File directory = new File(context.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization");
+        ObjectInput ois = null;
+        ois = new ObjectInputStream(new FileInputStream(directory
+                + File.separator + filename));
+        ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
+        ois.close();
+
+
+        return returnlist;
     }
 
 
