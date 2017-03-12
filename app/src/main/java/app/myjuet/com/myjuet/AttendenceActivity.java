@@ -11,6 +11,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,6 +47,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     public static AttendenceAdapter adapter;
     public static AttendenceData tempData;
+
     TextView EmptyView;
     ProgressBar progressBar;
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
@@ -52,7 +56,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     public static void write(Context context, ArrayList<AttendenceData> nameOfClass) {
         File directory = new File(context.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
-        directory.delete();
+
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -79,11 +83,37 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menuattendence, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                adapter.clear();
+                refreshData();
+                return true;
+            case R.id.clear:
+                adapter.clear();
+                File directoryFile = new File(this.getFilesDir().getAbsolutePath()
+                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+                directoryFile.delete();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
         write(AttendenceActivity.this, AttendenceDatas);
         adapter.clear();
         try {
-            adapter.addAll(read(AttendenceActivity.this));
+            adapter.addAll(AttendenceDatas);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,19 +134,18 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         progressBar = (ProgressBar) findViewById(R.id.progress_main);
         adapter = new AttendenceAdapter(AttendenceActivity.this, new ArrayList<AttendenceData>());
         list.setAdapter(adapter);
-        ConnectivityManager cm =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        progressBar.setVisibility(View.GONE);
+        File directory = new File(this.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+        if (directory.exists()) {
+            try {
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        if (isConnected) {
-            CookieHandler.setDefault(new CookieManager());
-            LoaderManager loader = getLoaderManager();
-            loader.initLoader(0, null, this);
+                adapter.addAll(read(AttendenceActivity.this));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
-            progressBar.setVisibility(View.GONE);
-            EmptyView.setText("No Internet Connections");
+            refreshData();
         }
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -140,6 +169,28 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
 
         return returnlist;
+    }
+
+    private void refreshData() {
+        progressBar.setVisibility(View.VISIBLE);
+        File directoryFile = new File(this.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+        if (directoryFile.exists())
+            directoryFile.delete();
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (isConnected) {
+            CookieHandler.setDefault(new CookieManager());
+            LoaderManager loader = getLoaderManager();
+            loader.initLoader(0, null, this);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            EmptyView.setText("No Internet Connections");
+        }
     }
 
 

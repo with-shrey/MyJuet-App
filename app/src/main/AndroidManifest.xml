@@ -21,9 +21,11 @@
         </activity>
         <activity
             android:name=".AttendenceActivity"
+            android:label="Attendence"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AttendenceDetailsActivity"
+            android:label="Attendence Details"
             android:parentActivityName=".AttendenceActivity" />
     </application>
 

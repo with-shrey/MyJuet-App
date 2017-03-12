@@ -2,12 +2,15 @@ package app.myjuet.com.myjuet;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import app.myjuet.com.myjuet.adapters.DetailsAdapter;
+import app.myjuet.com.myjuet.data.AttendenceDetails;
 
 import static app.myjuet.com.myjuet.AttendenceActivity.adapter;
+import static app.myjuet.com.myjuet.R.id.Attendence;
 
 public class AttendenceDetailsActivity extends AppCompatActivity {
 
@@ -15,6 +18,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_details);
+        setTitle(AttendenceActivity.tempData.getmName());
         TextView Present = (TextView) findViewById(R.id.present);
         TextView Absent = (TextView) findViewById(R.id.absent);
         TextView leaving = (TextView) findViewById(R.id.leavingdetails);

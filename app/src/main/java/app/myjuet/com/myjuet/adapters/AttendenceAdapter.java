@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,11 @@ public class AttendenceAdapter extends ArrayAdapter<AttendenceData> {
         TextView Next = (TextView) ListLayout.findViewById(R.id.next);
         TextView Leaving = (TextView) ListLayout.findViewById(R.id.leaving);
 
+        GradientDrawable magnitudeCircle = (GradientDrawable) Total.getBackground();
+        int color = getmColor(Integer.parseInt(data.getmLecTut()));
+
+        // Set the color on the magnitude circle
+        magnitudeCircle.setColor(ListLayout.getResources().getColor(color));
         Name.setText(data.getmName());
         Total.setText(data.getmLecTut());
         Leaving.setText("Leaving Next:" + data.getmOnLeaving());
@@ -42,5 +48,19 @@ public class AttendenceAdapter extends ArrayAdapter<AttendenceData> {
 
         return ListLayout;
 
+    }
+
+    public int getmColor(int mLecTut) {
+        if ((mLecTut) >= 0 && (mLecTut) <= 60) {
+            return R.color.magnitude6;
+        } else if ((mLecTut) > 60 && (mLecTut) < 70) {
+            return R.color.magnitude7;
+        } else if ((mLecTut) >= 70 && (mLecTut) <= 80) {
+            return R.color.magnitude80;
+        } else if ((mLecTut) >= 80 && (mLecTut) < 90) {
+            return R.color.magnitude89;
+        } else {
+            return R.color.magnitude90;
+        }
     }
 }

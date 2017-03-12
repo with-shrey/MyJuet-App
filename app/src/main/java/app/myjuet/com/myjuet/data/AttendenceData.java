@@ -3,11 +3,14 @@ package app.myjuet.com.myjuet.data;
 
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.R;
+
 public class AttendenceData implements java.io.Serializable {
     private String mLecTut, mTut, mLec, mName;
     private int mCountPresent, mCountAbsent;
     private int mOnNext, mOnLeaving;
     private ArrayList<AttendenceDetails> mData;
+
 /*
 public constructor
  */
@@ -22,7 +25,9 @@ public constructor
         this.mLecTut = LecTut;
         this.mTut = Tut;
         mData = Data;
+
     }
+
 
     public ArrayList<AttendenceDetails> getmList() {
         return mData;
