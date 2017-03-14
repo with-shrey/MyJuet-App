@@ -2,6 +2,8 @@ package app.myjuet.com.myjuet;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,10 +31,10 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         leaving.setText(AttendenceActivity.tempData.getmOnLeaving());
         nextattend.setText(AttendenceActivity.tempData.getmOnNext());
 
-        ListView list = (ListView) findViewById(R.id.listdetails);
+        RecyclerView list = (RecyclerView) findViewById(R.id.listdetails);
         DetailsAdapter adapter = new DetailsAdapter(this, AttendenceActivity.tempData.getmList());
         list.setAdapter(adapter);
-
+        list.setLayoutManager(new LinearLayoutManager(this));
 
     }
 }

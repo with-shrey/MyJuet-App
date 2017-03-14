@@ -18,7 +18,6 @@ public class AttendenceDetails implements java.io.Serializable {
         this.mStatus = mStatus;
         this.mType = mType;
         mTime = mDate.substring(mDate.indexOf(" "));
-        Log.v("mTime", mTime);
     }
 
     public String getmDate() {
