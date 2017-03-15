@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,11 +50,11 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     public static AttendenceAdapter adapter;
     public static AttendenceData tempData;
-    public static ArrayList<AttendenceData> listdata;
+    public static ArrayList<AttendenceData> listdata = new ArrayList<>();
+    SwipeRefreshLayout swipeRefreshLayout;
 
 
     TextView EmptyView;
-    ProgressBar progressBar;
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
     private String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=161B222&txtPIN=Password%2FPin&Password=jaishriram&BTNSubmit=Submit";
 
@@ -116,6 +117,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
+
         write(AttendenceActivity.this, AttendenceDatas);
         listdata.clear();
         adapter.notifyDataSetChanged();
@@ -125,13 +127,14 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         } catch (Exception e) {
             e.printStackTrace();
         }
-        progressBar.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
         listdata.clear();
         adapter.notifyDataSetChanged();
+        loader.reset();
     }
 
     @Override
@@ -140,16 +143,24 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         setContentView(R.layout.list_view);
         RecyclerView list = (RecyclerView) findViewById(R.id.list_view);
         EmptyView = (TextView) findViewById(R.id.emptyview_main);
-        progressBar = (ProgressBar) findViewById(R.id.progress_main);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                listdata.clear();
+                refreshData();
+            }
+        });
+        swipeRefreshLayout.hasNestedScrollingParent();
         listdata = new ArrayList<>();
         adapter = new AttendenceAdapter(AttendenceActivity.this, listdata);
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(this));
-        progressBar.setVisibility(View.GONE);
         File directory = new File(this.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.exists()) {
             try {
+                listdata.clear();
 
                 listdata.addAll(read(AttendenceActivity.this));
 
@@ -157,6 +168,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
                 e.printStackTrace();
             }
         } else {
+            listdata.clear();
             refreshData();
         }
 
@@ -177,7 +189,8 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     }
 
     private void refreshData() {
-        progressBar.setVisibility(View.VISIBLE);
+        EmptyView.setText("");
+        swipeRefreshLayout.setRefreshing(true);
         File directoryFile = new File(this.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directoryFile.exists())
@@ -193,7 +206,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
             LoaderManager loader = getLoaderManager();
             loader.initLoader(0, null, this);
         } else {
-            progressBar.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
             EmptyView.setText("No Internet Connections");
         }
     }

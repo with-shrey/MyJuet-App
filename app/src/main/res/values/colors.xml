@@ -8,7 +8,7 @@
     <!-- Magnitude circle color for an earthquake with magnitude between 2 and 3 -->
     <color name="magnitude90">#00b33c</color>
 
-    <color name="magnitude80">#ffff00</color>
+    <color name="magnitude80">#b3ff99</color>
     <!-- Magnitude circle color for an earthquake with magnitude between 4 and 5 -->
     <color name="magnitude70">#ffbf00</color>
 

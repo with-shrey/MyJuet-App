@@ -40,7 +40,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.viewHold
         TextView Type = (TextView) holder.Type;
 
         Date.setText(data.getmDate());
-        Status.setText(data.getmStatus());
+        Status.setText(data.getmTime());
         Type.setText(data.getmType());
         if (data.getmStatus().equals("Present"))
             layout.setBackgroundColor(mContext.getResources().getColor(R.color.present));
