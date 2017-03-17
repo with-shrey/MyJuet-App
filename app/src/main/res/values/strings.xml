@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MyJuet</string>
+    <string name="enrollment">enrollment</string>
+    <string name="password">password</string>
+    <string name="DesiredPercentage">desired</string>
+    <string name="defaultuser">161B222</string>
+    <string name="defaultpassword">jaishriram</string>
+    <string name="preferedAttendence">preferedattendence</string>
+    <string name="defaultattendence">90</string>
 </resources>

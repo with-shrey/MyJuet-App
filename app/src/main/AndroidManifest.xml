@@ -27,6 +27,9 @@
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"
             android:parentActivityName=".AttendenceActivity" />
+        <activity
+            android:name=".web.LoginWebkiosk"
+            android:label="Login Details" />
     </application>
 
 </manifest>

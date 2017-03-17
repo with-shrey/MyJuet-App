@@ -5,9 +5,11 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.web.LoginWebkiosk;
 import app.myjuet.com.myjuet.web.webUtilities;
 
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
@@ -48,15 +51,18 @@ import static java.security.AccessController.getContext;
 
 public class AttendenceActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
+    //ERROR CONSTANTS
+    public static final int WRONG_CREDENTIALS = 1;
+    public static final int HOST_DOWN = 2;
+    public static final int NO_INTERNET = 3;
     public static AttendenceAdapter adapter;
     public static AttendenceData tempData;
     public static ArrayList<AttendenceData> listdata = new ArrayList<>();
+    public static RecyclerView list;
+    public static int Error = -1;
     SwipeRefreshLayout swipeRefreshLayout;
-
-
     TextView EmptyView;
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-    private String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=161B222&txtPIN=Password%2FPin&Password=jaishriram&BTNSubmit=Submit";
 
     public static void write(Context context, ArrayList<AttendenceData> nameOfClass) {
         File directory = new File(context.getFilesDir().getAbsolutePath()
@@ -83,6 +89,11 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+        String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+        //TODO:check wheather values are dafault and show error
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         return new AttendenceLoader(this, Url, PostParam);
 
     }
@@ -101,14 +112,13 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
             case R.id.refresh:
                 listdata.clear();
                 adapter.notifyDataSetChanged();
+                AttendenceActivity.list.getRecycledViewPool().clear();
+
                 refreshData();
                 return true;
-            case R.id.clear:
-                listdata.clear();
-                adapter.notifyDataSetChanged();
-                File directoryFile = new File(this.getFilesDir().getAbsolutePath()
-                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-                directoryFile.delete();
+            case R.id.loginAttendence:
+                Intent login = new Intent(this, LoginWebkiosk.class);
+                startActivity(login);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -118,30 +128,56 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
 
-        write(AttendenceActivity.this, AttendenceDatas);
-        listdata.clear();
-        adapter.notifyDataSetChanged();
         try {
-            listdata.addAll(AttendenceDatas);
+            listdata.clear();
             adapter.notifyDataSetChanged();
+            AttendenceActivity.list.getRecycledViewPool().clear();
+
+
+            Log.v("Shrey", String.valueOf(Error));
+            if (Error == WRONG_CREDENTIALS) {
+                File directoryFile = new File(this.getFilesDir().getAbsolutePath()
+                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+                if (directoryFile.exists())
+                    directoryFile.delete();
+                EmptyView.setText("Wrong Credentials");
+            } else if (Error == HOST_DOWN) {
+                listdata.addAll(AttendenceDatas);
+                adapter.notifyDataSetChanged();
+                AttendenceActivity.list.getRecycledViewPool().clear();
+
+                EmptyView.setText("Webkiosk Down/Timed Out(3s)");
+            } else {
+                File directoryFile = new File(this.getFilesDir().getAbsolutePath()
+                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+                if (directoryFile.exists())
+                    directoryFile.delete();
+                write(AttendenceActivity.this, AttendenceDatas);
+                listdata.addAll(AttendenceDatas);
+                adapter.notifyDataSetChanged();
+                AttendenceActivity.list.getRecycledViewPool().clear();
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            swipeRefreshLayout.setRefreshing(false);
+            loader.reset();
         }
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
         listdata.clear();
         adapter.notifyDataSetChanged();
-        loader.reset();
+        list.getRecycledViewPool().clear();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
-        RecyclerView list = (RecyclerView) findViewById(R.id.list_view);
+        list = (RecyclerView) findViewById(R.id.list_view);
         EmptyView = (TextView) findViewById(R.id.emptyview_main);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -151,11 +187,12 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
                 refreshData();
             }
         });
-        swipeRefreshLayout.hasNestedScrollingParent();
         listdata = new ArrayList<>();
         adapter = new AttendenceAdapter(AttendenceActivity.this, listdata);
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(this));
+        list.getRecycledViewPool().clear();
+        adapter.notifyDataSetChanged();
         File directory = new File(this.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.exists()) {
@@ -169,9 +206,18 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
             }
         } else {
             listdata.clear();
+            list.getRecycledViewPool().clear();
+            adapter.notifyDataSetChanged();
             refreshData();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        list.getRecycledViewPool().clear();
+        adapter.notifyDataSetChanged();
+        super.onStart();
     }
 
     private ArrayList<AttendenceData> read(Context context) throws Exception {
@@ -190,11 +236,8 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     private void refreshData() {
         EmptyView.setText("");
+        Error = -1;
         swipeRefreshLayout.setRefreshing(true);
-        File directoryFile = new File(this.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-        if (directoryFile.exists())
-            directoryFile.delete();
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -202,12 +245,14 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
+            Log.v("Shrey", "isConnected");
             CookieHandler.setDefault(new CookieManager());
             LoaderManager loader = getLoaderManager();
             loader.initLoader(0, null, this);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             EmptyView.setText("No Internet Connections");
+            Error = NO_INTERNET;
         }
     }
 
