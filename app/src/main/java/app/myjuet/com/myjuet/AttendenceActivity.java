@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,7 +40,9 @@ import java.io.ObjectOutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
@@ -62,24 +65,34 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     public static int Error = -1;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView EmptyView;
+    private ActionBar action;
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
 
-    public static void write(Context context, ArrayList<AttendenceData> nameOfClass) {
+    public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
         File directory = new File(context.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
 
         if (!directory.exists()) {
             directory.mkdirs();
         }
+        Date dateobj = new Date();
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         String filename = "MessgeScreenList.srl";
+        String date = "date.srl";
         ObjectOutput out = null;
-
+        ObjectOutput dateout = null;
+        String dateString = formattor.format(dateobj).toString();
+        action.setSubtitle(dateString);
         try {
             out = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + filename));
+            dateout = new ObjectOutputStream(new FileOutputStream(directory
+                    + File.separator + date));
             out.writeObject(nameOfClass);
+            dateout.writeObject(formattor.format(dateobj).toString());
             out.close();
+            dateout.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -177,6 +190,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
+        action = getSupportActionBar();
         list = (RecyclerView) findViewById(R.id.list_view);
         EmptyView = (TextView) findViewById(R.id.emptyview_main);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
@@ -222,13 +236,21 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
 
     private ArrayList<AttendenceData> read(Context context) throws Exception {
         String filename = "MessgeScreenList.srl";
+        String datefile = "date.srl";
         File directory = new File(context.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         ObjectInput ois = null;
+        ObjectInput dateinput = null;
         ois = new ObjectInputStream(new FileInputStream(directory
                 + File.separator + filename));
+        dateinput = new ObjectInputStream(new FileInputStream(directory
+                + File.separator + datefile));
         ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
+        String dates = (String) dateinput.readObject();
+        action.setSubtitle(dates);
+
         ois.close();
+        dateinput.close();
 
 
         return returnlist;

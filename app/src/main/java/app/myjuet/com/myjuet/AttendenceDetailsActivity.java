@@ -49,9 +49,11 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         } else {
             classes = Math.floor((p - (t * pa)) / (t)) - 1;
             res = (int) classes;
-            if (res < 0)
+            if (res < 0) {
                 res = 0;
-            ClassText = "Hurray!! You Can Bunk " + String.valueOf(res) + " Classes";
+                ClassText = "Hurray!! You Can Bunk " + String.valueOf(res) + " Classes";
+            }
+            ClassText = "On the Border";
         }
 
         ActionBar action = getSupportActionBar();
