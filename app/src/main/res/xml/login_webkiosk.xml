@@ -15,7 +15,7 @@
             android:title="PASSWORD" />
     </PreferenceCategory>
     <EditTextPreference
-        android:defaultValue="@string/DesiredPercentage"
+        android:defaultValue="@string/defaultattendence"
         android:inputType="numberDecimal"
         android:key="@string/preferedAttendence"
         android:selectAllOnFocus="true"

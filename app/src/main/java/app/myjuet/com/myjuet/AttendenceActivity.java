@@ -175,7 +175,6 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
             e.printStackTrace();
         } finally {
             swipeRefreshLayout.setRefreshing(false);
-            loader.reset();
         }
     }
 
@@ -197,7 +196,6 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                listdata.clear();
                 refreshData();
             }
         });

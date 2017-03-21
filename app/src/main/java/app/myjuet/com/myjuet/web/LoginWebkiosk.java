@@ -34,8 +34,8 @@ public class LoginWebkiosk extends AppCompatActivity {
             Preference user = findPreference(getString(R.string.enrollment));
             bindPreferenceSummaryToValue(user);
 
-            Preference pass = findPreference(getString(R.string.password));
-            bindPreferenceSummaryToValue(pass);
+            Preference defaultPerc = findPreference(getString(R.string.preferedAttendence));
+            bindPreferenceSummaryToValue(defaultPerc);
         }
 
         @Override
