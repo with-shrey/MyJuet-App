@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.viewHold
     public void onBindViewHolder(DetailsAdapter.viewHolder holder, int position) {
         AttendenceDetails data = list.get(position);
         //Finding all text views from list_layout
-        LinearLayout layout = (LinearLayout) holder.layout;
+        CardView layout = (CardView) holder.layout;
         TextView Date = (TextView) holder.Date;
         TextView Status = (TextView) holder.Status;
         TextView Type = (TextView) holder.Type;
@@ -43,10 +44,9 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.viewHold
         Status.setText(data.getmTime());
         Type.setText(data.getmType());
         if (data.getmStatus().equals("Present"))
-            layout.setBackgroundColor(mContext.getResources().getColor(R.color.present));
+            layout.setCardBackgroundColor(mContext.getResources().getColor(R.color.present));
         else
-            layout.setBackgroundColor(mContext.getResources().getColor(R.color.absent));
-
+            layout.setCardBackgroundColor(mContext.getResources().getColor(R.color.absent));
     }
 
     @Override
@@ -56,14 +56,14 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.viewHold
 
     public class viewHolder extends RecyclerView.ViewHolder {
         //Finding all text views from list_layout
-        public LinearLayout layout;
+        public CardView layout;
         public TextView Date;
         public TextView Status;
         public TextView Type;
 
         public viewHolder(View itemView) {
             super(itemView);
-            layout = (LinearLayout) itemView.findViewById(R.id.details_linear_layout);
+            layout = (CardView) itemView.findViewById(R.id.details_linear_layout);
             Date = (TextView) itemView.findViewById(R.id.date);
             Status = (TextView) itemView.findViewById(R.id.status);
             Type = (TextView) itemView.findViewById(R.id.type);

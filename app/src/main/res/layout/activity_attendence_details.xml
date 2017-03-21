@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/details_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        app:titleTextAppearance="@style/Toolbar.TitleText" />
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroller"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -17,7 +28,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_margin="10dp"
-            android:background="@color/present"
+            app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="8dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +113,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%" />
+                android:text="%"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -125,7 +137,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%" />
+                android:text="%"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -147,7 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%" />
+                android:text="%"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <RelativeLayout
@@ -166,7 +180,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textColor="@android:color/black" />
 
         </RelativeLayout>
     </LinearLayout>
@@ -182,3 +197,4 @@
 
     </RelativeLayout>
 </ScrollView>
+</LinearLayout>

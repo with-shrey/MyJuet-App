@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
@@ -31,7 +32,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_details);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
+        double Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
         double t = Attendence / 100;
 
         int pa = Integer.parseInt(AttendenceActivity.tempData.getmCountPresent()) + Integer.parseInt(AttendenceActivity.tempData.getmCountAbsent());
@@ -54,13 +55,15 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
                 ClassText = "Don't Leave Class";
 
             } else {
-                ClassText = "Hurray!! You Can Leave " + String.valueOf(res) + " Classes\n I suggest NOT to leave a class!!\n";
+                ClassText = "Hurray!! You Can Leave " + classes + " Classes\n I suggest NOT to leave a class!!\n";
             }
 
         }
 
-        ActionBar action = getSupportActionBar();
-        setTitle(AttendenceActivity.tempData.getmName());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.details_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(AttendenceActivity.tempData.getmName());
+        getSupportActionBar().setElevation(5);
         TextView Present = (TextView) findViewById(R.id.present);
         TextView Absent = (TextView) findViewById(R.id.absent);
         TextView leaving = (TextView) findViewById(R.id.leavingdetails);
@@ -85,40 +88,5 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(this));
         scrollView.smoothScrollTo(0, 0);
-
-
-        // Create a TextView programmatically.
-        TextView tv = new TextView(getApplicationContext());
-
-        // Create a LayoutParams for TextView
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT, // Width of TextView
-                RelativeLayout.LayoutParams.WRAP_CONTENT); // Height of TextView
-
-        // Apply the layout parameters to TextView widget
-        tv.setLayoutParams(lp);
-
-        // Set text to display in TextView
-        try {
-            tv.setText(action.getTitle()); // ActionBar title text
-        } catch (NullPointerException e) {
-            Log.v("Title", "Error");
-        }
-        // Set the text color of TextView to black
-        // This line change the ActionBar title text color
-        tv.setTextColor(Color.WHITE);
-
-        // Set the TextView text size in dp
-        // This will change the ActionBar title text size
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-
-        // Set the ActionBar display option
-        action.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
-        // Finally, set the newly created TextView as ActionBar custom view
-        action.setCustomView(tv);
-
-
-
     }
 }

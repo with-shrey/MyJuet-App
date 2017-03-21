@@ -26,7 +26,8 @@
         <activity
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"
-            android:parentActivityName=".AttendenceActivity" />
+            android:parentActivityName=".AttendenceActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".web.LoginWebkiosk"
             android:label="Login Details" />
