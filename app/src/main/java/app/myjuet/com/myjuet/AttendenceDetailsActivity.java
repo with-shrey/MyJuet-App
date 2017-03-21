@@ -31,7 +31,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_details);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        double Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
+        int Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
         double t = Attendence / 100;
 
         int pa = Integer.parseInt(AttendenceActivity.tempData.getmCountPresent()) + Integer.parseInt(AttendenceActivity.tempData.getmCountAbsent());
@@ -45,15 +45,18 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
             res = (int) classes;
             ClassText = "You Need To Attend " + String.valueOf(res) + " Classes To Reach Threshold " + String.valueOf(Attendence) + " %";
         } else if (Integer.parseInt(AttendenceActivity.tempData.getmLecTut()) == Attendence) {
-            ClassText = "You are on the border !!";
+            ClassText = "Don't Leave Class";
         } else {
             classes = Math.floor((p - (t * pa)) / (t)) - 1;
             res = (int) classes;
             if (res < 0) {
                 res = 0;
-                ClassText = "Hurray!! You Can Bunk " + String.valueOf(res) + " Classes";
+                ClassText = "Don't Leave Class";
+
+            } else {
+                ClassText = "Hurray!! You Can Leave " + String.valueOf(res) + " Classes\n I suggest NOT to leave a class!!\n";
             }
-            ClassText = "On the Border";
+
         }
 
         ActionBar action = getSupportActionBar();
@@ -96,8 +99,11 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         tv.setLayoutParams(lp);
 
         // Set text to display in TextView
-        tv.setText(action.getTitle()); // ActionBar title text
-
+        try {
+            tv.setText(action.getTitle()); // ActionBar title text
+        } catch (NullPointerException e) {
+            Log.v("Title", "Error");
+        }
         // Set the text color of TextView to black
         // This line change the ActionBar title text color
         tv.setTextColor(Color.WHITE);
