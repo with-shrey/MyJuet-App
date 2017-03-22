@@ -86,7 +86,10 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         RecyclerView list = (RecyclerView) findViewById(R.id.listdetails);
         DetailsAdapter adapter = new DetailsAdapter(this, AttendenceActivity.tempData.getmList());
         list.setAdapter(adapter);
-        list.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        list.setLayoutManager(mLayoutManager);
         scrollView.smoothScrollTo(0, 0);
     }
 }
