@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,18 +19,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AttendenceActivity"
-            android:label="ATTENDENCE"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"
-            android:parentActivityName=".AttendenceActivity"
+            android:parentActivityName=".DrawerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".web.LoginWebkiosk"
             android:label="Login Details" />
+        <activity
+            android:name=".DrawerActivity"
+            android:label="@string/title_activity_drawer"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
