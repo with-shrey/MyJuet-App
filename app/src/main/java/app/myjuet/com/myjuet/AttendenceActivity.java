@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,7 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 import app.myjuet.com.myjuet.web.webUtilities;
 
+import static android.R.attr.action;
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 import static java.security.AccessController.getContext;
 
@@ -65,7 +67,6 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     public static int Error = -1;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView EmptyView;
-    private ActionBar action;
     private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
 
     public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
@@ -83,7 +84,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
         ObjectOutput out = null;
         ObjectOutput dateout = null;
         String dateString = formattor.format(dateobj).toString();
-        action.setSubtitle(dateString);
+        getSupportActionBar().setSubtitle(dateString);
         try {
             out = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + filename));
@@ -189,7 +190,11 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
-        action = getSupportActionBar();
+        Toolbar action = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(action);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         list = (RecyclerView) findViewById(R.id.list_view);
         EmptyView = (TextView) findViewById(R.id.emptyview_main);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
@@ -245,7 +250,7 @@ public class AttendenceActivity extends AppCompatActivity implements LoaderManag
                 + File.separator + datefile));
         ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
         String dates = (String) dateinput.readObject();
-        action.setSubtitle(dates);
+        getSupportActionBar().setSubtitle(dates);
 
         ois.close();
         dateinput.close();

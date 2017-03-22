@@ -21,8 +21,9 @@
         </activity>
         <activity
             android:name=".AttendenceActivity"
-            android:label="Attendence"
-            android:parentActivityName=".MainActivity" />
+            android:label="ATTENDENCE"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"
