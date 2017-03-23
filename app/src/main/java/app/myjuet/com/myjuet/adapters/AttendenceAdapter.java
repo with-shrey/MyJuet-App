@@ -23,7 +23,6 @@ import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 
 import static android.R.attr.data;
-import static app.myjuet.com.myjuet.AttendenceActivity.adapter;
 import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
 
 

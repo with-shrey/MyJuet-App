@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import app.myjuet.com.myjuet.AttendenceActivity;
 import app.myjuet.com.myjuet.R;
 
 import static android.R.attr.value;
@@ -61,4 +62,5 @@ public class LoginWebkiosk extends AppCompatActivity {
             onPreferenceChange(preference, preferenceString);
         }
     }
+
 }

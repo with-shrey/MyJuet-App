@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet;
 
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
@@ -22,8 +23,6 @@ import app.myjuet.com.myjuet.adapters.DetailsAdapter;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
 import static android.R.attr.action;
-import static app.myjuet.com.myjuet.AttendenceActivity.adapter;
-import static app.myjuet.com.myjuet.R.id.Attendence;
 
 public class AttendenceDetailsActivity extends AppCompatActivity {
 
@@ -92,4 +91,5 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         list.setLayoutManager(mLayoutManager);
         scrollView.smoothScrollTo(0, 0);
     }
+
 }

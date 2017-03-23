@@ -22,7 +22,6 @@ import app.myjuet.com.myjuet.AttendenceActivity;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
-import static app.myjuet.com.myjuet.R.id.Attendence;
 
 
 public class webUtilities extends AppCompatActivity {

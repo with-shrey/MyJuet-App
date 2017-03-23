@@ -1,26 +1,21 @@
 package app.myjuet.com.myjuet;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,11 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,20 +36,16 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
-import app.myjuet.com.myjuet.web.webUtilities;
 
-import static android.R.attr.action;
-import static app.myjuet.com.myjuet.R.id.toolbar;
-import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
-import static java.security.AccessController.getContext;
 
 public class AttendenceActivity extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
@@ -67,17 +53,19 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     //ERROR CONSTANTS
     public static final int WRONG_CREDENTIALS = 1;
     public static final int HOST_DOWN = 2;
+    public static final int CANCELLED = 4;
     public static final int NO_INTERNET = 3;
-    public static AttendenceAdapter adapter;
-    public static AttendenceData tempData;
     public static ArrayList<AttendenceData> listdata = new ArrayList<>();
-    public static RecyclerView list;
+    public static AttendenceData tempData;
     public static int Error = -1;
+    private static RecyclerView list;
     SwipeRefreshLayout swipeRefreshLayout;
-    TextView EmptyView;
     String DateString;
-    Toolbar action;
-    private String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
+    View.OnClickListener infoListner;
+    String FabString;
+    private AttendenceAdapter adapter;
+    private String Action = "Refresh";
+
 
     public AttendenceActivity() {
     }
@@ -90,13 +78,14 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
             directory.mkdirs();
         }
         Date dateobj = new Date();
-        SimpleDateFormat formattor = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
 
         String filename = "MessgeScreenList.srl";
         String date = "date.srl";
         ObjectOutput out = null;
         ObjectOutput dateout = null;
-        DateString = formattor.format(dateobj).toString();
+        DateString = formattor.format(dateobj);
+        FabString = "Synced Today " + DateString.substring(DateString.indexOf(" "));
         try {
             out = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + filename));
@@ -116,10 +105,11 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
         String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
-        //TODO:check wheather values are dafault and show error
         String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+
         return new AttendenceLoader(getActivity(), Url, PostParam);
 
     }
@@ -135,10 +125,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                listdata.clear();
-                adapter.notifyDataSetChanged();
-                AttendenceActivity.list.getRecycledViewPool().clear();
-
                 refreshData();
                 return true;
             case R.id.loginAttendence:
@@ -152,32 +138,55 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
-
+        swipeRefreshLayout.setKeepScreenOn(false);
+        ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+        FabString = "Synced Today";
+        Action = "Refresh";
         try {
-            listdata.clear();
-            adapter.notifyDataSetChanged();
-            AttendenceActivity.list.getRecycledViewPool().clear();
-
-
             Log.v("Shrey", String.valueOf(Error));
-            if (Error == WRONG_CREDENTIALS) {
-                File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
-                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-                if (directoryFile.exists())
-                    directoryFile.delete();
-                EmptyView.setText("Wrong Credentials");
-            } else if (Error == HOST_DOWN) {
-                listdata.addAll(AttendenceDatas);
-                adapter.notifyDataSetChanged();
-                AttendenceActivity.list.getRecycledViewPool().clear();
 
-                EmptyView.setText("Webkiosk Down/Timed Out(3s)");
-            } else {
+
+            if (Error == WRONG_CREDENTIALS) {
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "Wrong Credentials";
+                Action = "Login";
+                ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                                startActivity(login);
+                                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                                ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+                                FabString = "Refresh to Login";
+                                Action = "Refresh";
+                            }
+                        }).show();
+                    }
+                });
+                ((DrawerActivity) getActivity()).fab.performClick();
+
+
+            } else if (Error == HOST_DOWN) {
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "Webkiosk Down/Timed Out(3s)";
+                ((DrawerActivity) getActivity()).fab.performClick();
+            } else if (Error == -1 && !AttendenceDatas.isEmpty()) {
                 File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
                         + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
                 if (directoryFile.exists())
                     directoryFile.delete();
                 write(getActivity(), AttendenceDatas);
+                listdata.clear();
+                adapter.notifyDataSetChanged();
+                list.getRecycledViewPool().clear();
                 listdata.addAll(AttendenceDatas);
                 adapter.notifyDataSetChanged();
                 AttendenceActivity.list.getRecycledViewPool().clear();
@@ -188,8 +197,8 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         } finally {
             swipeRefreshLayout.setRefreshing(false);
         }
-    }
 
+    }
     @Override
     public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
         listdata.clear();
@@ -201,23 +210,24 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
-        Toolbar action = (Toolbar) rootView.findViewById(R.id.toolbar);
         setHasOptionsMenu(true);
-
-        ((DrawerActivity) getActivity()).setSupportActionBar(action);
-
-        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("ATTENDENCE");
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_attendence);
-        fab.setOnClickListener(new View.OnClickListener() {
+        infoListner = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Last Synced At " + DateString, Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        refreshData();
+                    }
+                }).show();
             }
-        });
+        };
+        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Attendence");
+        ((DrawerActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         list = (RecyclerView) rootView.findViewById(R.id.list_view);
-        EmptyView = (TextView) rootView.findViewById(R.id.emptyview_main);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -228,9 +238,14 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         listdata = new ArrayList<>();
         adapter = new AttendenceAdapter(getActivity(), listdata);
         list.setAdapter(adapter);
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        list.setLayoutManager(layoutManager);
         list.getRecycledViewPool().clear();
         adapter.notifyDataSetChanged();
+        if (layoutManager.findFirstVisibleItemPosition() == 1) {
+            ((DrawerActivity) getActivity()).appBarLayout.setExpanded(true);
+        }
+
         File directory = new File(getActivity().getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.exists()) {
@@ -238,18 +253,38 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 listdata.clear();
 
                 listdata.addAll(read(getActivity()));
+                list.getRecycledViewPool().clear();
+                adapter.notifyDataSetChanged();
+                if (DateString.contains("Today")) {
+                    ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+                    FabString = "Data Synced Today At " + DateString.substring(DateString.indexOf(" "));
+                    DateString = FabString;
+                } else {
+                    ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                    FabString = "Data last Synced " + DateString.substring(0, DateString.indexOf(" "));
+                    DateString = FabString;
+                }
+                ((DrawerActivity) getActivity()).fab.performClick();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            listdata.clear();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+            String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+            if (!user.equals("default") || !pass.equals("default")) {
+                listdata.clear();
             list.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();
-            refreshData();
+                refreshData();
+            } else {
+                Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                startActivity(login);
+                FabString = "Kindly Refresh To Login";
+                ((DrawerActivity) getActivity()).fab.performClick();
+            }
         }
-        Snackbar.make(rootView, "Last Synced At " + DateString, Snackbar.LENGTH_LONG)
-                .setAction("Refresh", null).show();
         return rootView;
     }
 
@@ -267,6 +302,15 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 + File.separator + datefile));
         ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
         DateString = (String) dateinput.readObject();
+        Date dateobj = new Date();
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
+        String temp = formattor.format(dateobj);
+        temp = temp.substring(0, temp.indexOf(" "));
+        if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
+            DateString = "Today " + DateString.substring(DateString.indexOf(" "));
+
+
+
         ois.close();
         dateinput.close();
 
@@ -275,7 +319,15 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     }
 
     public void refreshData() {
-        EmptyView.setText("");
+        swipeRefreshLayout.setKeepScreenOn(true);
+        if (DateString.contains("Today"))
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+        else
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+        FabString = DateString;
+        Action = "Refresh";
         Error = -1;
         swipeRefreshLayout.setRefreshing(true);
         ConnectivityManager cm =
@@ -285,14 +337,44 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
+
             Log.v("Shrey", "isConnected");
             CookieHandler.setDefault(new CookieManager());
-            LoaderManager loader = getLoaderManager();
-            loader.initLoader(0, null, this);
+            final LoaderManager loaderAtt = getLoaderManager();
+
+            if (loaderAtt.getLoader(0) == null)
+                loaderAtt.initLoader(0, null, this);
+            else
+                loaderAtt.restartLoader(0, null, this);
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_disabled_black_24dp);
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude60)));
+            FabString = "Click Orange Button To Stop";
+            Action = "";
+            ((DrawerActivity) getActivity()).fab.performClick();
+            ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (DateString.contains("Today"))
+                        ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+                    else
+                        ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                    ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+                    FabString = DateString;
+                    Action = "Refresh";
+                    loaderAtt.getLoader(0).stopLoading();
+                }
+            });
         } else {
             swipeRefreshLayout.setRefreshing(false);
-            EmptyView.setText("No Internet Connections");
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+            FabString = "No Internet Connections";
+            ((DrawerActivity) getActivity()).fab.performClick();
             Error = NO_INTERNET;
+            swipeRefreshLayout.setKeepScreenOn(false);
+
         }
 
     }
@@ -301,14 +383,16 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        ((DrawerActivity) getActivity()).setSupportActionBar(action);
+        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Attendence");
 
     }
 
-    @Override
-    public void onDestroyView() {
-        ((DrawerActivity) getActivity()).setSupportActionBar(null);
-        super.onDestroyView();
+    public class Cancellistner implements Loader.OnLoadCanceledListener {
+
+        @Override
+        public void onLoadCanceled(Loader loader) {
+            Error = CANCELLED;
+        }
     }
 
 

@@ -11,8 +11,8 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.webUtilities;
 
 import android.content.AsyncTaskLoader;
+import android.content.Loader;
 
-import static app.myjuet.com.myjuet.R.id.Attendence;
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 
 
@@ -48,25 +48,39 @@ public class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>>
     }
 
     @Override
+    protected void onStopLoading() {
+        cancelLoad();
+        AttendenceActivity.Error = 4;
+        cancelLoadInBackground();
+        super.onStopLoading();
+    }
+
+    @Override
     public ArrayList<AttendenceData> loadInBackground() {
-        ArrayList<AttendenceData> DataAttendence;
+        ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
         String Content = " ";
         try {
             if (pingHost("webkiosk.juet.ac.in", 80, 5000)) {
-                webUtilities.sendPost(mUrl, mPostParam);
-                Content = webUtilities.GetPageContent(mAttendence);
+                if (!isLoadInBackgroundCanceled())
+                    webUtilities.sendPost(mUrl, mPostParam);
+                if (!isLoadInBackgroundCanceled())
+                    Content = webUtilities.GetPageContent(mAttendence);
                 webUtilities.conn.disconnect();
             } else AttendenceActivity.Error = AttendenceActivity.HOST_DOWN;
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (!Content.equals(" ")) {
+            if (!isLoadInBackgroundCanceled())
             DataAttendence = AttendenceCrawler(Content);
-
-            AttendenceActivity.listdata.clear();
+            if (isLoadInBackgroundCanceled())
+                DataAttendence.clear();
             return DataAttendence;
         }
-        return AttendenceActivity.listdata;
+        DataAttendence.clear();
+        return DataAttendence;
     }
+
+
 }
 

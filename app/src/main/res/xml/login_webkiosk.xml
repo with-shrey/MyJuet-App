@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="WEBKIOSK CREDENTIALS">
         <EditTextPreference
-            android:defaultValue="161B222"
-            android:inputType="numberDecimal"
+            android:defaultValue="@string/defaultuser"
+            android:inputType="textCapWords"
             android:key="@string/enrollment"
             android:selectAllOnFocus="true"
             android:title="ENROLLMENT NUMBER" />
         <EditTextPreference
-            android:defaultValue="jaishriram"
+            android:defaultValue="@string/defaultpassword"
             android:inputType="textPassword"
             android:key="@string/password"
             android:selectAllOnFocus="true"
@@ -16,7 +16,7 @@
     </PreferenceCategory>
     <EditTextPreference
         android:defaultValue="@string/defaultattendence"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:key="@string/preferedAttendence"
         android:selectAllOnFocus="true"
         android:title="Desired Attendence Percentage" />

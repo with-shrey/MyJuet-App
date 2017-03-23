@@ -37,16 +37,19 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="AppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
 
+    <style name="collapsed">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <style name="expanded">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">25sp</item>
         <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="collapsed">
-        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
