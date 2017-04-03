@@ -322,14 +322,14 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     public void refreshData() {
         swipeRefreshLayout.setKeepScreenOn(true);
-        if (DateString.contains("Today")) {
-            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
-            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
-        }
-        else
-            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
-        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+//        if (DateString.contains("Today") && DateString !=null) {
+//            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+//            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+//        }
+//        else
+//            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+//        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
+//        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         FabString = DateString;
         Action = "Refresh";
         Error = -1;

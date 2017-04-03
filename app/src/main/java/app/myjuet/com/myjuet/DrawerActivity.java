@@ -7,6 +7,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -78,7 +79,8 @@ public class DrawerActivity extends AppCompatActivity
             WebviewFragment.goBackWebview();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
-        }
+        } else
+            drawer.openDrawer(GravityCompat.START);
     }
 
 
@@ -144,6 +146,9 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.feedback_drawer) {
 
+        } else if (id == R.id.exit) {
+            finish();
+            System.exit(0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

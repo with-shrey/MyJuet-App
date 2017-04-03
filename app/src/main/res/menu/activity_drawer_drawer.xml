@@ -22,6 +22,10 @@
             android:id="@+id/web_view_drawer"
             android:icon="@drawable/web_menu_icon"
             android:title="WebView" />
+        <item
+            android:id="@+id/exit"
+            android:icon="@drawable/drawer_exit"
+            android:title="Exit" />
     </group>
 
     <item android:title="Communicate">
