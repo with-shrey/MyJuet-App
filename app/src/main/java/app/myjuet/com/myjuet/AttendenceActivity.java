@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -162,7 +163,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                                 Intent login = new Intent(getActivity(), LoginWebkiosk.class);
                                 startActivity(login);
                                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
                                 ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
                                 FabString = "Refresh to Login";
                                 Action = "Refresh";
@@ -211,6 +212,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         setHasOptionsMenu(true);
+        ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
         infoListner = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,10 +224,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 }).show();
             }
         };
-        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
-        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Attendence");
-        ((DrawerActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         list = (RecyclerView) rootView.findViewById(R.id.list_view);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
@@ -257,10 +256,12 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 adapter.notifyDataSetChanged();
                 if (DateString.contains("Today")) {
                     ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
                     FabString = "Data Synced Today At " + DateString.substring(DateString.indexOf(" "));
                     DateString = FabString;
                 } else {
                     ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
                     FabString = "Data last Synced " + DateString.substring(0, DateString.indexOf(" "));
                     DateString = FabString;
                 }
@@ -285,6 +286,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 ((DrawerActivity) getActivity()).fab.performClick();
             }
         }
+
         return rootView;
     }
 
@@ -320,11 +322,13 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     public void refreshData() {
         swipeRefreshLayout.setKeepScreenOn(true);
-        if (DateString.contains("Today"))
+        if (DateString.contains("Today")) {
             ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        }
         else
             ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         FabString = DateString;
         Action = "Refresh";
@@ -355,11 +359,13 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 @Override
                 public void onClick(View view) {
                     swipeRefreshLayout.setRefreshing(false);
-                    if (DateString.contains("Today"))
+                    if (DateString.contains("Today")) {
                         ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
-                    else
+                        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+
+                    } else
                         ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
                     ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
                     FabString = DateString;
                     Action = "Refresh";
@@ -379,13 +385,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Attendence");
-
-    }
 
     public class Cancellistner implements Loader.OnLoadCanceledListener {
 
