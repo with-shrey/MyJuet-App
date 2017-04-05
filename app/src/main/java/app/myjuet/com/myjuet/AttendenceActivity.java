@@ -385,14 +385,4 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     }
 
-
-    public class Cancellistner implements Loader.OnLoadCanceledListener {
-
-        @Override
-        public void onLoadCanceled(Loader loader) {
-            Error = CANCELLED;
-        }
-    }
-
-
 }

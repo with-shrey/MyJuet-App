@@ -105,8 +105,11 @@ public class webUtilities extends AppCompatActivity {
         String[] datas = new String[5];
         String subPart[] = new String[5];
         Result = Result.trim();
-        if (Result.contains("Login</a>"))
-            AttendenceActivity.Error = AttendenceActivity.WRONG_CREDENTIALS;        //get the table body of atendence
+        Log.v("Shrey", Result);
+        if (Result.contains("Login</a>")) {
+            AttendenceActivity.Error = AttendenceActivity.WRONG_CREDENTIALS;
+            Log.v("Shrey", "Wrong Credentials");
+        }      //get the table body of atendence
 
         else if (Result.contains("<tbody") && Result.contains("</tbody>") && !Result.equals(null)) {
             Log.v("Shrey", "Crawled");
