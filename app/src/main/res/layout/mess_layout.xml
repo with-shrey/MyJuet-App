@@ -5,7 +5,7 @@
     android:background="@android:color/black"
     android:orientation="vertical">
 
-    <ImageView
+    <app.myjuet.com.myjuet.TouchImageView
         android:id="@+id/anapurna_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
