@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
@@ -64,7 +65,7 @@ public class DrawerActivity extends AppCompatActivity
         String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         TextView name = (TextView) headerView.findViewById(R.id.header_name);
         LinearLayout layoutheader = (LinearLayout) headerView.findViewById(R.id.header_main);
         layoutheader.setOnClickListener(new View.OnClickListener() {
