@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_event_black_24dp"
             android:title="TimeTable" />
         <item
-            android:id="@+id/Events_drawer"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Events/Alerts" />
-        <item
             android:id="@+id/annapurna_drawer"
             android:icon="@drawable/ic_restaurant_black_24dp"
             android:title="Annapurna menu" />
@@ -30,6 +26,10 @@
 
     <item android:title="Communicate">
         <menu>
+            <item
+                android:id="request_notification"
+                android:icon="@drawable/ic_notification"
+                android:title="Request Notification" />
             <item
                 android:id="@+id/contact_drawer"
                 android:icon="@drawable/ic_contact_mail_black_24dp"

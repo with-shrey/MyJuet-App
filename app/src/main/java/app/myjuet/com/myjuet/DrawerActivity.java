@@ -30,8 +30,10 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
@@ -45,6 +47,7 @@ public class DrawerActivity extends AppCompatActivity
     NavigationView navigationView;
     int activeFragment;
     Toolbar tool;
+    InterstitialAd mInterstitialAd;
     private AdView mAdView;
 
     @Override
@@ -57,10 +60,30 @@ public class DrawerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-5004802474664731/9840227206");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+        requestNewInterstitial();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -125,6 +148,9 @@ public class DrawerActivity extends AppCompatActivity
             android.app.Fragment fragment = new AttendenceActivity();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             // setSupportActionBar(tool);
             activeFragment = 0;
 
@@ -135,14 +161,9 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("TimeTable");
             getSupportActionBar().setTitle("TimeTable");
             activeFragment = 1;
-
-        } else if (id == R.id.Events_drawer) {
-            getSupportActionBar().setTitle("Events/Alerts");
-            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(Color.MAGENTA);
-            collapsingToolbarLayout.setTitle("Attendence");
-            activeFragment = 2;
-
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
 
         } else if (id == R.id.annapurna_drawer) {
             activeFragment = 3;
@@ -154,6 +175,9 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new MessFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
 
 
         } else if (id == R.id.web_view_drawer) {
@@ -164,6 +188,9 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new WebviewFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
 
             activeFragment = 4;
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -173,6 +200,9 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.feedback_drawer) {
 
         } else if (id == R.id.exit) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             finish();
             System.exit(0);
         }
