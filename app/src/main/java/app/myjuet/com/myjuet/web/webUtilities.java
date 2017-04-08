@@ -142,8 +142,12 @@ public class webUtilities extends AppCompatActivity {
                         else if (i == 4)  //tut
                             datas[3] = tempData;
 
-                        if (i == 5)
+                        if (i == 5) {
+                            if (!listDetails.isEmpty())
                             list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3], listDetails));
+                            else
+                                list.clear();
+                        }
                         subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
 
                     } else
@@ -171,6 +175,7 @@ public class webUtilities extends AppCompatActivity {
                     Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
                     Url = Url.replace("amp;", "");
                     listDetails = AttendenceDetailsFinder(Url);
+
 
                 }
             case 3:
@@ -222,59 +227,61 @@ public class webUtilities extends AppCompatActivity {
         ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
         String[] data = new String[3];
         //get the table body of atendence
-        subPart[0] = Result.substring(Result.indexOf("</thead><tbody>") + 8, Result.indexOf("</tbody>"));
-        //rows looping
-        while (subPart[0].contains("<tr")) {
-            if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
+        if (Result.contains("</thead><tbody>") && Result.contains("</tbody>")) {
+            subPart[0] = Result.substring(Result.indexOf("</thead><tbody>") + 8, Result.indexOf("</tbody>"));
+            //rows looping
+            while (subPart[0].contains("<tr")) {
+                if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
 
-                subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
+                    subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
 
-            } else
-                break;
-            String temp = subPart[1];
-
-            //loop for columns
-            for (int i = 0; i < 6; i++) {
-
-                if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
-                    if (i < 3)
-                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") + 24, subPart[1].indexOf("</td>"));
-                    else if (i == 3) {
-                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") - 1, subPart[1].indexOf("</td>"));
-                        if (subPart[2].contains("Present"))
-                            subPart[2] = "Present";
-                        else
-                            subPart[2] = "Absent";
-                    } else if (i == 4)
-                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td>") + 4, subPart[1].indexOf("</td>"));
-                    else {
-                        subPart[2] = subPart[1].substring(subPart[1].indexOf("color=\"\">") + 9, subPart[1].indexOf("</font></b></td>"));
-
-                    }
-                    subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
-
-                    switch (i) {
-                        case 1:
-                            data[0] = subPart[2];
-                            break;
-                        case 3:
-                            data[1] = subPart[2];
-                            break;
-                        case 5:
-                            data[2] = subPart[2];
-                            AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
-                            listDetails.add(dataDetailed);
-                            break;
-                        default:
-                    }
-                } else if (i == 5) {
-                    data[2] = "Lab";
-                    AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
-                    listDetails.add(dataDetailed);
                 } else
                     break;
+                String temp = subPart[1];
+
+                //loop for columns
+                for (int i = 0; i < 6; i++) {
+
+                    if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
+                        if (i < 3)
+                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") + 24, subPart[1].indexOf("</td>"));
+                        else if (i == 3) {
+                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") - 1, subPart[1].indexOf("</td>"));
+                            if (subPart[2].contains("Present"))
+                                subPart[2] = "Present";
+                            else
+                                subPart[2] = "Absent";
+                        } else if (i == 4)
+                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td>") + 4, subPart[1].indexOf("</td>"));
+                        else {
+                            subPart[2] = subPart[1].substring(subPart[1].indexOf("color=\"\">") + 9, subPart[1].indexOf("</font></b></td>"));
+
+                        }
+                        subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
+
+                        switch (i) {
+                            case 1:
+                                data[0] = subPart[2];
+                                break;
+                            case 3:
+                                data[1] = subPart[2];
+                                break;
+                            case 5:
+                                data[2] = subPart[2];
+                                AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
+                                listDetails.add(dataDetailed);
+                                break;
+                            default:
+                        }
+                    } else if (i == 5) {
+                        data[2] = "Lab";
+                        AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
+                        listDetails.add(dataDetailed);
+                    } else
+                        break;
+                }
+                subPart[0] = subPart[0].replace(temp, "");
             }
-            subPart[0] = subPart[0].replace(temp, "");
         }
         return listDetails;
     }

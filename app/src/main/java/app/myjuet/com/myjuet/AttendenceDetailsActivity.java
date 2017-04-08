@@ -19,17 +19,23 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import app.myjuet.com.myjuet.adapters.DetailsAdapter;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
 import static android.R.attr.action;
 
 public class AttendenceDetailsActivity extends AppCompatActivity {
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_details);
+        mAdView = (AdView) findViewById(R.id.adViewDetails);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         double Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
         double t = Attendence / 100;

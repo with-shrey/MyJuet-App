@@ -88,9 +88,11 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
             return R.color.magnitude50;
         } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
             return R.color.magnitude60;
-        } else if ((mLecTut) > 70 && (mLecTut) < 80) {
+        } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
+            return R.color.magnitude6070;
+        } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
             return R.color.magnitude70;
-        } else if ((mLecTut) > 80 && (mLecTut) < 90) {
+        } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {
             return R.color.magnitude80;
         } else {
             return R.color.magnitude90;

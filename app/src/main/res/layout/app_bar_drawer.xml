@@ -48,14 +48,27 @@
 
     <include layout="@layout/content_drawer" />
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/drawer_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:foregroundTint="@android:color/black"
+        android:layout_gravity="end"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="@dimen/fab_margin"
         app:fabSize="auto" />
 
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id" />
+
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

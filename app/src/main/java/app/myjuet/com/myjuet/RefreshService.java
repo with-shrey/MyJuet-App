@@ -2,12 +2,15 @@ package app.myjuet.com.myjuet;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -61,33 +64,8 @@ public class RefreshService extends IntentService {
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         String date = "date.srl";
-        Boolean today = false;
-        String DateString;
-        ObjectInput dateinput = null;
+        String DateString = new String();
 
-        try {
-            dateinput = new ObjectInputStream(new FileInputStream(directory
-                    + File.separator + date));
-            DateString = (String) dateinput.readObject();
-            Date dateobj = new Date();
-            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
-            String temp = formattor.format(dateobj);
-            temp = temp.substring(0, temp.indexOf(" "));
-            if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
-                today = true;
-            Toast.makeText(this, DateString, Toast.LENGTH_SHORT);
-            Log.v("Service Running", DateString);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String mAttendence = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
@@ -99,15 +77,16 @@ public class RefreshService extends IntentService {
         String Content = " ";
         Log.v("Shrey", user + " " + pass);
 
-        if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && isConnected && !today) {
+        if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+            sendNotification("Attendence Sync started");
             try {
-                if (pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+
                     CookieHandler.setDefault(new CookieManager());
                     webUtilities.sendPost(Url, PostParam);
                     Content = webUtilities.GetPageContent(mAttendence);
-                    webUtilities.conn.disconnect();
-                } else
-                    Error = HOST_DOWN;                    //HostDown
+                sendNotification("Attendence Synced 25%");
+                webUtilities.conn.disconnect();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -118,7 +97,7 @@ public class RefreshService extends IntentService {
                 DataAttendence.clear();
                 Log.v("Shrey", "content Empty");
             }
-            if (!DataAttendence.isEmpty() && Error == -1) {
+            if (!DataAttendence.isEmpty()) {
                 Date dateobj = new Date();
                 SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
 
@@ -130,8 +109,10 @@ public class RefreshService extends IntentService {
                 try {
                     out = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + filename));
+                    out.flush();
                     dateout = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + date));
+                    dateout.flush();
                     out.writeObject(DataAttendence);
                     dateout.writeObject(DateString);
                     out.close();
@@ -142,8 +123,32 @@ public class RefreshService extends IntentService {
                     e.printStackTrace();
                 }
             }
-        }//REturn statement
+            sendNotification("Attendence Synced successfully " + DateString);
+        } else if (!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword)))
+            sendNotification("Wrong Credentials");
+        else if (pingHost("webkiosk.juet.ac.in", 80, 5000))
+            sendNotification("Webkiosk Down/Unreachable");
+        else sendNotification("Unknown Error");
 
 
     }
+
+    private void sendNotification(String msg) {
+        NotificationManager mNotificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                new Intent(getApplicationContext(), DrawerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("Attendence")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                        .setContentText(msg)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setAutoCancel(true);
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(1, mBuilder.build());
+    }
+
 }

@@ -2,17 +2,21 @@ package app.myjuet.com.myjuet;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,9 +27,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
 import static android.R.id.toggle;
 
@@ -36,7 +44,7 @@ public class DrawerActivity extends AppCompatActivity
     NavigationView navigationView;
     int activeFragment;
     Toolbar tool;
-
+    private AdView mAdView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,7 +60,23 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
 
+        TextView name = (TextView) headerView.findViewById(R.id.header_name);
+        LinearLayout layoutheader = (LinearLayout) headerView.findViewById(R.id.header_main);
+        layoutheader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent login = new Intent(DrawerActivity.this, LoginWebkiosk.class);
+                startActivity(login);
+            }
+        });
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -67,6 +91,7 @@ public class DrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
@@ -94,7 +119,7 @@ public class DrawerActivity extends AppCompatActivity
         FragmentTransaction transition = getFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(Color.RED);
+            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
             collapsingToolbarLayout.setTitle("Attendence");
             android.app.Fragment fragment = new AttendenceActivity();
             transition.replace(R.id.content_drawer, fragment);

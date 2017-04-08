@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet;
 
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -101,17 +102,27 @@ public class WebviewFragment extends Fragment {
         webSettings.setDisplayZoomControls(false);
         myWebView.setWebViewClient(new WebViewClient());
         myWebView.setWebViewClient(new WebViewClient() {
+            @SuppressWarnings("deprecation")
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
+                return true;
+            }
+
+            @TargetApi(android.os.Build.VERSION_CODES.N)
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                shouldOverrideUrlLoading(view, link);
                 return true;
             }
 
             public void onLoadResource(WebView view, String url) {
                 // Check to see if there is a progress dialog
                     // If no progress dialog, make one and set message
+                if (progressDialog == null) {
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setMessage(Loading);
                     progressDialog.show();
+                }
 
                     // Hide the webview while loading
                     myWebView.setEnabled(false);
@@ -124,6 +135,7 @@ public class WebviewFragment extends Fragment {
                 try {
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
+                        progressDialog = null;
                         myWebView.setEnabled(true);
                     }
                 } catch (NullPointerException e) {
@@ -131,11 +143,19 @@ public class WebviewFragment extends Fragment {
                 }
             }
 
+            @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 SnackString = "ERROR:" + description + "ErrorCode:" + String.valueOf(errorCode);
                 ((DrawerActivity) getActivity()).fab.performClick();
 
+            }
+
+            @TargetApi(android.os.Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
+                // Redirect to deprecated method, so you can use it in all SDK versions
+                onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
             }
         });
         if (isConnected) {
@@ -154,6 +174,7 @@ public class WebviewFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        if (((DrawerActivity) getActivity()).getSupportActionBar() != null)
         ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Webview");
         ((DrawerActivity) getActivity()).appBarLayout.setExpanded(false);
 
@@ -260,6 +281,7 @@ public class WebviewFragment extends Fragment {
                             }
                         });
                         confirm.show();
+                        break;
                     case 7:
                         final AlertDialog.Builder change = new AlertDialog.Builder(getActivity());
                         change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
@@ -283,6 +305,7 @@ public class WebviewFragment extends Fragment {
                             }
                         });
                         change.show();
+                        break;
                 }
             }
 
