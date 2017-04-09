@@ -1,23 +1,16 @@
 package app.myjuet.com.myjuet;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,8 +30,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
-
-import static android.R.id.toggle;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -73,6 +64,7 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-5004802474664731/9840227206");
 
@@ -88,7 +80,6 @@ public class DrawerActivity extends AppCompatActivity
         String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         TextView name = (TextView) headerView.findViewById(R.id.header_name);
         LinearLayout layoutheader = (LinearLayout) headerView.findViewById(R.id.header_main);
         layoutheader.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +133,7 @@ public class DrawerActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentTransaction transition = getFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
+            fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
             collapsingToolbarLayout.setTitle("Attendence");
@@ -166,6 +158,8 @@ public class DrawerActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.annapurna_drawer) {
+            fab.setVisibility(View.GONE);
+
             activeFragment = 3;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
@@ -181,6 +175,8 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.web_view_drawer) {
+            fab.setVisibility(View.VISIBLE);
+
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
             collapsingToolbarLayout.setTitle("WebView");           // setSupportActionBar(tool);
@@ -196,8 +192,41 @@ public class DrawerActivity extends AppCompatActivity
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         } else if (id == R.id.contact_drawer) {
-
+            fab.setVisibility(View.GONE);
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setTitle("Contact Us");           // setSupportActionBar(tool);
+            appBarLayout.setExpanded(false);
+            Fragment fragment = new ContactFragment();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
+        } else if (id == R.id.request_notification) {
+            fab.setVisibility(View.GONE);
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
+            appBarLayout.setExpanded(false);
+            Fragment fragment = new NotificationRequestFragment();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
         } else if (id == R.id.feedback_drawer) {
+            fab.setVisibility(View.GONE);
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setTitle("FeedBack");           // setSupportActionBar(tool);
+            appBarLayout.setExpanded(false);
+            Fragment fragment = new ReportFragment();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
 
         } else if (id == R.id.exit) {
             if (mInterstitialAd.isLoaded()) {

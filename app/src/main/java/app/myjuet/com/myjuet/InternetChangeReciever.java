@@ -30,6 +30,9 @@ public class InternetChangeReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         File directory = new File(context.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
         String date = "date.srl";
         Boolean today = false;
         String DateString;

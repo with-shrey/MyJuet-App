@@ -47,6 +47,8 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 
 public class AttendenceActivity extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
@@ -107,10 +109,10 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser)).toUpperCase().trim();
         String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
-        String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
-
+        Log.v("User name", user + pass);
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         return new AttendenceLoader(getActivity(), Url, PostParam);
 
     }
@@ -247,7 +249,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
         File directory = new File(getActivity().getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-        if (directory.exists()) {
+        if (directory.isFile()) {
             try {
                 listdata.clear();
 
@@ -274,7 +276,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
             String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
-            if (!user.equals("default") || !pass.equals("default")) {
+            if (!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) {
                 listdata.clear();
             list.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();

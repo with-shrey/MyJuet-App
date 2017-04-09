@@ -6,6 +6,7 @@
             android:inputType="textCapWords"
             android:key="@string/enrollment"
             android:selectAllOnFocus="true"
+            android:textAllCaps="true"
             android:title="ENROLLMENT NUMBER" />
         <EditTextPreference
             android:defaultValue="@string/defaultpassword"

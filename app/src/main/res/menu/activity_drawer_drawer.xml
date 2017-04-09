@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:checkableBehavior="single">
 
     <group android:checkableBehavior="single">
         <item
@@ -22,12 +23,13 @@
             android:id="@+id/exit"
             android:icon="@drawable/drawer_exit"
             android:title="Exit" />
-    </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="request_notification"
+        <item
+            android:checkable="false"
+            android:title="COMMUNICATE" />
+
+        <item
+                android:id="@+id/request_notification"
                 android:icon="@drawable/ic_notification"
                 android:title="Request Notification" />
             <item
@@ -37,8 +39,7 @@
             <item
                 android:id="@+id/feedback_drawer"
                 android:icon="@drawable/ic_menu_send"
-                android:title="FeedBack/Report" />
-        </menu>
-    </item>
+                android:title="FeedBack/Suggestion" />
+    </group>
 
 </menu>

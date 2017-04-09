@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.web.LoginWebkiosk;
 import app.myjuet.com.myjuet.web.webUtilities;
 import app.myjuet.com.myjuet.AttendenceActivity;
 
@@ -63,6 +64,9 @@ public class RefreshService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
         String date = "date.srl";
         String DateString = new String();
 
@@ -70,22 +74,20 @@ public class RefreshService extends IntentService {
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String mAttendence = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
 
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser)).toUpperCase().trim();
         String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
-        String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
         String Content = " ";
         Log.v("Shrey", user + " " + pass);
 
         if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && pingHost("webkiosk.juet.ac.in", 80, 5000)) {
-            sendNotification("Attendence Sync started");
+            sendNotification("Attendence Sync started", 1);
             try {
-
                     CookieHandler.setDefault(new CookieManager());
                     webUtilities.sendPost(Url, PostParam);
                     Content = webUtilities.GetPageContent(mAttendence);
-                sendNotification("Attendence Synced 25%");
-                webUtilities.conn.disconnect();
+                sendNotification("Attendence Synced 25%", 1);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,36 +111,40 @@ public class RefreshService extends IntentService {
                 try {
                     out = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + filename));
-                    out.flush();
                     dateout = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + date));
-                    dateout.flush();
                     out.writeObject(DataAttendence);
                     dateout.writeObject(DateString);
                     out.close();
                     dateout.close();
                 } catch (FileNotFoundException e) {
+
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            sendNotification("Attendence Synced successfully " + DateString);
-        } else if (!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword)))
-            sendNotification("Wrong Credentials");
-        else if (pingHost("webkiosk.juet.ac.in", 80, 5000))
-            sendNotification("Webkiosk Down/Unreachable");
-        else sendNotification("Unknown Error");
+            sendNotification("Attendence Synced successfully " + DateString, 1);
+        } else if (user.equals(getString(R.string.defaultuser)) || pass.equals(getString(R.string.defaultpassword)))
+            sendNotification("Please Enter Login Details", 0);
+        else if (!pingHost("webkiosk.juet.ac.in", 80, 5000))
+            sendNotification("Webkiosk Down/Unreachable", 1);
+        else sendNotification("Wrong Credentials", 1);
 
 
     }
 
-    private void sendNotification(String msg) {
+    private void sendNotification(String msg, int i) {
+        PendingIntent contentIntent;
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), DrawerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        if (i == 1) {
+            contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                    new Intent(getApplicationContext(), DrawerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                    new Intent(getApplicationContext(), LoginWebkiosk.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getApplicationContext())

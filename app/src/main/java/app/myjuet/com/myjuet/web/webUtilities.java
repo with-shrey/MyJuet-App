@@ -71,6 +71,7 @@ public class webUtilities extends AppCompatActivity {
         }
         in.close();
         Log.v("Shrey", "Post Send");
+        Log.v("response", response.toString().trim());
 
 
     }
