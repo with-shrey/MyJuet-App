@@ -87,7 +87,7 @@ public class RefreshService extends IntentService {
                     CookieHandler.setDefault(new CookieManager());
                     webUtilities.sendPost(Url, PostParam);
                     Content = webUtilities.GetPageContent(mAttendence);
-                sendNotification("Attendence Synced 25%", 1);
+                sendNotification("Sync in Progress...", 1);
 
             } catch (Exception e) {
                 e.printStackTrace();

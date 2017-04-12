@@ -16,6 +16,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,6 +38,8 @@ import com.google.android.gms.ads.MobileAds;
 
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
+
+import static android.widget.Toast.makeText;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -134,7 +137,7 @@ public class DrawerActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
         } else {
-            Toast.makeText(this, "Press Exit in The Menu To Leave", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Press Exit To Quit", Toast.LENGTH_SHORT).show();
             drawer.openDrawer(GravityCompat.START);
         }
     }

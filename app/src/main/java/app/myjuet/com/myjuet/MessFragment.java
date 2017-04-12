@@ -47,6 +47,7 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.R.attr.bitmap;
 import static android.R.attr.data;
 import static android.R.attr.format;
 import static android.R.attr.path;
@@ -80,17 +81,28 @@ public class MessFragment extends Fragment {
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         mImageView = (ImageView) RootView.findViewById(R.id.anapurna_img);
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        String imageFileName = "MessImage";
+        String imageFileName = "Mess";
         File image = null;
         image = new File(storageDir, imageFileName + ".jpg");
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         if (image.exists()) {
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-            mImageView.setImageBitmap(bitmap);
+            new Thread(new Runnable() {
+                public void run() {
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    final Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mImageView.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }
+            ).start();
+
         } else {
             refreshimage();
         }
@@ -140,9 +152,9 @@ public class MessFragment extends Fragment {
         progressDialog.show();
 
 
-        StorageReference imageRef = storageRef.child("MessMaster.jpg");
+        StorageReference imageRef = storageRef.child("MessImage.jpg");
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        String imageFileName = "MessImage";
+        String imageFileName = "Mess";
         File image = null;
         image = new File(storageDir, imageFileName + ".jpg");
 
@@ -188,7 +200,7 @@ public class MessFragment extends Fragment {
         String admin = prefs.getString("admin", getString(R.string.defaultuser));
         String File = "mess/image.jpg";
         if (admin.equals("Myjuet.xyzadmin"))
-            File = "MessMaster.jpg";
+            File = "MessImage.jpg";
 
         if (resultCode == RESULT_OK) {
             final ProgressDialog progressDialog = new ProgressDialog(getActivity());
