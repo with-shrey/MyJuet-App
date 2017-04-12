@@ -41,8 +41,8 @@ public class ReportFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, "myjuetapp@gmail.com");
+        intent.setData(Uri.parse("mailto:myjuetapp@gmail.com")); // only email apps should handle this
+        //   intent.putExtra(Intent.EXTRA_EMAIL, "myjuetapp@gmail.com");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Report/Suggestion");
         intent.putExtra(Intent.EXTRA_TEXT, editText.getText());
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {

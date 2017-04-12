@@ -21,4 +21,10 @@
         android:key="@string/preferedAttendence"
         android:selectAllOnFocus="true"
         android:title="Desired Attendence Percentage" />
+    <EditTextPreference
+        android:defaultValue="@string/defaultuser"
+        android:inputType="textPassword"
+        android:key="admin"
+        android:selectAllOnFocus="true"
+        android:title="Only For Admin" />
 </PreferenceScreen>

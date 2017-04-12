@@ -62,8 +62,8 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public static AttendenceData tempData;
     public static int Error = -1;
     private static RecyclerView list;
+    private static String DateString;
     SwipeRefreshLayout swipeRefreshLayout;
-    String DateString;
     View.OnClickListener infoListner;
     String FabString;
     private AttendenceAdapter adapter;
@@ -71,6 +71,34 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
 
     public AttendenceActivity() {
+    }
+
+    public static ArrayList<AttendenceData> read(Context context) throws Exception {
+        String filename = "MessgeScreenList.srl";
+        String datefile = "date.srl";
+        File directory = new File(context.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization");
+        ObjectInput ois = null;
+        ObjectInput dateinput = null;
+        ois = new ObjectInputStream(new FileInputStream(directory
+                + File.separator + filename));
+        dateinput = new ObjectInputStream(new FileInputStream(directory
+                + File.separator + datefile));
+        ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
+        DateString = (String) dateinput.readObject();
+        Date dateobj = new Date();
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
+        String temp = formattor.format(dateobj);
+        temp = temp.substring(0, temp.indexOf(" "));
+        if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
+            DateString = "Today " + DateString.substring(DateString.indexOf(" "));
+
+
+        ois.close();
+        dateinput.close();
+
+
+        return returnlist;
     }
 
     public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
@@ -202,6 +230,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         }
 
     }
+
     @Override
     public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
         listdata.clear();
@@ -290,36 +319,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         }
 
         return rootView;
-    }
-
-
-    private ArrayList<AttendenceData> read(Context context) throws Exception {
-        String filename = "MessgeScreenList.srl";
-        String datefile = "date.srl";
-        File directory = new File(context.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization");
-        ObjectInput ois = null;
-        ObjectInput dateinput = null;
-        ois = new ObjectInputStream(new FileInputStream(directory
-                + File.separator + filename));
-        dateinput = new ObjectInputStream(new FileInputStream(directory
-                + File.separator + datefile));
-        ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
-        DateString = (String) dateinput.readObject();
-        Date dateobj = new Date();
-        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
-        String temp = formattor.format(dateobj);
-        temp = temp.substring(0, temp.indexOf(" "));
-        if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
-            DateString = "Today " + DateString.substring(DateString.indexOf(" "));
-
-
-
-        ois.close();
-        dateinput.close();
-
-
-        return returnlist;
     }
 
     public void refreshData() {

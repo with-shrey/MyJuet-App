@@ -3,6 +3,7 @@ package app.myjuet.com.myjuet;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,6 +53,7 @@ import static android.R.attr.path;
 import static android.app.Activity.RESULT_OK;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static android.support.v7.widget.AppCompatDrawableManager.get;
+import static app.myjuet.com.myjuet.R.id.refresh;
 import static com.google.android.gms.internal.zzs.TAG;
 
 /**
@@ -59,7 +62,6 @@ import static com.google.android.gms.internal.zzs.TAG;
 public class MessFragment extends Fragment {
 
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     String mCurrentPhotoPath;
     ImageView mImageView;
     Uri file;
@@ -89,6 +91,8 @@ public class MessFragment extends Fragment {
             BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             mImageView.setImageBitmap(bitmap);
+        } else {
+            refreshimage();
         }
 
 
@@ -108,54 +112,12 @@ public class MessFragment extends Fragment {
         StorageReference storageRef = storage.getReference();
 
         if (item.getItemId() == R.id.camera_mess) {
-            final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading");
-            progressDialog.show();
-
-
-            StorageReference imageRef = storageRef.child("MessMaster.jpg");
-            File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            String imageFileName = "MessImage";
-            File image = null;
-            image = new File(storageDir, imageFileName + ".jpg");
-
-            // Save a file: path for use with ACTION_VIEW intents
-            mCurrentPhotoPath = image.getAbsolutePath();
-            imageRef.getFile(image).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                    mImageView.setImageBitmap(bitmap);
-                    try {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (NullPointerException e) {
-                        Log.e("mess", "progress", e);
-                    }
-
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    try {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (NullPointerException pe) {
-                        Log.e("mess", "progress", pe);
-                    }
-                }
-            });
-
+            refreshimage();
         }
         if (item.getItemId() == R.id.fetch_img) {
             int FILE_SELECT_CODE = 0;
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("*/*");
+            intent.setType("image/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
 
             try {
@@ -169,11 +131,64 @@ public class MessFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void refreshimage() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading");
+        progressDialog.show();
+
+
+        StorageReference imageRef = storageRef.child("MessMaster.jpg");
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String imageFileName = "MessImage";
+        File image = null;
+        image = new File(storageDir, imageFileName + ".jpg");
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        imageRef.getFile(image).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                mImageView.setImageBitmap(bitmap);
+                try {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                } catch (NullPointerException e) {
+                    Log.e("mess", "progress", e);
+                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                try {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                } catch (NullPointerException pe) {
+                    Log.e("mess", "progress", pe);
+                }
+            }
+        });
+
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String admin = prefs.getString("admin", getString(R.string.defaultuser));
+        String File = "mess/image.jpg";
+        if (admin.equals("Myjuet.xyzadmin"))
+            File = "MessMaster.jpg";
 
         if (resultCode == RESULT_OK) {
             final ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -181,12 +196,12 @@ public class MessFragment extends Fragment {
             progressDialog.show();
             // Get the Uri of the selected file
             Uri file = data.getData();
-            StorageReference riversRef = storageRef.child("mess/image.jpg");
+            StorageReference riversRef = storageRef.child(File);
 
             riversRef.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getActivity(), "Upload SuccessFull", Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), "Upload SuccessFull", Toast.LENGTH_LONG).show();
                     try {
                         if (progressDialog.isShowing()) {
                             progressDialog.dismiss();
@@ -199,7 +214,7 @@ public class MessFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getActivity(), "Upload Failed", Toast.LENGTH_LONG);
+                            Toast.makeText(getActivity(), "Upload Failed", Toast.LENGTH_LONG).show();
                             try {
                                 if (progressDialog.isShowing()) {
                                     progressDialog.dismiss();

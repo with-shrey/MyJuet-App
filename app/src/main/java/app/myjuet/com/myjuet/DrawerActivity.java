@@ -1,10 +1,15 @@
 package app.myjuet.com.myjuet;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
@@ -22,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -29,6 +35,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
+import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
 public class DrawerActivity extends AppCompatActivity
@@ -64,6 +71,11 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-5004802474664731/9840227206");
@@ -90,8 +102,12 @@ public class DrawerActivity extends AppCompatActivity
             }
         });
         mAdView = (AdView) findViewById(R.id.adView);
+        if (isConnected) {
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -115,12 +131,12 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (activeFragment == 4)
-            WebviewFragment.goBackWebview();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
-        } else
+        } else {
+            Toast.makeText(this, "Press Exit in The Menu To Leave", Toast.LENGTH_SHORT).show();
             drawer.openDrawer(GravityCompat.START);
+        }
     }
 
 
@@ -148,10 +164,17 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.timetable_drawer) {
+            fab.setVisibility(View.VISIBLE);
+            fab.setImageResource(R.drawable.ic_settings);
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.MAGENTA);
             collapsingToolbarLayout.setTitle("TimeTable");
             getSupportActionBar().setTitle("TimeTable");
+            appBarLayout.setExpanded(true);
+            Fragment fragment = new TimeTableFragment();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
             activeFragment = 1;
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
@@ -160,11 +183,10 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.annapurna_drawer) {
             fab.setVisibility(View.GONE);
 
-            activeFragment = 3;
+            activeFragment = 2;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
-            collapsingToolbarLayout.setTitle("Annapurna Mess");
-            getSupportActionBar().setTitle("Annapurna Menu");
+            collapsingToolbarLayout.setTitle("Annapurna");
             appBarLayout.setExpanded(false);
             Fragment fragment = new MessFragment();
             transition.replace(R.id.content_drawer, fragment);
@@ -175,7 +197,9 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.web_view_drawer) {
-            fab.setVisibility(View.VISIBLE);
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+            fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+            fab.setVisibility(View.GONE);
 
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
@@ -188,8 +212,23 @@ public class DrawerActivity extends AppCompatActivity
                 mInterstitialAd.show();
             }
 
-            activeFragment = 4;
+            activeFragment = 3;
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        } else if (id == R.id.findyourway) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.acc.juetlocate");
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+            } else {
+                Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.acc.juetlocate&hl=en");
+                Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
 
         } else if (id == R.id.contact_drawer) {
             fab.setVisibility(View.GONE);
@@ -203,6 +242,8 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
+            activeFragment = 4;
+
         } else if (id == R.id.request_notification) {
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -227,6 +268,8 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
+            activeFragment = 5;
+
 
         } else if (id == R.id.exit) {
             if (mInterstitialAd.isLoaded()) {

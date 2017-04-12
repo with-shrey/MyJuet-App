@@ -44,12 +44,12 @@ import static android.R.attr.lockTaskMode;
  */
 public class WebviewFragment extends Fragment {
 
-    private static WebView myWebView;
+    public static WebView myWebView;
+    public static ProgressDialog progressDialog;
     boolean isConnected;
     String SnackString;
     String link;
     String Loading;
-    private ProgressDialog progressDialog;
 
     public WebviewFragment() {
         // Required empty public constructor
@@ -66,8 +66,6 @@ public class WebviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View RootView = inflater.inflate(R.layout.fragment_webview, container, false);
         setHasOptionsMenu(true);
-        ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
-        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_menu_black_24dp);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +116,7 @@ public class WebviewFragment extends Fragment {
             public void onLoadResource(WebView view, String url) {
                 // Check to see if there is a progress dialog
                     // If no progress dialog, make one and set message
-                if (progressDialog == null) {
+                if (progressDialog == null || !progressDialog.isShowing()) {
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setMessage(Loading);
                     progressDialog.show();
@@ -146,6 +144,7 @@ public class WebviewFragment extends Fragment {
             @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
                 SnackString = description + "\nErrorCode:" + String.valueOf(errorCode);
                 ((DrawerActivity) getActivity()).fab.performClick();
 
@@ -164,6 +163,7 @@ public class WebviewFragment extends Fragment {
             myWebView.loadUrl(link);
             optionsDialog();
         } else {
+            ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
             SnackString = "NoInternet";
             ((DrawerActivity) getActivity()).fab.performClick();
         }
@@ -191,13 +191,14 @@ public class WebviewFragment extends Fragment {
         if (item.getItemId() == R.id.optionsdialog_webview) {
             optionsDialog();
         } else {
-
+            ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
             myWebView.loadUrl(link);
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void optionsDialog() {
+        ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "Cgpa/Sgpa", "Open In Browser", "Change Password"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("WEBKIOSK-JUET");
@@ -206,74 +207,45 @@ public class WebviewFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        if (isConnected) {
                             Loading = "Getting Alert Message";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 1:
-                        if (isConnected) {
+
                             Loading = "Getting Page Data";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
+
                         break;
                     case 2:
-                        if (isConnected) {
-                            Loading = "Loading Attendence";
+
+                        Loading = "Loading Attendence";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 3:
-                        if (isConnected) {
-                            Loading = "Loading DateSheet";
+
+                        Loading = "Loading DateSheet";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 4:
-                        if (isConnected) {
                             Loading = "Loading Seating Plan";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 5:
-                        if (isConnected) {
                             Loading = "Loading Exam Marks";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 6:
-                        if (isConnected) {
+
+                        ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                             Loading = "Loading CGPA";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
                             myWebView.loadUrl(link);
-                        } else {
-                            SnackString = "No Internet";
-                            ((DrawerActivity) getActivity()).fab.performClick();
-                        }
                         break;
                     case 7:
                         final AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
@@ -297,14 +269,9 @@ public class WebviewFragment extends Fragment {
                         change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
                         change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if (isConnected) {
                                     Loading = "Loading Password Page";
                                     link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
                                     myWebView.loadUrl(link);
-                                } else {
-                                    SnackString = "No Internet";
-                                    ((DrawerActivity) getActivity()).fab.performClick();
-                                }
                             }
 
                         });
@@ -337,4 +304,6 @@ public class WebviewFragment extends Fragment {
             startActivity(intent);
         }
     }
+
+
 }

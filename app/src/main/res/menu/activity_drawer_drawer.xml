@@ -23,15 +23,25 @@
             android:id="@+id/exit"
             android:icon="@drawable/drawer_exit"
             android:title="Exit" />
-
-        <item
-            android:checkable="false"
-            android:title="COMMUNICATE" />
-
-        <item
-                android:id="@+id/request_notification"
-                android:icon="@drawable/ic_notification"
-                android:title="Request Notification" />
+    </group>
+    <item android:title="SERVICES">
+        <menu xmlns:android="http://schemas.android.com/apk/res/android">
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/findyourway"
+                    android:checkable="false"
+                    android:icon="@drawable/web_menu_icon"
+                    android:title="Find Your Way-Shortcut" />
+                <item
+                    android:id="@+id/request_notification"
+                    android:icon="@drawable/ic_notification"
+                    android:title="Request Notification" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="COMMUNICATE">
+        <menu xmlns:android="http://schemas.android.com/apk/res/android">
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/contact_drawer"
                 android:icon="@drawable/ic_contact_mail_black_24dp"
@@ -40,6 +50,8 @@
                 android:id="@+id/feedback_drawer"
                 android:icon="@drawable/ic_menu_send"
                 android:title="FeedBack/Suggestion" />
-    </group>
+            </group>
+        </menu>
+    </item>
 
 </menu>
