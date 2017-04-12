@@ -14,17 +14,36 @@
             android:key="@string/password"
             android:selectAllOnFocus="true"
             android:title="PASSWORD" />
+        <EditTextPreference
+            android:defaultValue="@string/defaultattendence"
+            android:inputType="number"
+            android:key="@string/preferedAttendence"
+            android:selectAllOnFocus="true"
+            android:title="DESIRED ATTENDENCE PERCENTAGE" />
     </PreferenceCategory>
-    <EditTextPreference
-        android:defaultValue="@string/defaultattendence"
-        android:inputType="number"
-        android:key="@string/preferedAttendence"
-        android:selectAllOnFocus="true"
-        android:title="Desired Attendence Percentage" />
+    <PreferenceCategory android:title="PERSONAL DETAILS(COMPULSORY)">
+        <EditTextPreference
+            android:defaultValue="9"
+            android:inputType="number"
+            android:key="semester"
+            android:maxLength="1"
+            android:selectAllOnFocus="true"
+            android:title="SEMESTER" />
+        <EditTextPreference
+            android:defaultValue="M8"
+            android:inputType="text"
+            android:key="batch"
+            android:maxLength="3"
+            android:selectAllOnFocus="true"
+            android:title="BATCH" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="ADMIN PANEL">
     <EditTextPreference
         android:defaultValue="@string/defaultuser"
         android:inputType="textPassword"
         android:key="admin"
         android:selectAllOnFocus="true"
-        android:title="Only For Admin" />
+        android:title="ADMIN KEY" />
+    </PreferenceCategory>
 </PreferenceScreen>

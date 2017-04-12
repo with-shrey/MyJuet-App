@@ -37,6 +37,12 @@ public class LoginWebkiosk extends AppCompatActivity {
 
             Preference defaultPerc = findPreference(getString(R.string.preferedAttendence));
             bindPreferenceSummaryToValue(defaultPerc);
+
+            Preference sem = findPreference("semester");
+            bindPreferenceSummaryToValue(sem);
+
+            Preference batch = findPreference("batch");
+            bindPreferenceSummaryToValue(batch);
         }
 
         @Override

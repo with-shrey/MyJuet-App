@@ -5,4 +5,15 @@
         android:icon="@drawable/ic_save"
         android:title="Save Changes"
         app:showAsAction="always" />
+    <item xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/table_upload"
+        android:icon="@drawable/ic_upload_cloud"
+        android:title="Save Changes"
+        app:showAsAction="always" />
+    <item xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/table_download"
+        android:icon="@drawable/ic_download_cloud"
+        android:title="Save Changes"
+        app:showAsAction="always" />
+
 </menu>

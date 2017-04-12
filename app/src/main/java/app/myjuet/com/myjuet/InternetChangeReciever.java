@@ -28,44 +28,9 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 public class InternetChangeReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        File directory = new File(context.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization");
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        String date = "date.srl";
-        Boolean today = false;
-        String DateString;
-        ObjectInput dateinput = null;
-
-        try {
-            dateinput = new ObjectInputStream(new FileInputStream(directory
-                    + File.separator + date));
-            DateString = (String) dateinput.readObject();
-            Date dateobj = new Date();
-            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
-            String temp = formattor.format(dateobj);
-            temp = temp.substring(0, temp.indexOf(" "));
-            if (DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
-                today = true;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-
-
-        if (isConnected && !today) {
+        Log.v("Reciever", "REcieved");
         context.startService(new Intent(context, RefreshService.class));
 
-        }
 
     }
 }

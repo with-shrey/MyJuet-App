@@ -5,7 +5,7 @@ package app.myjuet.com.myjuet.data;
  */
 
 public class TimeTableData implements java.io.Serializable {
-    private int PosNine, PosTen, PosEleven, PosTwelve, PosTwo, PosThree, PosFour, PosFive, PosSix;
+    private int PosNine, PosTen, PosEleven, PosTwelve, PosTwo, PosThree, PosFour, PosFive;
 
     public TimeTableData() {
         PosNine = 0;
@@ -16,7 +16,6 @@ public class TimeTableData implements java.io.Serializable {
         PosThree = 0;
         PosFour = 0;
         PosFive = 0;
-        PosSix = 0;
     }
 
     public int getPosEleven() {
@@ -49,14 +48,6 @@ public class TimeTableData implements java.io.Serializable {
 
     public void setPosNine(int posNine) {
         PosNine = posNine;
-    }
-
-    public int getPosSix() {
-        return PosSix;
-    }
-
-    public void setPosSix(int posSix) {
-        PosSix = posSix;
     }
 
     public int getPosTen() {

@@ -62,6 +62,12 @@ public class RefreshService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         if (!directory.exists()) {
@@ -69,6 +75,24 @@ public class RefreshService extends IntentService {
         }
         String date = "date.srl";
         String DateString = new String();
+        Boolean today = false;
+        ObjectInput dateinput = null;
+        try {
+            dateinput = new ObjectInputStream(new FileInputStream(directory
+                    + File.separator + date));
+            DateString = (String) dateinput.readObject();
+            Date dateobj = new Date();
+            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
+            String temp = formattor.format(dateobj);
+            temp = temp.substring(0, temp.indexOf(" "));
+            if (DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
+                today = true;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
@@ -81,7 +105,7 @@ public class RefreshService extends IntentService {
         String Content = " ";
         Log.v("Shrey", user + " " + pass);
 
-        if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+        if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
             sendNotification("Attendence Sync started", 1);
             try {
                     CookieHandler.setDefault(new CookieManager());
@@ -127,9 +151,13 @@ public class RefreshService extends IntentService {
             sendNotification("Attendence Synced successfully " + DateString, 1);
         } else if (user.equals(getString(R.string.defaultuser)) || pass.equals(getString(R.string.defaultpassword)))
             sendNotification("Please Enter Login Details", 0);
+        else if (today || !isConnected) {
+        }
         else if (!pingHost("webkiosk.juet.ac.in", 80, 5000))
             sendNotification("Webkiosk Down/Unreachable", 1);
-        else sendNotification("Wrong Credentials", 1);
+
+        else
+            sendNotification("Wrong Credentials", 1);
 
 
     }
