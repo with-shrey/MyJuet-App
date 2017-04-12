@@ -282,7 +282,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
             try {
                 listdata.clear();
 
-                listdata.addAll(read(getActivity()));
+                listdata.addAll(read(getActivity()));//Todo:thread required
                 list.getRecycledViewPool().clear();
                 adapter.notifyDataSetChanged();
                 if (DateString.contains("Today")) {

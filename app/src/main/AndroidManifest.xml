@@ -51,7 +51,7 @@
             android:name=".timetable.TableSettingsActivity"
             android:label="TimeTableSettings"
             android:parentActivityName=".DrawerActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
