@@ -4,7 +4,7 @@ package app.myjuet.com.myjuet.data;
  * Created by Shrey on 12-Apr-17.
  */
 
-public class TimeTableData {
+public class TimeTableData implements java.io.Serializable {
     private int PosNine, PosTen, PosEleven, PosTwelve, PosTwo, PosThree, PosFour, PosFive, PosSix;
 
     public TimeTableData() {

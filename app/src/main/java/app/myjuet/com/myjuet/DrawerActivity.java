@@ -116,7 +116,7 @@ public class DrawerActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
-        getSupportActionBar().setElevation(2);
+        getSupportActionBar().setElevation(5);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, tool, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.setDrawerIndicatorEnabled(true);
         drawer.setDrawerListener(toggle);

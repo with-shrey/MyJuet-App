@@ -61,7 +61,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
                 ClassText = "Don't Leave Class";
 
             } else {
-                ClassText = "Hurray!! You Can Leave " + classes + " Classes\n I suggest NOT to leave a class!!\n";
+                ClassText = "You Can Leave " + classes + " Classes And Reach Threshold" + String.valueOf(Attendence) + "%\n I suggest NOT to leave a class!!\n";
             }
 
         }

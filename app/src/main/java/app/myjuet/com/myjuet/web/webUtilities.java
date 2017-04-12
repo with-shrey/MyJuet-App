@@ -168,7 +168,7 @@ public class webUtilities extends AppCompatActivity {
         String Url;
         switch (num) {
             case 1:
-                extracted = data.substring(data.indexOf("<td") + 4, data.indexOf("-"));
+                extracted = data.substring(data.indexOf("<td") + 4, data.indexOf(" - "));
                 break;
             case 5:
             case 2:

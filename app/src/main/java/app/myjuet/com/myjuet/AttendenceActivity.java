@@ -45,6 +45,7 @@ import java.util.Locale;
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
+import app.myjuet.com.myjuet.data.TimeTableData;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
@@ -279,28 +280,39 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         File directory = new File(getActivity().getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.isFile()) {
-            try {
-                listdata.clear();
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        listdata.clear();
+                        listdata.addAll(read(getActivity()));//Todo:thread required
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ((DrawerActivity) getActivity()).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            list.getRecycledViewPool().clear();
+                            adapter.notifyDataSetChanged();
+                            if (DateString.contains("Today")) {
+                                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
+                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                                FabString = "Data Synced Today At " + DateString.substring(DateString.indexOf(" "));
+                                DateString = FabString;
+                            } else {
+                                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
+                                FabString = "Data last Synced " + DateString.substring(0, DateString.indexOf(" "));
+                                DateString = FabString;
+                            }
+                            ((DrawerActivity) getActivity()).fab.performClick();
+                        }
+                    });
 
-                listdata.addAll(read(getActivity()));//Todo:thread required
-                list.getRecycledViewPool().clear();
-                adapter.notifyDataSetChanged();
-                if (DateString.contains("Today")) {
-                    ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
-                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
-                    FabString = "Data Synced Today At " + DateString.substring(DateString.indexOf(" "));
-                    DateString = FabString;
-                } else {
-                    ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-                    ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
-                    FabString = "Data last Synced " + DateString.substring(0, DateString.indexOf(" "));
-                    DateString = FabString;
                 }
-                ((DrawerActivity) getActivity()).fab.performClick();
 
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            ).start();
+
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
