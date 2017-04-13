@@ -30,8 +30,8 @@
                 <item
                     android:id="@+id/findyourway"
                     android:checkable="false"
-                    android:icon="@drawable/web_menu_icon"
-                    android:title="Find Your Way-Shortcut" />
+                    android:icon="@drawable/ic_shortcut"
+                    android:title="Open Find Your Way" />
                 <item
                     android:id="@+id/request_notification"
                     android:icon="@drawable/ic_notification"
@@ -43,13 +43,13 @@
         <menu xmlns:android="http://schemas.android.com/apk/res/android">
             <group android:checkableBehavior="single">
             <item
-                android:id="@+id/contact_drawer"
-                android:icon="@drawable/ic_contact_mail_black_24dp"
-                android:title="Contact" />
-            <item
                 android:id="@+id/feedback_drawer"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_contact_mail_black_24dp"
                 android:title="FeedBack/Suggestion" />
+                <item
+                    android:id="@+id/contact_drawer"
+                    android:icon="@drawable/ic_info_about"
+                    android:title="About" />
             </group>
         </menu>
     </item>

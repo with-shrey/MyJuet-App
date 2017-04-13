@@ -152,9 +152,9 @@ public class RefreshService extends IntentService {
         } else if (user.equals(getString(R.string.defaultuser)) || pass.equals(getString(R.string.defaultpassword)))
             sendNotification("Please Enter Login Details", 0);
         else if (today || !isConnected) {
+        } else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
         }
-        else if (!pingHost("webkiosk.juet.ac.in", 80, 5000))
-            sendNotification("Webkiosk Down/Unreachable", 1);
+        //  sendNotification("Webkiosk Down/Unreachable", 1);
 
         else
             sendNotification("Wrong Credentials", 1);

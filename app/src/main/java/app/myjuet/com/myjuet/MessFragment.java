@@ -1,6 +1,8 @@
 package app.myjuet.com.myjuet;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +47,9 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.ResponseCache;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.R.attr.bitmap;
@@ -52,9 +57,11 @@ import static android.R.attr.data;
 import static android.R.attr.format;
 import static android.R.attr.path;
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.ALARM_SERVICE;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static android.support.v7.widget.AppCompatDrawableManager.get;
 import static app.myjuet.com.myjuet.R.id.refresh;
+import static app.myjuet.com.myjuet.WebviewFragment.progressDialog;
 import static com.google.android.gms.internal.zzs.TAG;
 
 /**
@@ -78,8 +85,19 @@ public class MessFragment extends Fragment {
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.mess_layout, container, false);
         setHasOptionsMenu(true);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 14);
+//        calendar.set(Calendar.MINUTE, 40);//TODO:create broadcast reciever to schedule alarms and another to recieve
+//        calendar.set(Calendar.SECOND, 0);
+//        Intent intent1 = new Intent(getActivity(), DrawerActivity.class);
+//       PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+//        AlarmManager am = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         mImageView = (ImageView) RootView.findViewById(R.id.anapurna_img);
+        TextView day = (TextView) RootView.findViewById(R.id.day_mess);
+        String Day = "Today is " + new SimpleDateFormat("EEEE").format(new Date());
+        day.setText(Day);
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         String imageFileName = "Mess";
         File image = null;
@@ -202,12 +220,35 @@ public class MessFragment extends Fragment {
         if (admin.equals("Myjuet.xyzadmin"))
             File = "MessImage.jpg";
 
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String imageFileName = "Mess";
+        File image = null;
+        image = new File(storageDir, imageFileName + ".jpg");
+        int ERROR = -1;
         if (resultCode == RESULT_OK) {
-            final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            if (requestCode == 0) {
+                Uri file = data.getData();
+
+                final Intent intent = new Intent("com.android.camera.action.CROP");
+                intent.setData(file);
+                intent.putExtra("noFaceDetection", true);
+                intent.putExtra("output", Uri.fromFile(image));
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivityForResult(intent, 1);
+                } else {
+                    requestCode = 1;
+                    ERROR = 1;
+                    Toast.makeText(getActivity(), "Crop Failed!!\nUploading Image...", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (requestCode == 1) {
+                Uri file = Uri.fromFile(image);
+                if (ERROR == 1)
+                    file = data.getData();
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Uploading");
             progressDialog.show();
             // Get the Uri of the selected file
-            Uri file = data.getData();
             StorageReference riversRef = storageRef.child(File);
 
             riversRef.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -238,6 +279,7 @@ public class MessFragment extends Fragment {
                         }
                     });
 
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data);

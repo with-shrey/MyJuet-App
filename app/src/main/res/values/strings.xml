@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyJuet</string>
+    <string name="app_name">My Juet</string>
     <string name="enrollment">enrollment</string>
     <string name="password">password</string>
     <string name="defaultuser">default</string>
