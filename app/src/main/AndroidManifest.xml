@@ -27,7 +27,14 @@
                 <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".BootReciever">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+                <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmReciever" />
         <activity
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"

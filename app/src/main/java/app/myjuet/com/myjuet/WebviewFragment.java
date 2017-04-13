@@ -87,8 +87,8 @@ public class WebviewFragment extends Fragment {
         myWebView.setScrollbarFadingEnabled(false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser)).toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+        String user = prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim();
+        String pass = prefs.getString(getString(R.string.password), "");
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -294,8 +294,8 @@ public class WebviewFragment extends Fragment {
     private void sendIntentBrowser() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
-        String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+        String user = prefs.getString(getString(R.string.enrollment), "");
+        String pass = prefs.getString(getString(R.string.password), "");
         final String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
 
         Uri webpage = Uri.parse(Url + "?" + PostParam);

@@ -2,14 +2,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="WEBKIOSK CREDENTIALS">
         <EditTextPreference
-            android:defaultValue="@string/defaultuser"
+            android:defaultValue=""
             android:inputType="textCapWords"
             android:key="@string/enrollment"
             android:selectAllOnFocus="true"
             android:textAllCaps="true"
             android:title="ENROLLMENT NUMBER" />
         <EditTextPreference
-            android:defaultValue="@string/defaultpassword"
+            android:defaultValue=""
             android:inputType="textPassword"
             android:key="@string/password"
             android:selectAllOnFocus="true"
@@ -23,14 +23,14 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="PERSONAL DETAILS(COMPULSORY)">
         <EditTextPreference
-            android:defaultValue="9"
+            android:defaultValue=""
             android:inputType="number"
             android:key="semester"
             android:maxLength="1"
             android:selectAllOnFocus="true"
             android:title="SEMESTER" />
         <EditTextPreference
-            android:defaultValue="M8"
+            android:defaultValue=""
             android:inputType="text"
             android:key="batch"
             android:maxLength="3"

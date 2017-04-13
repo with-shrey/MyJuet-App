@@ -138,8 +138,8 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser)).toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+        String user = prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim();
+        String pass = prefs.getString(getString(R.string.password), "");
         Log.v("User name", user + pass);
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         return new AttendenceLoader(getActivity(), Url, PostParam);
@@ -284,7 +284,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 public void run() {
                     try {
                         listdata.clear();
-                        listdata.addAll(read(getActivity()));//Todo:thread required
+                        listdata.addAll(read(getActivity()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -315,9 +315,9 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
-            String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
-            if (!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) {
+            String user = prefs.getString(getString(R.string.enrollment), "");
+            String pass = prefs.getString(getString(R.string.password), "");
+            if (!user.equals("") || !pass.equals("")) {
                 listdata.clear();
             list.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();

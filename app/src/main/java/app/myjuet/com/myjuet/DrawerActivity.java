@@ -123,8 +123,9 @@ public class DrawerActivity extends AppCompatActivity
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        int i = getIntent().getIntExtra("fragment", 0);
+        navigationView.getMenu().getItem(i).setChecked(true);
+        onNavigationItemSelected(navigationView.getMenu().getItem(i));
         name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 

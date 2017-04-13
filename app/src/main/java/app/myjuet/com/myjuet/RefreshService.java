@@ -98,14 +98,14 @@ public class RefreshService extends IntentService {
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String mAttendence = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
 
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser)).toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.password), getString(R.string.defaultpassword));
+        String user = prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim();
+        String pass = prefs.getString(getString(R.string.password), "");
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
         String Content = " ";
         Log.v("Shrey", user + " " + pass);
 
-        if ((!user.equals(getString(R.string.defaultuser)) || !pass.equals(getString(R.string.defaultpassword))) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
+        if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
             sendNotification("Attendence Sync started", 1);
             try {
                     CookieHandler.setDefault(new CookieManager());
@@ -149,7 +149,7 @@ public class RefreshService extends IntentService {
                 }
             }
             sendNotification("Attendence Synced successfully " + DateString, 1);
-        } else if (user.equals(getString(R.string.defaultuser)) || pass.equals(getString(R.string.defaultpassword)))
+        } else if (user.equals("") || pass.equals(""))
             sendNotification("Please Enter Login Details", 0);
         else if (today || !isConnected) {
         } else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
