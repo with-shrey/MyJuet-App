@@ -64,7 +64,6 @@ public class RefreshService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
@@ -173,7 +172,7 @@ public class RefreshService extends IntentService {
             contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                     new Intent(getApplicationContext(), LoginWebkiosk.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
-
+        long[] patern = {1000, 500, 1000, 500, 1000, 500};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setContentTitle("Attendence")

@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,6 +41,7 @@ import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
 import static android.widget.Toast.makeText;
+import static app.myjuet.com.myjuet.R.id.exit;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,6 +51,7 @@ public class DrawerActivity extends AppCompatActivity
     int activeFragment;
     Toolbar tool;
     InterstitialAd mInterstitialAd;
+    boolean doubleBackToExitPressedOnce = false;
     private AdView mAdView;
 
     @Override
@@ -69,11 +72,12 @@ public class DrawerActivity extends AppCompatActivity
         mInterstitialAd.loadAd(adRequest);
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        Intent intent = new Intent("SetAlarms");
+        sendBroadcast(intent);
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -92,7 +96,7 @@ public class DrawerActivity extends AppCompatActivity
 
         requestNewInterstitial();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = prefs.getString(getString(R.string.enrollment), getString(R.string.defaultuser));
+        String user = prefs.getString(getString(R.string.enrollment), "");
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView name = (TextView) headerView.findViewById(R.id.header_name);
@@ -109,7 +113,7 @@ public class DrawerActivity extends AppCompatActivity
         AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         } else {
-            mAdView.setVisibility(View.GONE);
+            mAdView.setVisibility(View.GONE);  //todo:Remove on release
         }
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
@@ -138,8 +142,25 @@ public class DrawerActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
         } else {
-            Toast.makeText(this, "Press Exit To Quit", Toast.LENGTH_SHORT).show();
-            drawer.openDrawer(GravityCompat.START);
+            if (doubleBackToExitPressedOnce) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                }
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please Click Back Again To Quit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+
         }
     }
 
@@ -280,7 +301,6 @@ public class DrawerActivity extends AppCompatActivity
                 mInterstitialAd.show();
             }
             finish();
-            System.exit(0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -29,7 +29,8 @@ public class InternetChangeReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("Reciever", "REcieved");
-        context.startService(new Intent(context, RefreshService.class));
+
+        context.startService(new Intent(context, RefreshService.class).putExtra("alarm", "no"));
 
 
     }
