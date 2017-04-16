@@ -40,8 +40,6 @@ import com.google.android.gms.ads.MobileAds;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
-import static android.widget.Toast.makeText;
-import static app.myjuet.com.myjuet.R.id.exit;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -173,6 +171,7 @@ public class DrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentTransaction transition = getFragmentManager().beginTransaction();
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
             fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -197,9 +196,9 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("TimeTable");
             getSupportActionBar().setTitle("TimeTable");
             appBarLayout.setExpanded(true);
-            Fragment fragment = new TimeTableFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+            android.support.v4.app.Fragment fragment = new TimeTableFragment();
+            transaction.replace(R.id.content_drawer, fragment);
+            transaction.commit();
             activeFragment = 1;
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
@@ -213,9 +212,9 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
             collapsingToolbarLayout.setTitle("Annapurna");
             appBarLayout.setExpanded(false);
-            Fragment fragment = new MessFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+            android.support.v4.app.Fragment fragment = new MessFragment();
+            transaction.replace(R.id.content_drawer, fragment);
+            transaction.commit();
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
@@ -230,9 +229,9 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
             collapsingToolbarLayout.setTitle("WebView");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
-            Fragment fragment = new WebviewFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+            android.support.v4.app.Fragment fragment = new WebviewFragment();
+            transaction.replace(R.id.content_drawer, fragment);
+            transaction.commit();
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
