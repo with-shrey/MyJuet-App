@@ -21,6 +21,7 @@ import app.myjuet.com.myjuet.data.TimeTableData;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 
 import static android.R.attr.data;
+import static android.R.attr.progress;
 import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
 import static app.myjuet.com.myjuet.timetable.TimeTableFragment.count;
 
@@ -60,6 +61,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         // Get the data model based on position
 
         // Set item views based on your views and data model
+        String[] time = new String[]{"9:00", "10:00", "11:00", "12:00", "02:00", "03:00", "04:00", "05:00"};
         TextView Name = viewHolder.Name;
         TextView Location = viewHolder.Location;
         TextView Time = viewHolder.Time;
@@ -67,86 +69,21 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         TextView Type = viewHolder.Type;
         CardView cardView = viewHolder.cardView;
         ProgressBar Progress = viewHolder.Progress;
-
-        if (position == 0 && list.getPosNine() != 0) {
-            Name.setText(dataAttendence.get(list.getPosNine()).getmName());
-            Location.setText(list.getLocNine());
-            Type.setText(typeGiver(list.getTypeNine()));
-            percent.setText(dataAttendence.get(list.getPosNine()).getmLecTut() + "%");
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosNine()).getmLecTut()));
-        } else if (position == 1 && list.getPosTen() != 0) {
-            Name.setText(dataAttendence.get(list.getPosTen()).getmName());
-            percent.setText(dataAttendence.get(list.getPosTen()).getmLecTut() + "%");
-
-            Location.setText(list.getLocTen());
-            Type.setText(typeGiver(list.getTypeTen()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosTen()).getmLecTut()));
-        } else if (position == 2 && list.getPosEleven() != 0) {
-            Name.setText(dataAttendence.get(list.getPosEleven()).getmName());
-            percent.setText(dataAttendence.get(list.getPosEleven()).getmLecTut() + "%");
-
-            Location.setText(list.getLocEleven());
-            Type.setText(typeGiver(list.getTypeEleven()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosEleven()).getmLecTut()));
-        } else if (position == 3 && list.getPosTwelve() != 0) {
-            Name.setText(dataAttendence.get(list.getPosTwelve()).getmName());
-            percent.setText(dataAttendence.get(list.getPosTwelve()).getmLecTut() + "%");
-
-            Location.setText(list.getLocTwelve());
-            Type.setText(typeGiver(list.getTypeTwelve()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosTwelve()).getmLecTut()));
-        } else if (position == 4 && list.getPosTwo() != 0) {
-            Name.setText(dataAttendence.get(list.getPosTwo()).getmName());
-            percent.setText(dataAttendence.get(list.getPosTwo()).getmLecTut() + "%");
-
-            Location.setText(list.getLocTwo());
-            Type.setText(typeGiver(list.getTypeTwo()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosTwo()).getmLecTut()));
-        } else if (position == 5 && list.getPosThree() != 0) {
-            Name.setText(dataAttendence.get(list.getPosThree()).getmName());
-            percent.setText(dataAttendence.get(list.getPosThree()).getmLecTut() + "%");
-
-            Location.setText(list.getLocThree());
-            Type.setText(typeGiver(list.getTypeThree()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosThree()).getmLecTut()));
-        } else if (position == 6 && list.getPosFour() != 0) {
-            Name.setText(dataAttendence.get(list.getPosFour()).getmName());
-            percent.setText(dataAttendence.get(list.getPosFour()).getmLecTut() + "%");
-
-            Location.setText(list.getLocFour());
-            Type.setText(typeGiver(list.getTypeFour()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosFour()).getmLecTut()));
-        } else if (position == 7 && list.getPosFive() != 0) {
-            Name.setText(dataAttendence.get(list.getPosFive()).getmName());
-            percent.setText(dataAttendence.get(list.getPosFive()).getmLecTut() + "%");
-
-            Location.setText(list.getLocFive());
-            Type.setText(typeGiver(list.getTypeFive()));
-
-            Time.setText(R.string.time_9);
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPosFive()).getmLecTut()));
-        } else {
-            cardView.setVisibility(View.GONE);
-        }
+        if (list.getPos(position) != 0) {
+            Name.setText(dataAttendence.get(list.getPos(position) - 1).getmName());
+            Location.setText(list.getLoc(position));
+            Time.setText(time[position]);
+            percent.setText(dataAttendence.get(list.getPos(position) - 1).getmLecTut());
+            Type.setText(typeGiver(list.getType(position)));
+            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(position) - 1).getmLecTut()));
+        } else
+            viewHolder.cardView.setVisibility(View.GONE);
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return 9;
+        return 8;
     }
 
     private String typeGiver(int i) {

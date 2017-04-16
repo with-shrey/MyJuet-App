@@ -235,4 +235,73 @@ public class TimeTableData implements java.io.Serializable {
     public void setLocTwo(String locTwo) {
         LocTwo = locTwo;
     }
+
+    public int getPos(int i) {
+        switch (i) {
+            case 0:
+                return PosNine[0];
+            case 1:
+                return PosTen[0];
+            case 2:
+                return PosEleven[0];
+            case 3:
+                return PosTwelve[0];
+            case 4:
+                return PosTwo[0];
+            case 5:
+                return PosThree[0];
+            case 6:
+                return PosFour[0];
+            case 7:
+                return PosFive[0];
+            default:
+                return PosNine[0];
+        }
+    }
+
+    public String getLoc(int i) {
+        switch (i) {
+            case 0:
+                return LocNine;
+            case 1:
+                return LocTen;
+            case 2:
+                return LocEleven;
+            case 3:
+                return LocTwelve;
+            case 4:
+                return LocTwo;
+            case 5:
+                return LocThree;
+            case 6:
+                return LocFour;
+            case 7:
+                return LocFive;
+            default:
+                return LocNine;
+        }
+    }
+
+    public int getType(int i) {
+        switch (i) {
+            case 0:
+                return PosNine[1];
+            case 1:
+                return PosTen[1];
+            case 2:
+                return PosEleven[1];
+            case 3:
+                return PosTwelve[1];
+            case 4:
+                return PosTwo[1];
+            case 5:
+                return PosThree[1];
+            case 6:
+                return PosFour[1];
+            case 7:
+                return PosFive[1];
+            default:
+                return PosNine[1];
+        }
+    }
 }

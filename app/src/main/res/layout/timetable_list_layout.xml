@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:elevation="5dp"
+    android:visibility="gone"
     card_view:cardCornerRadius="10dp">
 
     <LinearLayout
@@ -16,8 +17,7 @@
         <TextView
             android:id="@+id/subname_tt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Subject Name" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,8 +34,7 @@
                 android:id="@+id/percent_value_tt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:text="98%" />
+                android:layout_weight="0.1" />
         </LinearLayout>
 
         <LinearLayout
@@ -47,14 +46,12 @@
             <TextView
                 android:id="@+id/time_tt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="900" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/location_tt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cl5" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/type_tt"
