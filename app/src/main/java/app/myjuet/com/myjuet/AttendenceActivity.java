@@ -1,10 +1,10 @@
 package app.myjuet.com.myjuet;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
+import android.support.v4.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
@@ -134,6 +134,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         }
     }
 
+
     @Override
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -233,7 +234,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<AttendenceData>> loader) {
+    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<AttendenceData>> loader) {
         listdata.clear();
         adapter.notifyDataSetChanged();
         list.getRecycledViewPool().clear();

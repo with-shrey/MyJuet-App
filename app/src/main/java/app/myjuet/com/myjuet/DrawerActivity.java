@@ -1,6 +1,6 @@
 package app.myjuet.com.myjuet;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -170,14 +170,13 @@ public class DrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentTransaction transition = getFragmentManager().beginTransaction();
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
             fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
             collapsingToolbarLayout.setTitle("Attendence");
-            android.app.Fragment fragment = new AttendenceActivity();
+            Fragment fragment = new AttendenceActivity();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             if (mInterstitialAd.isLoaded()) {
@@ -197,8 +196,8 @@ public class DrawerActivity extends AppCompatActivity
             getSupportActionBar().setTitle("TimeTable");
             appBarLayout.setExpanded(true);
             android.support.v4.app.Fragment fragment = new TimeTableFragment();
-            transaction.replace(R.id.content_drawer, fragment);
-            transaction.commit();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
             activeFragment = 1;
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
@@ -213,8 +212,8 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("Annapurna");
             appBarLayout.setExpanded(false);
             android.support.v4.app.Fragment fragment = new MessFragment();
-            transaction.replace(R.id.content_drawer, fragment);
-            transaction.commit();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
@@ -230,8 +229,8 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("WebView");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             android.support.v4.app.Fragment fragment = new WebviewFragment();
-            transaction.replace(R.id.content_drawer, fragment);
-            transaction.commit();
+            transition.replace(R.id.content_drawer, fragment);
+            transition.commit();
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }

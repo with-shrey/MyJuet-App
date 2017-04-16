@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.webUtilities;
 
-import android.content.AsyncTaskLoader;
+import android.support.v4.content.AsyncTaskLoader;
 import android.content.Loader;
 
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
