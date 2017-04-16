@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -64,6 +65,9 @@ public class WebviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        String notlink = new String();
+        if (getActivity().getIntent().getBooleanExtra("containsurl", false))
+            notlink = getActivity().getIntent().getStringExtra("url");
         View RootView = inflater.inflate(R.layout.fragment_webview, container, false);
         setHasOptionsMenu(true);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
@@ -158,15 +162,22 @@ public class WebviewFragment extends Fragment {
             }
         });
         if (isConnected) {
-            Loading = "Signing In To Webkiosk";
+            if (!getActivity().getIntent().getBooleanExtra("containsurl", false)) {
+                Loading = "Signing In To Webkiosk";
             link = Url + "?" + PostParam;
             myWebView.loadUrl(link);
-            optionsDialog();
+                optionsDialog();
+            } else {
+                Loading = "Loading Page..";
+                link = notlink;
+                myWebView.loadUrl(link);
+            }
         } else {
             ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
             SnackString = "NoInternet";
             ((DrawerActivity) getActivity()).fab.performClick();
         }
+
         return RootView;
     }
 

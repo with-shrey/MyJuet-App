@@ -7,19 +7,19 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="app.myjuet.com.myjuet.timetable.TimeTableFragment">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tablayout_tt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#FF00FF"
-        app:tabGravity="center"
-        app:tabMode="scrollable"
-        app:tabPaddingBottom="5dp"
-        app:tabPaddingEnd="10dp"
-        app:tabPaddingStart="10dp"
-        app:tabPaddingTop="5dp"
-        app:tabTextColor="@android:color/white" />
+    <!-- <android.support.design.widget.TabLayout
+         android:id="@+id/tablayout_tt"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:background="#FF00FF"
+         app:tabContentStart="120dp"
+         app:tabMode="scrollable"
+         app:tabPaddingBottom="5dp"
+         app:tabPaddingEnd="10dp"
+         app:tabPaddingStart="10dp"
+         app:tabPaddingTop="5dp"
+         app:tabTextColor="@android:color/white" />-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_tt"

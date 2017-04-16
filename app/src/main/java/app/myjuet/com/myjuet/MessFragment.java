@@ -85,14 +85,6 @@ public class MessFragment extends Fragment {
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.mess_layout, container, false);
         setHasOptionsMenu(true);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR_OF_DAY, 14);
-//        calendar.set(Calendar.MINUTE, 40);//TODO:create broadcast reciever to schedule alarms and another to recieve
-//        calendar.set(Calendar.SECOND, 0);
-//        Intent intent1 = new Intent(getActivity(), DrawerActivity.class);
-//       PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager am = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         mImageView = (ImageView) RootView.findViewById(R.id.anapurna_img);
         TextView day = (TextView) RootView.findViewById(R.id.day_mess);

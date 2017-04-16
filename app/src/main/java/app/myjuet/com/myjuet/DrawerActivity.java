@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet;
 
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public FloatingActionButton fab;
     public AppBarLayout appBarLayout;
+    public TabLayout tabLayout;
     NavigationView navigationView;
     int activeFragment;
     Toolbar tool;
@@ -116,6 +118,7 @@ public class DrawerActivity extends AppCompatActivity
         }
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
+        tabLayout = (TabLayout) findViewById(R.id.tablayout_tt);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
@@ -171,6 +174,7 @@ public class DrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        tabLayout.setVisibility(View.GONE);
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
             fab.setVisibility(View.VISIBLE);
@@ -188,14 +192,15 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.timetable_drawer) {
+            tabLayout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.ic_settings);
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(Color.MAGENTA);
-            collapsingToolbarLayout.setTitle("TimeTable");
-            getSupportActionBar().setTitle("TimeTable");
-            appBarLayout.setExpanded(true);
+            collapsingToolbarLayout.setContentScrimColor(Color.rgb(98, 147, 239));
+            getSupportActionBar().setTitle("");
+            collapsingToolbarLayout.setTitle("");
+            appBarLayout.setExpanded(false);
             android.support.v4.app.Fragment fragment = new TimeTableFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
