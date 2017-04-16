@@ -3,11 +3,15 @@ package app.myjuet.com.myjuet.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -67,7 +71,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         TextView Time = viewHolder.Time;
         TextView percent = viewHolder.progressValue;
         TextView Type = viewHolder.Type;
-        CardView cardView = viewHolder.cardView;
+        LinearLayout linearLayout = viewHolder.linearLayout;
         ProgressBar Progress = viewHolder.Progress;
         if (list.getPos(position) != 0) {
             Name.setText(dataAttendence.get(list.getPos(position) - 1).getmName());
@@ -76,8 +80,11 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
             percent.setText(dataAttendence.get(list.getPos(position) - 1).getmLecTut());
             Type.setText(typeGiver(list.getType(position)));
             Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(position) - 1).getmLecTut()));
-        } else
-            viewHolder.cardView.setVisibility(View.GONE);
+        } else {
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+            linearLayout.setVisibility(View.GONE);
+
+        }
     }
 
     // Returns the total count of items in the list
@@ -123,7 +130,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         public TextView Time;
         public TextView Type;
         public TextView progressValue;
-        public CardView cardView;
+        public LinearLayout linearLayout;
         public ProgressBar Progress;
 
         // We also create a constructor that accepts the entire item row
@@ -132,7 +139,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.cardview_tt);
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.linear_layout_tt);
             progressValue = (TextView) itemView.findViewById(R.id.percent_value_tt);
             Name = (TextView) itemView.findViewById(R.id.subname_tt);
             Location = (TextView) itemView.findViewById(R.id.location_tt);
