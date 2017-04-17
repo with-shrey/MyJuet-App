@@ -18,6 +18,14 @@
     <string name="title_activity_table_settings">TableSettingsActivity</string>
     <string name="hint_tt_setting">Location</string>
     <string name="time_9">9:00</string>
+    <string name="maximum_length_30">Maximum Length 30</string>
+    <string name="url">Url:</string>
+    <string name="by">By:</string>
+    <string name="paid_feature_rs_5">Paid Feature(Rs-5)</string>
+    <string name="paytm_number">PayTM number:</string>
+    <string name="if_payment_required">If Payment Required</string>
+    <string name="image_attachment">Image Attachment:</string>
+    <string name="choose_image">Choose Image</string>
 
     <string-array name="type">
         <item>NONE</item>
