@@ -21,16 +21,33 @@ import static app.myjuet.com.myjuet.timetable.TimeTableFragment.list;
  */
 
 public class MondayFragment extends Fragment {
+    int[] info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View RootView = inflater.inflate(R.layout.fragment_time_table_display, container, false);
-        RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        final View RootView = inflater.inflate(R.layout.fragment_time_table_display, container, false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 8; i++) {
+                    if (list.get(MONDAY).getPos(i) != 0) {
+                        info[info[8]++] = i;
+                    }
 
-        TimeTableAdapter adapter = new TimeTableAdapter(list.get(MONDAY), data, MONDAY);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
+                        TimeTableAdapter adapter = new TimeTableAdapter(list.get(MONDAY), data, MONDAY, info[8], info);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+                });
+            }
+        }).run();
+
+
         return RootView;
     }
 }

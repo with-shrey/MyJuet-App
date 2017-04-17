@@ -35,14 +35,18 @@ import static app.myjuet.com.myjuet.timetable.TimeTableFragment.count;
 
 public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.ViewHolder> {
     int day;
+    int Count;
+    int[] Detailsdata;
     private TimeTableData list;
     private ArrayList<AttendenceData> dataAttendence;
     // Store the context for easy access
 
-    public TimeTableAdapter(TimeTableData dataTT, ArrayList<AttendenceData> MdataAttendence, int i) {
+    public TimeTableAdapter(TimeTableData dataTT, ArrayList<AttendenceData> MdataAttendence, int i, int count, int[] detailsData) {
         list = dataTT;
         dataAttendence = MdataAttendence;
         day = i;
+        Count = count;
+        Detailsdata = detailsData;
     }
 
 
@@ -71,26 +75,21 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         TextView Time = viewHolder.Time;
         TextView percent = viewHolder.progressValue;
         TextView Type = viewHolder.Type;
-        LinearLayout linearLayout = viewHolder.linearLayout;
         ProgressBar Progress = viewHolder.Progress;
-        if (list.getPos(position) != 0) {
-            Name.setText(dataAttendence.get(list.getPos(position) - 1).getmName());
-            Location.setText(list.getLoc(position));
-            Time.setText(time[position]);
-            percent.setText(dataAttendence.get(list.getPos(position) - 1).getmLecTut());
-            Type.setText(typeGiver(list.getType(position)));
-            Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(position) - 1).getmLecTut()));
-        } else {
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-            linearLayout.setVisibility(View.GONE);
 
-        }
+        Name.setText(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmName());
+        Location.setText(list.getLoc(Detailsdata[position]));
+        Time.setText(time[Detailsdata[position]]);
+        percent.setText(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut());
+        Type.setText(typeGiver(list.getType(Detailsdata[position])));
+        Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut()));
+        
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return 8;
+        return Count;
     }
 
     private String typeGiver(int i) {
