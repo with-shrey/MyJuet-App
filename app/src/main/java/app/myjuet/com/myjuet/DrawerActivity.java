@@ -200,7 +200,7 @@ public class DrawerActivity extends AppCompatActivity
             fab.setImageResource(R.drawable.ic_settings);
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(Color.rgb(98, 147, 239));
+            collapsingToolbarLayout.setContentScrimColor(Color.WHITE);
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
             appBarLayout.setExpanded(false);
@@ -282,7 +282,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
             collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
-            Fragment fragment = new NotificationRequestFragment();
+            Fragment fragment = new NotificationApplicationFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             if (mInterstitialAd.isLoaded()) {

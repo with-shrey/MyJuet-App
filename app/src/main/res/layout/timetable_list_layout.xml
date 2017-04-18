@@ -12,6 +12,7 @@
     android:id="@+id/cardview_tt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+        android:backgroundTint="@color/cardview_light_background"
         android:elevation="2dp"
         card_view:cardCornerRadius="5dp"
         card_view:cardPreventCornerOverlap="false">

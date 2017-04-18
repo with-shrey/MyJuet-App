@@ -32,8 +32,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NotificationApplicationFragment extends Fragment {
 
-    String text;
-    Uri imgUri = null;
     String Title = "";
     String Message = "";
     String Url = "";
@@ -46,21 +44,10 @@ public class NotificationApplicationFragment extends Fragment {
     TextInputEditText url;
     TextInputEditText byLine;
     TextInputEditText Contact;
-    TextView path;
-    int i;
     public NotificationApplicationFragment() {
         // Required empty public constructor
     }
 
-    public NotificationApplicationFragment newInstance(int i) {
-
-        Bundle args = new Bundle();
-        args.putInt("type", i);
-
-        NotificationApplicationFragment fragment = new NotificationApplicationFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,44 +56,13 @@ public class NotificationApplicationFragment extends Fragment {
         View RootView = inflater.inflate(R.layout.notification_application, container, false);
         title = (TextInputEditText) RootView.findViewById(R.id.title_application);
         message = (TextInputEditText) RootView.findViewById(R.id.message_application);
-        TextView messagetext = (TextView) RootView.findViewById(R.id.length_message_application);
         url = (TextInputEditText) RootView.findViewById(R.id.url_application);
         byLine = (TextInputEditText) RootView.findViewById(R.id.byline_application);
         Contact = (TextInputEditText) RootView.findViewById(R.id.contact_application);
-        path = (TextView) RootView.findViewById(R.id.path_attachment);
-        Button img = (Button) RootView.findViewById(R.id.button_application);
-        LinearLayout linearLayout = (LinearLayout) RootView.findViewById(R.id.image_application);
-        i = getArguments().getInt("type");
-        if (i == 2) {
-            messagetext.setText("Max.Length 200");
-            message.setMaxLines(20);
-        } else if (i == 3) {
-            linearLayout.setVisibility(View.VISIBLE);
-            img.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int FILE_SELECT_CODE = 0;
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-                    try {
-                        startActivityForResult(
-                                Intent.createChooser(intent, "Select a Image.. "),
-                                FILE_SELECT_CODE);
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-        }
-
 
         return RootView;
     }
 
-    public void ImageChoose() {
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -119,6 +75,7 @@ public class NotificationApplicationFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         try {
+            data.put("id", "");
             if (!title.getText().toString().isEmpty()) {
                 Title = title.getText().toString();
                 data.put("title", Title);
@@ -147,14 +104,6 @@ public class NotificationApplicationFragment extends Fragment {
                 Toast.makeText(getContext(), "Contact Number Is Required", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            if (i == 3) {
-                if (imgUri == null) {
-                    Toast.makeText(getContext(), "Choose Image", Toast.LENGTH_SHORT).show();
-
-                    return false;
-                }
-                data.put("urlImg", "");
-            }
             parent.put("to", "");
             parent.put("data", data);
 
@@ -163,8 +112,6 @@ public class NotificationApplicationFragment extends Fragment {
         }
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:myjuetapp@gmail.com")); // only email apps should handle this
-        if (i == 3)
-            intent.putExtra(Intent.EXTRA_STREAM, imgUri);
         intent.putExtra(Intent.EXTRA_SUBJECT, "Notification Request-" + prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim());
         try {
             intent.putExtra(Intent.EXTRA_TEXT, Number + "\n" + parent.toString(2));
@@ -174,19 +121,15 @@ public class NotificationApplicationFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent.createChooser(intent, "Send Using.."));
         } else {
-        } //TODO:send to browser with data copy paste
+            Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG);
+            Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");
+            Intent browser = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(browser);
+            }
+        }
         return true;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 0) {
-                imgUri = data.getData();
-                path.setText(imgUri.getPath());
-                Toast.makeText(getContext(), "Image Added", Toast.LENGTH_SHORT).show();
 
-            }
-        }
-    }
 }

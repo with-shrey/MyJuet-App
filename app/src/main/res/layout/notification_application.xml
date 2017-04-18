@@ -134,30 +134,6 @@
             android:layout_gravity="center"
             android:text="You Will Be Contacted In Case Of Any Discrepancy"
             android:textSize="10dp" />
-        <LinearLayout
-            android:id="@+id/image_application"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="16dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/path_attachment"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:text="@string/image_attachment" />
-
-            <Button
-                android:id="@+id/button_application"
-                style="@android:style/ButtonBar"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/choose_image" />
-
-        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
