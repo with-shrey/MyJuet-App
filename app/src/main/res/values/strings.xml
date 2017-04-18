@@ -26,6 +26,7 @@
     <string name="if_payment_required">If Payment Required</string>
     <string name="image_attachment">Image Attachment:</string>
     <string name="choose_image">Choose Image</string>
+    <string name="you_will_be_contacted_in_case_of_any_problem">You Will Be Contacted In Case Of Any Problem</string>
 
     <string-array name="type">
         <item>NONE</item>

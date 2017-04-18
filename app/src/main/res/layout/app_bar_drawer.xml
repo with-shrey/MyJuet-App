@@ -46,16 +46,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="center"
-                android:layout_marginLeft="40dp"
-                android:theme="@style/AppToolbar"
+                android:paddingLeft="40dp"
+                android:paddingStart="40dp"
                 app:layout_collapseMode="pin"
-                app:tabContentStart="120dp"
+                app:tabContentStart="100dp"
                 app:tabMode="scrollable"
                 app:tabPaddingBottom="5dp"
                 app:tabPaddingEnd="10dp"
                 app:tabPaddingStart="10dp"
-                app:tabPaddingTop="5dp"
-                app:tabTextColor="@android:color/white" />
+                app:tabPaddingTop="5dp" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

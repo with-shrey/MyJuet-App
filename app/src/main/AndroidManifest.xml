@@ -22,6 +22,7 @@
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="refreshAttendence" />
             </intent-filter>
         </receiver>
         <receiver android:name=".BootReciever">
