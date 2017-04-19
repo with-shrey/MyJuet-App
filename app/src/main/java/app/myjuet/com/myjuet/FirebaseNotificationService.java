@@ -22,6 +22,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.Map;
 import java.util.Random;
 
+import static android.R.attr.id;
+import static app.myjuet.com.myjuet.R.string.url;
+
 
 /**
  * Created by Shrey on 17-Apr-17.
@@ -34,16 +37,26 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Log.v("payload", "notification");
+        Intent intent = new Intent(this, DrawerActivity.class);
+        intent.putExtra("fragment", 3);
+        intent.putExtra("url", remoteMessage.getData().get("url"));
+        intent.putExtra("containsurl", true);
+
+        PendingIntent btn1Intent = PendingIntent.getActivity(this, 50, intent, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("title")
-                .setContentText("body")
+                .setContentTitle(remoteMessage.getData().get("title"))
+                .setContentText(remoteMessage.getData().get("short"))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("title")).setSummaryText(remoteMessage.getData().get("by")).setBigContentTitle(remoteMessage.getData().get("message")))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setSound(defaultSoundUri)
-                .setAutoCancel(true);
+                .addAction(R.drawable.ic_open, "DETAILS", btn1Intent)
+                .setContentIntent(btn1Intent)
+                .setSubText(remoteMessage.getData().get("by"))
+                .setAutoCancel(false);
 
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(Integer.valueOf(remoteMessage.getData().get("id")), notificationBuilder.build());
 
     }
 

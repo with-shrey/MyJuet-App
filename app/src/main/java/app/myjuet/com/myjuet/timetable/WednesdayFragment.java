@@ -42,6 +42,7 @@ public class WednesdayFragment extends Fragment {
                     @Override
                     public void run() {
                         TimeTableAdapter adapter = new TimeTableAdapter(list.get(WEDNESDAY), data, WEDNESDAY, info[8], info);
+                        recyclerView.getRecycledViewPool().clear();
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }

@@ -33,6 +33,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import app.myjuet.com.myjuet.web.webUtilities;
 
@@ -169,6 +170,7 @@ public class WebviewFragment extends Fragment {
                 optionsDialog();
             } else {
                 Loading = "Loading Page..";
+                Toast.makeText(getContext(), notlink, Toast.LENGTH_LONG).show();
                 link = notlink;
                 myWebView.loadUrl(link);
             }

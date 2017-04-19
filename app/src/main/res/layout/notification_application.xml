@@ -50,10 +50,10 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:hint="Message">
+            android:hint="Short Description">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/message_application"
+                android:id="@+id/short_description_application"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:cursorVisible="true"
@@ -61,11 +61,35 @@
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:id="@+id/length_message_application"
             android:layout_width="wrap_content"
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:text="@string/maximum_length_30"
+            android:textSize="10dp" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Message">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/message_application"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:maxLines="10"
+                android:minLines="3" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/length_message_application"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:text="Full Description Max. Length 150"
             android:textSize="10dp" />
 
         <android.support.design.widget.TextInputLayout
@@ -109,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="15dp"
             android:layout_gravity="center"
-            android:text="@string/paid_feature_rs_5"
+            android:text="This Must Contain Name Of Club Or Individual"
             android:textSize="10dp" />
 
         <android.support.design.widget.TextInputLayout

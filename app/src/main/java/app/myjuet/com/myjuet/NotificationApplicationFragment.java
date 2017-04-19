@@ -34,6 +34,7 @@ public class NotificationApplicationFragment extends Fragment {
 
     String Title = "";
     String Message = "";
+    String Short = "";
     String Url = "";
     String Byline = "";
     String Number = "";
@@ -44,6 +45,8 @@ public class NotificationApplicationFragment extends Fragment {
     TextInputEditText url;
     TextInputEditText byLine;
     TextInputEditText Contact;
+    TextInputEditText shorttext;
+
     public NotificationApplicationFragment() {
         // Required empty public constructor
     }
@@ -59,7 +62,7 @@ public class NotificationApplicationFragment extends Fragment {
         url = (TextInputEditText) RootView.findViewById(R.id.url_application);
         byLine = (TextInputEditText) RootView.findViewById(R.id.byline_application);
         Contact = (TextInputEditText) RootView.findViewById(R.id.contact_application);
-
+        shorttext = (TextInputEditText) RootView.findViewById(R.id.short_description_application);
         return RootView;
     }
 
@@ -90,14 +93,23 @@ public class NotificationApplicationFragment extends Fragment {
                 Toast.makeText(getContext(), "Message Is Required", Toast.LENGTH_SHORT).show();
                 return false;
             }
+            if (!shorttext.getText().toString().isEmpty()) {
+                Short = shorttext.getText().toString();
+                data.put("short", Short);
+            } else {
+                Toast.makeText(getContext(), "Short Description Is Required", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             if (!url.getText().toString().isEmpty()) {
                 Url = url.getText().toString();
-                data.put("url", Url);
             }
+            data.put("url", "https://" + Url);
+
             if (!byLine.getText().toString().isEmpty()) {
                 Byline = byLine.getText().toString();
-                data.put("Byline", Byline);
             }
+                data.put("Byline", Byline);
+
             if (!Contact.getText().toString().isEmpty())
                 Number = Contact.getText().toString();
             else {
@@ -114,7 +126,7 @@ public class NotificationApplicationFragment extends Fragment {
         intent.setData(Uri.parse("mailto:myjuetapp@gmail.com")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_SUBJECT, "Notification Request-" + prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim());
         try {
-            intent.putExtra(Intent.EXTRA_TEXT, Number + "\n" + parent.toString(2));
+            intent.putExtra(Intent.EXTRA_TEXT, Number + "\n" + parent.toString(1));
         } catch (JSONException e) {
             e.printStackTrace();
         }
