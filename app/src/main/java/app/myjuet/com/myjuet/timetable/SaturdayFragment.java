@@ -22,7 +22,7 @@ import static app.myjuet.com.myjuet.timetable.TimeTableFragment.list;
  */
 
 public class SaturdayFragment extends Fragment {
-    int[] info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int[] info;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,6 +30,7 @@ public class SaturdayFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int i = 0; i < 8; i++) {
                     if (list.get(SATURDAY).getPos(i) != 0) {
                         info[info[8]++] = i;
@@ -41,7 +42,6 @@ public class SaturdayFragment extends Fragment {
                     public void run() {
                         TimeTableAdapter adapter = new TimeTableAdapter(list.get(SATURDAY), data, SATURDAY, info[8], info);
                         RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
-                        recyclerView.getRecycledViewPool().clear();
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }

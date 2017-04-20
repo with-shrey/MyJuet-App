@@ -30,6 +30,7 @@ public class FridayFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int i = 0; i < 8; i++) {
                     if (list.get(FRIDAY).getPos(i) != 0) {
                         info[info[8]++] = i;

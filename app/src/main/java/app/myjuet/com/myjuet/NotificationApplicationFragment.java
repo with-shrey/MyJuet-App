@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.DocumentsContract;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,13 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Stack;
+
+import app.myjuet.com.myjuet.data.TimeTableData;
 
 import static android.R.id.message;
 import static android.app.Activity.RESULT_OK;
@@ -103,12 +103,12 @@ public class NotificationApplicationFragment extends Fragment {
             if (!url.getText().toString().isEmpty()) {
                 Url = url.getText().toString();
             }
-            data.put("url", "https://" + Url);
+            data.put("url", Url);
 
             if (!byLine.getText().toString().isEmpty()) {
                 Byline = byLine.getText().toString();
             }
-                data.put("Byline", Byline);
+            data.put("by", "By: " + Byline);
 
             if (!Contact.getText().toString().isEmpty())
                 Number = Contact.getText().toString();
@@ -133,7 +133,7 @@ public class NotificationApplicationFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent.createChooser(intent, "Send Using.."));
         } else {
-            Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG).show();
             Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");
             Intent browser = new Intent(Intent.ACTION_VIEW, webpage);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {

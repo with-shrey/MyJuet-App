@@ -50,7 +50,7 @@ public class DrawerActivity extends AppCompatActivity
     public FloatingActionButton fab;
     public AppBarLayout appBarLayout;
     public TabLayout tabLayout;
-    NavigationView navigationView;
+    public NavigationView navigationView;
     int activeFragment;
     Toolbar tool;
     InterstitialAd mInterstitialAd;
@@ -170,7 +170,7 @@ public class DrawerActivity extends AppCompatActivity
     }
 
 
-
+//todo:reopen selected fragment handle
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -190,11 +190,11 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            // setSupportActionBar(tool);
             activeFragment = 0;
 
 
         } else if (id == R.id.timetable_drawer) {
+            activeFragment = 1;
             tabLayout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.ic_settings);
@@ -248,6 +248,7 @@ public class DrawerActivity extends AppCompatActivity
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         } else if (id == R.id.findyourway) {
+            activeFragment = 4;
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
@@ -274,7 +275,8 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            activeFragment = 4;
+            activeFragment = 5;
+
 
         } else if (id == R.id.request_notification) {
             fab.setVisibility(View.GONE);
@@ -288,6 +290,7 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
+            activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -300,7 +303,7 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            activeFragment = 5;
+            activeFragment = 7;
 
 
         } else if (id == R.id.exit) {
