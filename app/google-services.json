@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "123893541001",
+    "firebase_url": "https://myjuet-app.firebaseio.com",
+    "project_id": "myjuet-app",
+    "storage_bucket": "myjuet-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123893541001:android:4883eac3b9831a3b",
+        "android_client_info": {
+          "package_name": "app.myjuet.com.myjuet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123893541001-op2k33235jgq784u5stmgnu0pb1ujqoj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.myjuet.com.myjuet",
+            "certificate_hash": "c84c362fe077488b82ab0486dad5310b155c06f4"
+          }
+        },
+        {
+          "client_id": "123893541001-gu0m4fhq3e148gqchahedqc3mm5d9htr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.myjuet.com.myjuet",
+            "certificate_hash": "8f1eafca9399f53b56acb422fb7883f72a6db0a0"
+          }
+        },
+        {
+          "client_id": "123893541001-466q63008dg5u5hpk91dpuvsu9pfi3eg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSQjnldgGlj40lsuHiypqphC3coOyzHkQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123893541001-466q63008dg5u5hpk91dpuvsu9pfi3eg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
