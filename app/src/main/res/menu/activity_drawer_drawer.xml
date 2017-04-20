@@ -50,6 +50,10 @@
                     android:id="@+id/contact_drawer"
                     android:icon="@drawable/ic_info_about"
                     android:title="About" />
+                <item
+                    android:id="@+id/settings_master"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Settings" />
             </group>
         </menu>
     </item>

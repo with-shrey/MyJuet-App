@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.timetable;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.web.LoginWebkiosk;
+import app.myjuet.com.myjuet.web.SettingsActivity;
 
 import static android.R.attr.data;
 import static android.R.attr.fragment;
@@ -51,15 +52,16 @@ public class TimeTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final String batch = prefs.getString("batch", "").toUpperCase().trim();
-        final String sem = prefs.getString("semester", "").toUpperCase().trim();
+        Context context = getActivity();
+        SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        final String batch = prefs.getString(getString(R.string.key_batch), "").toUpperCase().trim();
+        final String sem = prefs.getString(getString(R.string.key_semester), "").toUpperCase().trim();
         ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (batch.equals("") || sem.equals("")) {
                     Toast.makeText(((DrawerActivity) getActivity()), "Update Personal details", Toast.LENGTH_LONG).show();
-                    Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                    Intent login = new Intent(getActivity(), SettingsActivity.class);
                     startActivity(login);
                 } else {
                     Intent settings = new Intent(getActivity(), TableSettingsActivity.class);
@@ -137,9 +139,10 @@ public class TimeTableFragment extends Fragment {
     }
 
     private ArrayList<TimeTableData> readSettings() throws Exception {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final String batch = prefs.getString("batch", "").toUpperCase().trim();
-        final String sem = prefs.getString("semester", "").toUpperCase().trim();
+        Context context = getActivity();
+        SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        final String batch = prefs.getString(getString(R.string.key_batch), "").toUpperCase().trim();
+        final String sem = prefs.getString(getString(R.string.key_semester), "").toUpperCase().trim();
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File settings = null;
         settings = new File(storageDir, sem + "_" + batch + ".txt");

@@ -4,6 +4,7 @@ package app.myjuet.com.myjuet;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -206,8 +207,9 @@ public class MessFragment extends Fragment {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String admin = prefs.getString("admin", getString(R.string.defaultuser));
+        Context context = getActivity();
+        SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        String admin = prefs.getString("admin", getString(R.string.defaultuser));//TODO: implement admin key
         String File = "mess/image.jpg";
         if (admin.equals("Myjuet.xyzadmin"))
             File = "MessImage.jpg";

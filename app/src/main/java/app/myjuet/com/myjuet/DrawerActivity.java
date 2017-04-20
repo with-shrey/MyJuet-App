@@ -42,7 +42,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
-import app.myjuet.com.myjuet.web.LoginWebkiosk;
+import app.myjuet.com.myjuet.web.SettingsActivity;
 
 
 public class DrawerActivity extends AppCompatActivity
@@ -99,8 +99,8 @@ public class DrawerActivity extends AppCompatActivity
         });
 
         requestNewInterstitial();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = prefs.getString(getString(R.string.enrollment), "");
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        String user = prefs.getString(getString(R.string.key_enrollment), "");
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView name = (TextView) headerView.findViewById(R.id.header_name);
@@ -108,7 +108,7 @@ public class DrawerActivity extends AppCompatActivity
         layoutheader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent login = new Intent(DrawerActivity.this, LoginWebkiosk.class);
+                Intent login = new Intent(DrawerActivity.this, SettingsActivity.class);
                 startActivity(login);
             }
         });
@@ -306,6 +306,9 @@ public class DrawerActivity extends AppCompatActivity
             activeFragment = 7;
 
 
+        } else if (id == R.id.settings_master) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.exit) {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();

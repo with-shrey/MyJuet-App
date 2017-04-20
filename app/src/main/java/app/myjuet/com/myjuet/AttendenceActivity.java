@@ -46,7 +46,7 @@ import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.web.LoginWebkiosk;
+import app.myjuet.com.myjuet.web.SettingsActivity;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
@@ -137,10 +137,11 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Context context = getActivity();
+        SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.password), "");
+        String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
+        String pass = prefs.getString(getString(R.string.key_password), "");
         Log.v("User name", user + pass);
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         return new AttendenceLoader(getActivity(), Url, PostParam);
@@ -161,7 +162,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 refreshData();
                 return true;
             case R.id.loginAttendence:
-                Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                Intent login = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(login);
             default:
                 return super.onOptionsItemSelected(item);
@@ -192,7 +193,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                         Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                                Intent login = new Intent(getActivity(), SettingsActivity.class);
                                 startActivity(login);
                                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
                                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
@@ -315,16 +316,17 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
             ).start();
 
         } else {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String user = prefs.getString(getString(R.string.enrollment), "");
-            String pass = prefs.getString(getString(R.string.password), "");
+            Context context = getActivity();
+            SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+            String user = prefs.getString(getString(R.string.key_enrollment), "");
+            String pass = prefs.getString(getString(R.string.key_password), "");
             if (!user.equals("") || !pass.equals("")) {
                 listdata.clear();
             list.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();
                 refreshData();
             } else {
-                Intent login = new Intent(getActivity(), LoginWebkiosk.class);
+                Intent login = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(login);
                 FabString = "Kindly Refresh To Login";
                 ((DrawerActivity) getActivity()).fab.performClick();

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.web.LoginWebkiosk;
+import app.myjuet.com.myjuet.web.SettingsActivity;
 import app.myjuet.com.myjuet.web.webUtilities;
 import app.myjuet.com.myjuet.AttendenceActivity;
 
@@ -93,12 +93,12 @@ public class RefreshService extends IntentService {
             e.printStackTrace();
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String mAttendence = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
 
-        String user = prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.password), "");
+        String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
+        String pass = prefs.getString(getString(R.string.key_password), "");
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
         String Content = " ";
@@ -170,7 +170,7 @@ public class RefreshService extends IntentService {
                     new Intent(getApplicationContext(), DrawerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                    new Intent(getApplicationContext(), LoginWebkiosk.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                    new Intent(getApplicationContext(), SettingsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
         long[] patern = {1000, 500, 1000, 500, 1000, 500};
         NotificationCompat.Builder mBuilder =

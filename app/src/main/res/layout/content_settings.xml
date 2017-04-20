@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="app.myjuet.com.myjuet.web.SettingsActivity"
+    tools:showIn="@layout/activity_settings">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="32dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="app.myjuet.com.myjuet.web.SettingsActivity"
+        tools:showIn="@layout/activity_settings">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ATTENDENCE"
+            android:textColor="@color/colorAccent" />
+
+        <View style="@style/dividerline" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Enrollment Number">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/preference_enrollment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Password">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/preference_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Prefered Percentage">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/preference_percent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="numberDecimal"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TIMETABLE"
+            android:textColor="@color/colorAccent" />
+
+        <View style="@style/dividerline" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Semester">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/preference_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="numberDecimal"
+                android:maxLength="1"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Batch(B8)">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/preference_batch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Switch
+            android:id="@+id/preference_tt_morning"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Notification In Morning"
+            android:textAllCaps="true" />
+
+        <Switch
+            android:id="@+id/preference_tt_before"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="notification before irregular class"
+            android:textAllCaps="true" />
+
+        <LinearLayout
+            android:id="@+id/before_class_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="MINUTES BEFORE CLASS:" />
+
+            <NumberPicker
+                android:id="@+id/preference_minutes_timetable"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ANNAPURNA MESS"
+            android:textColor="@color/colorAccent" />
+
+        <View style="@style/dividerline" />
+
+        <Switch
+            android:id="@+id/preference_mess_before"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Notification Before meals"
+            android:textAllCaps="true" />
+
+        <LinearLayout
+            android:id="@+id/before_meal_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:text="MINUTES BEFORE MEAL:" />
+
+            <NumberPicker
+                android:id="@+id/preference_minutes_mess"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -75,8 +76,8 @@ public class NotificationApplicationFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+        Context context = getActivity();
+        SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         try {
             data.put("id", "");
             if (!title.getText().toString().isEmpty()) {
@@ -124,7 +125,7 @@ public class NotificationApplicationFragment extends Fragment {
         }
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:myjuetapp@gmail.com")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Notification Request-" + prefs.getString(getString(R.string.enrollment), "").toUpperCase().trim());
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Notification Request-" + prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim());
         try {
             intent.putExtra(Intent.EXTRA_TEXT, Number + "\n" + parent.toString(1));
         } catch (JSONException e) {

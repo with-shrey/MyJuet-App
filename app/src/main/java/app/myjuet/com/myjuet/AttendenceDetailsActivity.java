@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -37,8 +38,8 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         mAdView = (AdView) findViewById(R.id.adViewDetails);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        double Attendence = Integer.parseInt(prefs.getString(getString(R.string.preferedAttendence), getString(R.string.defaultattendence)));
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        double Attendence = Integer.parseInt(prefs.getString(getString(R.string.key_preferred_attendence), "90"));
         double t = Attendence / 100;
 
         int pa = Integer.parseInt(AttendenceActivity.tempData.getmCountPresent()) + Integer.parseInt(AttendenceActivity.tempData.getmCountAbsent());
@@ -61,7 +62,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
                 ClassText = "Don't Leave Class";
 
             } else {
-                ClassText = "You Can Leave " + classes + " Classes And Reach Threshold" + String.valueOf(Attendence) + "%\n I suggest NOT to leave a class!!\n";
+                ClassText = "You Can Leave " + classes + " Classes And Reach Threshold " + String.valueOf(Attendence) + " %\n I suggest NOT to leave a class!!\n";
             }
 
         }

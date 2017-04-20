@@ -32,6 +32,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".AlarmReciever" />
+
         <activity
             android:name=".AttendenceDetailsActivity"
             android:label="Attendence Details"
@@ -59,12 +60,18 @@
             android:parentActivityName=".DrawerActivity"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".FirebaseNotificationService">   
-            <intent-filter> 
+        <service android:name=".FirebaseNotificationService">
+               
+            <intent-filter>
+                 
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".web.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

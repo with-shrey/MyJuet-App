@@ -43,4 +43,14 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
+    <string name="title_activity_settings">Settings</string>
+    <string name="preferencefile">app_myjuet_com_myjuet_preferences</string>
+    <string name="key_enrollment">enrollment</string>
+    <string name="key_password">password</string>
+    <string name="key_preferred_attendence">preferred</string>
+    <string name="key_semester">semester</string>
+    <string name="key_batch">batch</string>
+    <string name="key_alarm_morming">ttmorning</string>
+    <string name="key_alarm_meal">beforemeal</string>
+    <string name="key_alarm_class">beforeclass</string>
 </resources>

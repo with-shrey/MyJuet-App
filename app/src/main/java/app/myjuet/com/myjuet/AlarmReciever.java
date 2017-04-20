@@ -14,7 +14,6 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import app.myjuet.com.myjuet.web.LoginWebkiosk;
 
 import static app.myjuet.com.myjuet.R.id.send;
 

@@ -98,9 +98,9 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_settings);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        batch = prefs.getString("batch", "").toUpperCase().trim();
-        sem = prefs.getString("semester", "").toUpperCase().trim();
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        batch = sharedPref.getString("batch", "").toUpperCase().trim();
+        sem = sharedPref.getString("semester", "").toUpperCase().trim();
         new Thread(new Runnable() {
             public void run() {
 
@@ -785,9 +785,9 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
     }
 
     private ArrayList<TimeTableData> readSettings() throws Exception {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final String batch = prefs.getString("batch", "").toUpperCase().trim();
-        final String sem = prefs.getString("semester", "").toUpperCase().trim();
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        final String batch = prefs.getString(getString(R.string.key_batch), "").toUpperCase().trim();
+        final String sem = prefs.getString(getString(R.string.key_semester), "").toUpperCase().trim();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File settings = null;
         settings = new File(storageDir, sem + "_" + batch + ".txt");
