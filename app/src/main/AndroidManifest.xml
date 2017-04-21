@@ -38,10 +38,7 @@
             android:label="Attendence Details"
             android:parentActivityName=".DrawerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".web.LoginWebkiosk"
-            android:label="Login Details"
-            android:parentActivityName=".DrawerActivity" />
+
         <activity
             android:name=".DrawerActivity"
             android:excludeFromRecents="true"

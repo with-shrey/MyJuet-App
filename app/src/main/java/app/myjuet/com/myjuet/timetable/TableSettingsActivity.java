@@ -1,8 +1,11 @@
 package app.myjuet.com.myjuet.timetable;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,6 +56,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.AlarmReciever;
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
@@ -784,7 +788,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         return true;
     }
 
-    private ArrayList<TimeTableData> readSettings() throws Exception {
+    public ArrayList<TimeTableData> readSettings() throws Exception {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         final String batch = prefs.getString(getString(R.string.key_batch), "").toUpperCase().trim();
         final String sem = prefs.getString(getString(R.string.key_semester), "").toUpperCase().trim();
@@ -929,5 +933,6 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         }
         return super.dispatchTouchEvent(ev);
     }
+
 
 }

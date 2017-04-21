@@ -122,6 +122,7 @@ public class TimeTableFragment extends Fragment {
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(3).setText("THURSDAY");
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(4).setText("FRIDAY");
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(5).setText("SATURDAY");
+                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", 0)).select();
                         } else {
                             Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
                             ((DrawerActivity) getActivity()).fab.performClick();

@@ -166,10 +166,10 @@ public class RefreshService extends IntentService {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         if (i == 1) {
-            contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+            contentIntent = PendingIntent.getActivity(getApplicationContext(), 55,
                     new Intent(getApplicationContext(), DrawerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
-            contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+            contentIntent = PendingIntent.getActivity(getApplicationContext(), 55,
                     new Intent(getApplicationContext(), SettingsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
         long[] patern = {1000, 500, 1000, 500, 1000, 500};
@@ -181,7 +181,7 @@ public class RefreshService extends IntentService {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify(3, mBuilder.build());
     }
 
 }

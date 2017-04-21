@@ -17,7 +17,7 @@
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="32dp"
+        android:paddingTop="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="app.myjuet.com.myjuet.web.SettingsActivity"
         tools:showIn="@layout/activity_settings">

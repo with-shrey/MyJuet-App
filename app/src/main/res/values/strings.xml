@@ -53,4 +53,6 @@
     <string name="key_alarm_morming">ttmorning</string>
     <string name="key_alarm_meal">beforemeal</string>
     <string name="key_alarm_class">beforeclass</string>
+    <string name="key_minutes_before_meal">beforemealminute</string>
+    <string name="key_minutes_before_class">beforeclassminute</string>
 </resources>
