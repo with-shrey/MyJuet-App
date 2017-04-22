@@ -1,37 +1,126 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="32dp"
-    android:orientation="vertical">
+    android:layout_marginTop="16dp"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DEVELOPED BY-:"
+        android:textColor="@color/colorAccent" />
+
+    <View style="@style/dividerline" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SHREY GUPTA"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Developed By-:Shrey Gupta" />
+        android:text="B.TECH (2nd SEMESTER)"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Student\n B.Tech(2nd Semester)\nJUET,Guna\nPersonal Email-:shrey.gupta1nov@gmail.com" />
+        android:text="JUET\nGUNA"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Support-:myjuetapp@gmail.com" />
+        android:text="CONTACT"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent" />
+
+    <View style="@style/dividerline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33" />
+
+        <ImageButton
+            android:id="@+id/shrey_fb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fblogo" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33" />
+
+        <ImageButton
+            android:id="@+id/shrey_gmail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gmaillogo" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33" />
+    </LinearLayout>
+
+    <View style="@style/dividerline" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PICTURES BY-:"
+        android:textColor="@color/colorAccent" />
+
+    <View style="@style/dividerline" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PULKIT AGGARWAL"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Website-:http://myjuet.tk" />
+        android:text="B.TECH (2nd SEMESTER)"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Facebook-: www.facebook.com/myjuet" />
+        android:text="JUET\nGUNA"
+        android:textColor="@color/colorPrimary" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PORTFOLIO ON FACEBOOK"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent" />
+
+    <View style="@style/dividerline" />
+
+    <ImageButton
+        android:id="@+id/pa_arts_fb"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fblogo" />
 </LinearLayout>
+</ScrollView>

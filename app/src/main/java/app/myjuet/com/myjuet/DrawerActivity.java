@@ -176,9 +176,9 @@ public class DrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        tabLayout.setVisibility(View.GONE);
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
+            tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
@@ -213,6 +213,7 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.annapurna_drawer) {
             fab.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
 
             activeFragment = 2;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -231,6 +232,7 @@ public class DrawerActivity extends AppCompatActivity
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
 
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
@@ -263,6 +265,7 @@ public class DrawerActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.contact_drawer) {
+            tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
@@ -278,6 +281,7 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.request_notification) {
+            tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
@@ -291,6 +295,7 @@ public class DrawerActivity extends AppCompatActivity
             }
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
+            tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));

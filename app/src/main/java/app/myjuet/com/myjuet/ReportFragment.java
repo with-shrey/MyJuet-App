@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import app.myjuet.com.myjuet.R;
 
@@ -48,8 +49,13 @@ public class ReportFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent.createChooser(intent, "Send Using.."));
         } else {
-        } //TODO:send to browser with data copy paste
-
+            Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG).show();
+            Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");
+            Intent browser = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(browser);
+            }
+        }
         return true;
     }
 }

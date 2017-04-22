@@ -3,15 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="app.myjuet.com.myjuet.timetable.TimeTableFragment">
 
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_tt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/empty_image_view"

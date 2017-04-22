@@ -59,6 +59,7 @@ public class AlarmReciever extends BroadcastReceiver {
             Intent drawer = new Intent(context, DrawerActivity.class);
             drawer.putExtra("fragment", intent.getIntExtra("fragmentno", 1));
             drawer.putExtra("childfragment", i);
+            Log.v("Day of week", String.valueOf(i));
             PendingIntent contentIntent = PendingIntent.getActivity(context, 53,
                     drawer, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder mBuilder =
@@ -74,11 +75,12 @@ public class AlarmReciever extends BroadcastReceiver {
         } else if (intent.getIntExtra("fragmentno", 2) == 1 && Title.contains("Class")) {
             Calendar calender = Calendar.getInstance();
             int i = calender.get(Calendar.DAY_OF_WEEK);
-            Intent drawer = new Intent(context, DrawerActivity.class);
-            drawer.putExtra("fragment", intent.getIntExtra("fragmentno", 1));
-            drawer.putExtra("childfragment", i);
+            Log.v("Day of week", String.valueOf(i));
+            Intent classes = new Intent(context, DrawerActivity.class);
+            classes.putExtra("fragment", intent.getIntExtra("fragmentno", 1));
+            classes.putExtra("childfragment", i);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 54,
-                    drawer, PendingIntent.FLAG_UPDATE_CURRENT);
+                    classes, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
                             .setContentTitle(Title)
