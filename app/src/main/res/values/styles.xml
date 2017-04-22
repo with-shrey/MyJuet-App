@@ -101,6 +101,7 @@
     <style name="NavigationTab" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/colorAccent</item>
         <item name="tabTextAppearance">@style/NavigationTabTextAppeareance</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
 
     <style name="NavigationTabTextAppeareance" parent="TextAppearance.Design.Tab">

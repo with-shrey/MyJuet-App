@@ -175,9 +175,6 @@ public class DrawerActivity extends AppCompatActivity
         }
     }
 
-
-//todo:reopen selected fragment handle
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -206,7 +203,7 @@ public class DrawerActivity extends AppCompatActivity
             fab.setImageResource(R.drawable.ic_settings);
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(Color.WHITE);
+            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
             appBarLayout.setExpanded(false);

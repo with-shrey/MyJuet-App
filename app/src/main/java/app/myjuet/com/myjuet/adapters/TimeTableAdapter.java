@@ -2,6 +2,7 @@ package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -83,7 +84,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         percent.setText(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut());
         Type.setText(typeGiver(list.getType(Detailsdata[position])));
         Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut()));
-        
+
     }
 
     // Returns the total count of items in the list

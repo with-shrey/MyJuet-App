@@ -55,7 +55,8 @@
                 app:tabPaddingBottom="5dp"
                 app:tabPaddingEnd="10dp"
                 app:tabPaddingStart="10dp"
-                app:tabPaddingTop="5dp" />
+                app:tabPaddingTop="5dp"
+                app:tabSelectedTextColor="@android:color/white" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
