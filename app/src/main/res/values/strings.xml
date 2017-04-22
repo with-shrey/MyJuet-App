@@ -55,4 +55,6 @@
     <string name="key_alarm_class">beforeclass</string>
     <string name="key_minutes_before_meal">beforemealminute</string>
     <string name="key_minutes_before_class">beforeclassminute</string>
+    <string name="key_notification_mess">notificationmess</string>
+    <string name="key_notification_tt">notificationtt</string>
 </resources>

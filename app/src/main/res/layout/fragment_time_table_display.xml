@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark"
+    android:background="#f2c8d4"
     android:orientation="vertical">
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recyclerview_tt"
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="50dp"
+        tools:listitem="@layout/timetable_list_layout" />
 
 
 </LinearLayout>

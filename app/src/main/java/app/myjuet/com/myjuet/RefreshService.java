@@ -178,7 +178,7 @@ public class RefreshService extends IntentService {
                         .setContentTitle("Attendence")
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                         .setContentText(msg)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(3, mBuilder.build());

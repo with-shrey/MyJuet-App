@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Image;
 import android.media.RingtoneManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -25,16 +27,16 @@ public class AlarmReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         long[] patern = {1000, 1000, 1000, 1000, 1000, 1000};
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
+
+        Uri timetableuri = Uri.parse(sharedPref.getString(context.getString(R.string.key_notification_tt), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+        Uri messuri = Uri.parse(sharedPref.getString(context.getString(R.string.key_notification_mess), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
 
         Log.v("AlarmReciever", "Recieved");
         NotificationManager mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String time = new SimpleDateFormat("HHmm").format(new Date());
-        if (time.equals("1250")) {
-            patern = new long[]{500};
-        }
         String Title = intent.getStringExtra("title");
         if (Title.equals("app"))
             context.startService(new Intent(context, RefreshService.class).putExtra("alarm", "yes"));
@@ -48,8 +50,8 @@ public class AlarmReciever extends BroadcastReceiver {
                             .setContentTitle(Title)
                             .setVibrate(patern)
                             .setContentText("Click To View")
-                            .setSound(defaultSoundUri)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSound(messuri)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setAutoCancel(true);
             mBuilder.setContentIntent(contentIntent);
             mNotificationManager.notify(0, mBuilder.build());
@@ -67,8 +69,8 @@ public class AlarmReciever extends BroadcastReceiver {
                             .setContentTitle(Title)
                             .setVibrate(patern)
                             .setContentText("Click To View")
-                            .setSound(defaultSoundUri)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSound(timetableuri)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setAutoCancel(true);
             mBuilder.setContentIntent(contentIntent);
             mNotificationManager.notify(1, mBuilder.build());
@@ -86,8 +88,8 @@ public class AlarmReciever extends BroadcastReceiver {
                             .setContentTitle(Title)
                             .setVibrate(patern)
                             .setContentText("Click To View")
-                            .setSound(defaultSoundUri)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSound(timetableuri)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setAutoCancel(true);
             mBuilder.setContentIntent(contentIntent);
             mNotificationManager.notify(2, mBuilder.build());

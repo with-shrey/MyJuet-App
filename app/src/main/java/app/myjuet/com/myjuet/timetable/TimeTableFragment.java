@@ -214,12 +214,7 @@ public class TimeTableFragment extends Fragment {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
-                            ((DrawerActivity) getActivity()).fab.performClick();
-
                         }
-
                     }
                 });
             }

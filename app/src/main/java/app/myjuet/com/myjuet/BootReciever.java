@@ -31,8 +31,8 @@ import static java.lang.reflect.Array.getInt;
  */
 
 public class BootReciever extends BroadcastReceiver {
-    ArrayList<TimeTableData> datatt;
-    ArrayList<AttendenceData> attendenceDatas;
+    ArrayList<TimeTableData> datatt = new ArrayList<>();
+    ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
 
 
     @Override
@@ -87,6 +87,8 @@ public class BootReciever extends BroadcastReceiver {
             final String batch = prefs.getString(context.getString(R.string.key_batch), "").toUpperCase().trim();
             final String sem = prefs.getString(context.getString(R.string.key_semester), "").toUpperCase().trim();
             File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!storageDir.exists())
+                storageDir.mkdir();
             File settings = null;
             settings = new File(storageDir, sem + "_" + batch + ".txt");
             ObjectInput ois = null;
@@ -98,17 +100,17 @@ public class BootReciever extends BroadcastReceiver {
             }
             try {
                 datatt = (ArrayList<TimeTableData>) ois.readObject();
+                ois.close();
+
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-            try {
-                ois.close();
-            } catch (IOException e) {
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
+
+
             try {
                 attendenceDatas = AttendenceActivity.read(context);
             } catch (Exception e) {

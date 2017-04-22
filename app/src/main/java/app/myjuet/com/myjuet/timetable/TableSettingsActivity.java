@@ -744,6 +744,26 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 out.writeObject(settings);
                 out.close();
                 Toast.makeText(this, "Settings Saved Successfully\nUpload Data if Completed", Toast.LENGTH_LONG).show();
+                cancelMessAlarms();
+                cancelttAlarms();
+                cancelmorningalarm();
+                Intent intent = new Intent("SetAlarms");
+                sendBroadcast(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        uploadtt();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                builder.setMessage("Upload Your Settings For Your BatctchMates\nDo You Want To Upload Your Settings?");
+                builder.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -754,7 +774,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             if (isConnected)
                 uploadtt();
             else {
-                Toast.makeText(this, "Upload Failed\nEnable Internet & TryAgain", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Enable Internet & TryAgain", Toast.LENGTH_LONG).show();
 
             }
         else if (item.getItemId() == R.id.table_download) {
@@ -767,8 +787,9 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                     boolean isConnected = activeNetwork != null &&
                             activeNetwork.isConnectedOrConnecting();
-                    if (isConnected)
+                    if (isConnected) {
                         DownloadData();
+                    }
                     else
                         Toast.makeText(TableSettingsActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
 
@@ -868,7 +889,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 try {
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
-                        Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully\nReopen Settings !!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
                         recreate();
                     }
                 } catch (NullPointerException pe) {
@@ -883,7 +904,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                         progressDialog.dismiss();
                         String text;
                         if (e.toString().contains(":") && e.toString().contains("Object"))
-                            text = e.toString().substring(e.toString().indexOf(":")).replace("Object", "Data");
+                            text = e.toString().substring(e.toString().indexOf(":") + 1).replace("Object", "Data");
                         else text = e.toString();
                         Toast.makeText(TableSettingsActivity.this, text, Toast.LENGTH_SHORT).show();
                     }
@@ -901,7 +922,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
+                TableSettingsActivity.super.onBackPressed();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -910,11 +931,45 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
             }
         });
-        builder.setMessage("UnSaved Data Will Be Lost\n\nKindly Upload If Settings Are Completed\n" + "Have You Saved Your Data?");
-        builder.setNeutralButton("Upload", new DialogInterface.OnClickListener() {
+        builder.setMessage("Unsaved Data Will Be Lost\nDo You Want To Leave?");
+        builder.setNeutralButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                uploadtt();
+                File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                File image = null;
+                image = new File(storageDir, sem + "_" + batch + ".txt");
+                if (!storageDir.exists())
+                    storageDir.mkdir();
+                ObjectOutput out = null;
+                try {
+                    out = new ObjectOutputStream(new FileOutputStream(image));
+                    out.writeObject(settings);
+                    out.close();
+                    Toast.makeText(TableSettingsActivity.this, "Settings Saved Successfully\nUpload Data if Completed", Toast.LENGTH_LONG).show();
+                    cancelMessAlarms();
+                    cancelttAlarms();
+                    cancelmorningalarm();
+                    Intent intent = new Intent("SetAlarms");
+                    sendBroadcast(intent);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TableSettingsActivity.this);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            uploadtt();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    });
+                    builder.setMessage("Upload Your Settings For Your BatctchMates\nDo You Want To Upload Your Settings?");
+                    builder.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
         builder.show();
@@ -932,6 +987,35 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    private void cancelMessAlarms() {
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 48, new Intent(this, AlarmReciever.class).putExtra("title", "BreakFast Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent1 = PendingIntent.getBroadcast(this, 49, new Intent(this, AlarmReciever.class).putExtra("title", "Dinner Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 50, new Intent(this, AlarmReciever.class).putExtra("title", "Lunch Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(pendingIntent);
+        am.cancel(pendingIntent1);
+        am.cancel(pendingIntent2);
+    }
+
+    private void cancelttAlarms() {
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        for (int i = 0; i < 6; i++) {
+            am.cancel(PendingIntent.getBroadcast(this, 0 + (i), new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 6 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 11:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 13 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 12:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 20 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 02:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 27 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 03:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 34 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 04:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, 41 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 05:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+        }
+    }
+
+    void cancelmorningalarm() {
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(PendingIntent.getBroadcast(this, 51, new Intent(this, AlarmReciever.class).putExtra("title", "TimeTable Of Today").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+
     }
 
 

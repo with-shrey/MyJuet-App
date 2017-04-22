@@ -1,10 +1,13 @@
 package app.myjuet.com.myjuet.web;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,6 +42,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextInputEditText batch;
     LinearLayout ttmin_layout;
     LinearLayout messmin_layout;
+    String ringtonett;
+    String ringtonemess;
 
 
     Switch morningtt;
@@ -60,18 +66,45 @@ public class SettingsActivity extends AppCompatActivity {
         sem = (TextInputEditText) findViewById(R.id.preference_semester);
         batch = (TextInputEditText) findViewById(R.id.preference_batch);
 
+        Button ringmess = (Button) findViewById(R.id.mess_ring);
+        Button ringtt = (Button) findViewById(R.id.tt_ring);
+
         ttmin_layout = (LinearLayout) findViewById(R.id.before_class_layout);
         messmin_layout = (LinearLayout) findViewById(R.id.before_meal_layout);
 
         morningtt = (Switch) findViewById(R.id.preference_tt_morning);
         beforemeal = (Switch) findViewById(R.id.preference_mess_before);
         beforeclass = (Switch) findViewById(R.id.preference_tt_before);
+
+        ringmess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For Mess");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonemess));
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                startActivityForResult(intent, 1);
+            }
+        });
+        ringtt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For TimeTable");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonett));
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                startActivityForResult(intent, 2);
+            }
+        });
         beforemeal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     messmin_layout.setVisibility(View.VISIBLE);
                     messmin.setMaxValue(59);
+                    messmin.setWrapSelectorWheel(false);
                     messmin.setMinValue(0);
                     messmin.setValue(15);
                 } else
@@ -100,6 +133,8 @@ public class SettingsActivity extends AppCompatActivity {
         preferred.setText(sharedPref.getString(getString(R.string.key_preferred_attendence), "90"));
         sem.setText(sharedPref.getString(getString(R.string.key_semester), ""));
         batch.setText(sharedPref.getString(getString(R.string.key_batch), ""));
+        ringtonemess = sharedPref.getString("notificationmess", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
+        ringtonett = sharedPref.getString("notificationtt", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
 
         if (sharedPref.getBoolean(getString(R.string.key_alarm_morming), true)) {
             morningtt.setChecked(true);
@@ -125,6 +160,8 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString(getString(R.string.key_preferred_attendence), preferred.getText().toString());
         editor.putString(getString(R.string.key_semester), sem.getText().toString());
         editor.putString(getString(R.string.key_batch), batch.getText().toString());
+        editor.putString(getString(R.string.key_notification_mess), ringtonemess);
+        editor.putString(getString(R.string.key_notification_tt), ringtonett);
         if (morningtt.isChecked()) {
             editor.putBoolean(getString(R.string.key_alarm_morming), true);
         } else {
@@ -146,6 +183,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         editor.apply();
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        finish();
 
     }
 
@@ -233,5 +272,27 @@ public class SettingsActivity extends AppCompatActivity {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(PendingIntent.getBroadcast(this, 51, new Intent(this, AlarmReciever.class).putExtra("title", "TimeTable Of Today").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
 
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+            if (uri != null) {
+                this.ringtonemess = uri.toString();
+            } else {
+                this.ringtonemess = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString();
+            }
+        }
+        if (resultCode == RESULT_OK && requestCode == 2) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+            if (uri != null) {
+                this.ringtonett = uri.toString();
+            } else {
+                this.ringtonett = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString();
+            }
+        }
     }
 }

@@ -140,8 +140,10 @@
             android:textAllCaps="true" />
 
         <Button
+            android:id="@+id/tt_ring"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="CHOOSE NOTIFICATION SOUND" />
         <LinearLayout
             android:id="@+id/before_class_layout"
             android:layout_width="match_parent"
@@ -178,6 +180,12 @@
             android:layout_marginBottom="16dp"
             android:text="Notification Before meals"
             android:textAllCaps="true" />
+
+        <Button
+            android:id="@+id/mess_ring"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CHOOSE NOTIFICATION SOUND" />
 
         <LinearLayout
             android:id="@+id/before_meal_layout"

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_layout_tt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    tools:showIn="@layout/fragment_time_table_display">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview_tt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-        android:backgroundTint="@color/cardview_light_background"
+        android:backgroundTint="#cc99ff"
         android:elevation="2dp"
         card_view:cardCornerRadius="5dp"
         card_view:cardPreventCornerOverlap="false">
@@ -29,6 +31,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="SUBJECT NAME"
+            android:textColor="#ff3300"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -76,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="9:00"
+
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />

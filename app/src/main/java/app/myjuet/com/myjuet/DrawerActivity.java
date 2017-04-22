@@ -18,6 +18,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -43,6 +44,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.web.SettingsActivity;
+
+import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 
 public class DrawerActivity extends AppCompatActivity
@@ -142,11 +145,14 @@ public class DrawerActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
-        } else {
-            if (doubleBackToExitPressedOnce) {
+        } else if (activeFragment == 3)
+            if (myWebView.canGoBack()) {
+                myWebView.goBack();
+            } else {
+                if (doubleBackToExitPressedOnce) {
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 }
@@ -156,12 +162,13 @@ public class DrawerActivity extends AppCompatActivity
 
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please Click Back Again To Quit", Toast.LENGTH_SHORT).show();
-
+                drawer.openDrawer(GravityCompat.START, true);
             new Handler().postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
                     doubleBackToExitPressedOnce = false;
+                    drawer.closeDrawer(GravityCompat.START, true);
                 }
             }, 2000);
 
@@ -339,5 +346,14 @@ public class DrawerActivity extends AppCompatActivity
         return super.dispatchTouchEvent(ev);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (activeFragment == 3)
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && myWebView.canGoBack()) {
+                myWebView.goBack();
+                return true;
+            }
+        return super.onKeyDown(keyCode, event);
+    }
 
 }

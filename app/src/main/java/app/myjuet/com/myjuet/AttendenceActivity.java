@@ -63,7 +63,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public static AttendenceData tempData;
     public static int Error = -1;
     private static RecyclerView list;
-    private static String DateString;
+    private static String DateString = "";
     SwipeRefreshLayout swipeRefreshLayout;
     View.OnClickListener infoListner;
     String FabString;

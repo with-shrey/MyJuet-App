@@ -28,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -105,72 +107,41 @@ public class WebviewFragment extends Fragment {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         myWebView.setWebViewClient(new WebViewClient());
-        myWebView.setWebViewClient(new WebViewClient() {
-            @SuppressWarnings("deprecation")
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
+        myWebView.setWebChromeClient(new WebChromeClient() {
+            private ProgressDialog mProgress;
 
-            @TargetApi(android.os.Build.VERSION_CODES.N)
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                shouldOverrideUrlLoading(view, link);
-                return true;
-            }
-
-            public void onLoadResource(WebView view, String url) {
-                // Check to see if there is a progress dialog
-                    // If no progress dialog, make one and set message
-                if (progressDialog == null || !progressDialog.isShowing()) {
-                    progressDialog = new ProgressDialog(getActivity());
-                    progressDialog.setMessage(Loading);
-                    progressDialog.show();
-                }
-
-                    // Hide the webview while loading
-                    myWebView.setEnabled(false);
-                }
-
-
-            public void onPageFinished(WebView view, String url) {
-                // Page is done loading;
-                // hide the progress dialog and show the webview
-                try {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                        progressDialog = null;
-                        myWebView.setEnabled(true);
-                    }
-                } catch (NullPointerException e) {
-                    Log.e("WEbview", "progress", e);
-                }
-            }
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
-                SnackString = description + "\nErrorCode:" + String.valueOf(errorCode);
+                SnackString = consoleMessage.toString();
                 ((DrawerActivity) getActivity()).fab.performClick();
 
+                return super.onConsoleMessage(consoleMessage);
             }
 
-            @TargetApi(android.os.Build.VERSION_CODES.M)
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
-                // Redirect to deprecated method, so you can use it in all SDK versions
-                onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
+            public void onProgressChanged(WebView view, int progress) {
+                if (mProgress == null) {
+                    mProgress = new ProgressDialog(getActivity());
+                    mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgress.setMax(100);
+                    mProgress.show();
+                }
+                mProgress.setMessage("Loading " + String.valueOf(progress) + "%");
+                mProgress.setProgress(progress);
+                if (progress == 100) {
+                    mProgress.dismiss();
+                    mProgress = null;
+                }
+
             }
         });
         if (isConnected) {
             if (!getActivity().getIntent().getBooleanExtra("containsurl", false)) {
-                Loading = "Signing In To Webkiosk";
             link = Url + "?" + PostParam;
             myWebView.loadUrl(link);
                 optionsDialog();
             } else {
-                Loading = "Loading Page..";
                 Toast.makeText(getContext(), notlink, Toast.LENGTH_LONG).show();
                 link = notlink;
                 myWebView.loadUrl(link);
@@ -221,43 +192,36 @@ public class WebviewFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                            Loading = "Getting Alert Message";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
                             myWebView.loadUrl(link);
                         break;
                     case 1:
 
-                            Loading = "Getting Page Data";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
                             myWebView.loadUrl(link);
 
                         break;
                     case 2:
 
-                        Loading = "Loading Attendence";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
                             myWebView.loadUrl(link);
                         break;
                     case 3:
 
-                        Loading = "Loading DateSheet";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
                             myWebView.loadUrl(link);
                         break;
                     case 4:
-                            Loading = "Loading Seating Plan";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
                             myWebView.loadUrl(link);
                         break;
                     case 5:
-                            Loading = "Loading Exam Marks";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
                             myWebView.loadUrl(link);
                         break;
                     case 6:
 
                         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
-                            Loading = "Loading CGPA";
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
                             myWebView.loadUrl(link);
                         break;
@@ -283,7 +247,6 @@ public class WebviewFragment extends Fragment {
                         change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
                         change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                    Loading = "Loading Password Page";
                                     link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
                                     myWebView.loadUrl(link);
                             }
