@@ -1,43 +1,24 @@
 package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import app.myjuet.com.myjuet.AttendenceActivity;
-import app.myjuet.com.myjuet.AttendenceDetailsActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 
-import static android.R.attr.data;
-import static android.R.attr.progress;
-import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
-import static app.myjuet.com.myjuet.timetable.TimeTableFragment.count;
-
-/**
- * Created by Shrey on 16-Apr-17.
- */
 
 public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.ViewHolder> {
-    int day;
-    int Count;
-    int[] Detailsdata;
+    private int day;
+    private int Count;
+    private int[] Detailsdata;
     private TimeTableData list;
     private ArrayList<AttendenceData> dataAttendence;
     // Store the context for easy access
@@ -60,8 +41,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         View contactView = inflater.inflate(R.layout.timetable_list_layout, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     // Involves populating data into the item through holder
@@ -122,16 +102,16 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
 //        }
 //    }
 
+    @SuppressWarnings("WeakerAccess")
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView Name;
-        public TextView Location;
-        public TextView Time;
-        public TextView Type;
-        public TextView progressValue;
-        public LinearLayout linearLayout;
-        public ProgressBar Progress;
+        private TextView Name;
+        private TextView Location;
+        private TextView Time;
+        private TextView Type;
+        private TextView progressValue;
+        private ProgressBar Progress;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -139,7 +119,6 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.linear_layout_tt);
             progressValue = (TextView) itemView.findViewById(R.id.percent_value_tt);
             Name = (TextView) itemView.findViewById(R.id.subname_tt);
             Location = (TextView) itemView.findViewById(R.id.location_tt);

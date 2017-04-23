@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 
 public abstract class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
-    public static boolean userSelect = false;
+    static boolean userSelect = false;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

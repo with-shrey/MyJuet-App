@@ -64,7 +64,9 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle("Settings");
+        }
         enrollment = (TextInputEditText) findViewById(R.id.preference_enrollment);
         password = (TextInputEditText) findViewById(R.id.preference_password);
         preferred = (TextInputEditText) findViewById(R.id.preference_percent);
@@ -118,15 +120,19 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     messmin_layout.setVisibility(View.VISIBLE);
-                    messmin_layout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String temp = messmin.getText().toString();
-                            show(Integer.valueOf(temp), messmin);
-                        }
-                    });
+
                 } else
                     messmin_layout.setVisibility(View.GONE);
+            }
+        });
+        messmin_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+
+                messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
+                String temp = messmin.getText().toString();
+                show(Integer.valueOf(temp), messmin);
             }
         });
         beforeclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -134,15 +140,18 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     ttmin_layout.setVisibility(View.VISIBLE);
-                    ttmin_layout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String temp = ttmin.getText().toString();
-                            show(Integer.valueOf(temp), ttmin);
-                        }
-                    });
+
                 } else
                     ttmin_layout.setVisibility(View.GONE);
+            }
+        });
+        ttmin_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+                messmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
+                String temp = ttmin.getText().toString();
+                show(Integer.valueOf(temp), ttmin);
             }
         });
         initialize();
@@ -207,9 +216,9 @@ public class SettingsActivity extends AppCompatActivity {
             beforemeal.setChecked(true);
             messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
         }
-        if (sharedPref.getBoolean(getString(R.string.key_alarm_class), false)) {
+        if (sharedPref.getBoolean(getString(R.string.key_alarm_class), true)) {
             beforeclass.setChecked(true);
-            ttmin.setText(String.valueOf(sharedPref.getInt("beforclassminute", 15)));
+            ttmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
         }
 
 

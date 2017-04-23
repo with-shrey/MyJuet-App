@@ -16,10 +16,12 @@
             android:id="@+id/toolbarsettings"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/Attendence"
+            android:elevation="5dp"
             android:theme="@style/AppToolbar"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="TimeTable Settings" />
+            app:title="TimeTable Settings"
+            tools:ignore="UnusedAttribute" />
 
     </android.support.design.widget.AppBarLayout>
 

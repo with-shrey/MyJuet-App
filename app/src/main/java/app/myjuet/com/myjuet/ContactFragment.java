@@ -42,7 +42,7 @@ public class ContactFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:myjuetapp@gmail.com"));
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(intent.createChooser(intent, "Send Using.."));
+                    startActivity(Intent.createChooser(intent, "Send Using.."));
                 } else {
                     Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG).show();
                     Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");

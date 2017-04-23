@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -43,6 +44,8 @@ public class TimeTableFragment extends Fragment {
     public static ArrayList<AttendenceData> data = new ArrayList<>();
     public static int[] count = new int[]{0, 0, 0, 0, 0, 0};
     ViewPager viewPager;
+    ImageView empty;
+
 
     public TimeTableFragment() {
         // Required empty public constructor
@@ -65,11 +68,14 @@ public class TimeTableFragment extends Fragment {
                     startActivity(login);
                 } else {
                     Intent settings = new Intent(getActivity(), TableSettingsActivity.class);
+                    if (list.isEmpty())
+                        Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
                     startActivity(settings);
                 }
             }
         });
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_tt);
+        empty = (ImageView) view.findViewById(R.id.empty_image_view_tt);
         setHasOptionsMenu(false);
         new Thread(new Runnable() {
             @Override
@@ -125,7 +131,6 @@ public class TimeTableFragment extends Fragment {
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", 2) - 2).select();
                         } else {
                             Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
-                            ((DrawerActivity) getActivity()).fab.performClick();
 
                         }
 
@@ -173,10 +178,12 @@ public class TimeTableFragment extends Fragment {
                     @Override
                     public void run() {
                         if (data.isEmpty()) {
+                            empty.setVisibility(View.VISIBLE);
                             Toast.makeText(getContext(), "Refresh Attendence First", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent("refreshAttendence");
                             getActivity().sendBroadcast(intent);
                         } else if (!list.isEmpty()) {
+                            empty.setVisibility(View.GONE);
                             viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
                                 @Override
                                 public android.support.v4.app.Fragment getItem(int position) {
@@ -214,6 +221,8 @@ public class TimeTableFragment extends Fragment {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            empty.setVisibility(View.VISIBLE);
                         }
                     }
                 });

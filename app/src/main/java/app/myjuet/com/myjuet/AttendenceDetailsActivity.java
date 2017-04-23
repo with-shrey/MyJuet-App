@@ -2,39 +2,27 @@ package app.myjuet.com.myjuet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
 import app.myjuet.com.myjuet.adapters.DetailsAdapter;
-import app.myjuet.com.myjuet.data.AttendenceDetails;
 
-import static android.R.attr.action;
 
 public class AttendenceDetailsActivity extends AppCompatActivity {
-    private AdView mAdView;
+    @SuppressWarnings("UnusedAssignment")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence_details);
+        AdView mAdView;
         mAdView = (AdView) findViewById(R.id.adViewDetails);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -69,6 +57,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.details_toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
         getSupportActionBar().setTitle(AttendenceActivity.tempData.getmName());
         getSupportActionBar().setElevation(5);
         TextView Present = (TextView) findViewById(R.id.present);

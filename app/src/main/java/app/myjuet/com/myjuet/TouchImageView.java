@@ -11,6 +11,7 @@ package app.myjuet.com.myjuet;
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
  */
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 
 
@@ -40,6 +41,8 @@ import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
+@SuppressWarnings("unused")
+@SuppressLint("AppCompatCustomView")
 public class TouchImageView extends ImageView {
 
     private static final String DEBUG = "DEBUG";
@@ -65,7 +68,6 @@ public class TouchImageView extends ImageView {
     //
     private Matrix matrix, prevMatrix;
     private State state;
-    ;
     private float minScale;
     private float maxScale;
     private float superMinScale;
@@ -346,7 +348,6 @@ public class TouchImageView extends ImageView {
     /**
      * Set zoom to the specified scale. Image will be centered by default.
      *
-     * @param scale
      */
     public void setZoom(float scale) {
         setZoom(scale, 0.5f, 0.5f);
@@ -358,9 +359,7 @@ public class TouchImageView extends ImageView {
      * as a fraction from the left and top of the view. For example, the top left
      * corner of the image would be (0, 0). And the bottom right corner would be (1, 1).
      *
-     * @param scale
-     * @param focusX
-     * @param focusY
+     *
      */
     public void setZoom(float scale, float focusX, float focusY) {
         setZoom(scale, focusX, focusY, mScaleType);
@@ -372,10 +371,7 @@ public class TouchImageView extends ImageView {
      * as a fraction from the left and top of the view. For example, the top left
      * corner of the image would be (0, 0). And the bottom right corner would be (1, 1).
      *
-     * @param scale
-     * @param focusX
-     * @param focusY
-     * @param scaleType
+
      */
     public void setZoom(float scale, float focusX, float focusY, ScaleType scaleType) {
         //
@@ -436,8 +432,7 @@ public class TouchImageView extends ImageView {
      * Set the focus point of the zoomed image. The focus points are denoted as a fraction from the
      * left and top of the view. The focus points can range in value between 0 and 1.
      *
-     * @param focusX
-     * @param focusY
+
      */
     public void setScrollPosition(float focusX, float focusY) {
         setZoom(normalizedScale, focusX, focusY);
@@ -657,10 +652,6 @@ public class TouchImageView extends ImageView {
     /**
      * Set view dimensions based on layout params
      *
-     * @param mode
-     * @param size
-     * @param drawableWidth
-     * @return
      */
     private int setViewSize(int mode, int size, int drawableWidth) {
         int viewSize;
@@ -836,6 +827,7 @@ public class TouchImageView extends ImageView {
 
     private static enum State {NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM}
 
+    @SuppressWarnings("UnnecessaryInterfaceModifier")
     public interface OnTouchImageViewListener {
         public void onMove();
     }

@@ -11,19 +11,14 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.webUtilities;
 
 import android.support.v4.content.AsyncTaskLoader;
-import android.content.Loader;
 
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 
 
-/**
- * Created by Shrey on 10-Mar-17.
- */
-
-public class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
+class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
     private String mUrl, mPostParam, mAttendence;
 
-    public AttendenceLoader(Context context, String url, String PostParam) {
+    AttendenceLoader(Context context, String url, String PostParam) {
         super(context);
         mUrl = url;
         mPostParam = PostParam;
@@ -31,7 +26,7 @@ public class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>>
 
     }
 
-    public static boolean pingHost(String host, int port, int timeout) {
+    private static boolean pingHost(String host, int port, int timeout) {
         try {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(host, port), timeout);

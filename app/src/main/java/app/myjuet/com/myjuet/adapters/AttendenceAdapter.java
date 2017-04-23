@@ -3,26 +3,20 @@ package app.myjuet.com.myjuet.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import app.myjuet.com.myjuet.AttendenceActivity;
 import app.myjuet.com.myjuet.AttendenceDetailsActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 
-import static android.R.attr.data;
 import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
 
 
@@ -36,10 +30,6 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         mContext = context;
     }
 
-    private Context getContext() {
-        return mContext;
-    }
-
     @Override
     public AttendenceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -49,8 +39,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         View contactView = inflater.inflate(R.layout.list_layout, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     // Involves populating data into the item through holder
@@ -60,19 +49,20 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         AttendenceData data = list.get(position);
 
         // Set item views based on your views and data model
-        TextView Name = (TextView) viewHolder.Name;
-        TextView Total = (TextView) viewHolder.Total;
-        TextView Next = (TextView) viewHolder.Next;
-        TextView Leaving = (TextView) viewHolder.Leaving;
+        TextView Name = viewHolder.Name;
+        TextView Total = viewHolder.Total;
+        TextView Next = viewHolder.Next;
+        TextView Leaving = viewHolder.Leaving;
 
         GradientDrawable magnitudeCircle = (GradientDrawable) Total.getBackground();
         int color = getmColor(Integer.parseInt(data.getmLecTut()));
-
-        magnitudeCircle.setColor(getContext().getResources().getColor(color));
+        magnitudeCircle.setColor(ContextCompat.getColor(mContext, color));
         Name.setText(data.getmName());
         Total.setText(data.getmLecTut());
-        Leaving.setText("Leaving Next:" + data.getmOnLeaving());
-        Next.setText("Attending Next:" + data.getmOnNext());
+        String next = "Leaving Next:" + data.getmOnLeaving();
+        String attendnext = "Attending Next:" + data.getmOnNext();
+        Leaving.setText(next);
+        Next.setText(attendnext);
     }
 
     // Returns the total count of items in the list
@@ -81,7 +71,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         return list.size();
     }
 
-    public int getmColor(int mLecTut) {
+    private int getmColor(int mLecTut) {
         if ((mLecTut) >= 0 && (mLecTut) <= 40) {
             return R.color.magnitude40;
         } else if ((mLecTut) > 40 && (mLecTut) < 50) {
@@ -99,17 +89,18 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView Name;
-        public TextView Total;
-        public TextView Next;
-        public TextView Leaving;
+        private TextView Name;
+        private TextView Total;
+        private TextView Next;
+        private TextView Leaving;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);

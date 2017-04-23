@@ -1,6 +1,5 @@
 package app.myjuet.com.myjuet;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import app.myjuet.com.myjuet.R;
 
 
 public class ReportFragment extends Fragment {
@@ -43,11 +41,10 @@ public class ReportFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:myjuetapp@gmail.com")); // only email apps should handle this
-        //   intent.putExtra(Intent.EXTRA_EMAIL, "myjuetapp@gmail.com");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Report/Suggestion");
         intent.putExtra(Intent.EXTRA_TEXT, editText.getText());
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(intent.createChooser(intent, "Send Using.."));
+            startActivity(Intent.createChooser(intent, "Send Using.."));
         } else {
             Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG).show();
             Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");

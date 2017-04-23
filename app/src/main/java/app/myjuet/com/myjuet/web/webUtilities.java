@@ -23,7 +23,7 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
 
-
+@SuppressWarnings("StringBufferMayBeStringBuilder")
 public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
     public static ArrayList<AttendenceData> list = new ArrayList<>();
@@ -70,8 +70,6 @@ public class webUtilities extends AppCompatActivity {
             response.append(inputLine);
         }
         in.close();
-        Log.v("Shrey", "Post Send");
-        Log.v("response", response.toString().trim());
 
 
     }
@@ -83,7 +81,6 @@ public class webUtilities extends AppCompatActivity {
 
         String Result = null;
         conn = (HttpsURLConnection) obj.openConnection();
-        Log.v("Shrey", "Content Recieved");
         conn.setRequestMethod("GET");
         conn.setUseCaches(false);
         conn.setRequestProperty("User-Agent", USER_AGENT);
@@ -106,14 +103,11 @@ public class webUtilities extends AppCompatActivity {
         String[] datas = new String[5];
         String subPart[] = new String[5];
         Result = Result.trim();
-        Log.v("Shrey", Result);
         if (Result.contains("Login</a>")) {
             AttendenceActivity.Error = AttendenceActivity.WRONG_CREDENTIALS;
-            Log.v("Shrey", "Wrong Credentials");
         }      //get the table body of atendence
 
         else if (Result.contains("<tbody") && Result.contains("</tbody>") && !Result.equals(null)) {
-            Log.v("Shrey", "Crawled");
             subPart[0] = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
             //rows looping
             for (int j = 0; j < 15; j++) {

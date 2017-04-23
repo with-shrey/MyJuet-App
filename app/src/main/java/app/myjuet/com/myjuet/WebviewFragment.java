@@ -1,7 +1,7 @@
 package app.myjuet.com.myjuet;
 
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,37 +10,27 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Display;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import app.myjuet.com.myjuet.web.webUtilities;
 
-import static android.R.attr.description;
-import static android.R.attr.lockTaskMode;
+
 
 
 /**
@@ -49,26 +39,21 @@ import static android.R.attr.lockTaskMode;
 public class WebviewFragment extends Fragment {
 
     public static WebView myWebView;
-    public static ProgressDialog progressDialog;
     boolean isConnected;
     String SnackString;
     String link;
-    String Loading;
 
     public WebviewFragment() {
         // Required empty public constructor
     }
 
-    public static void goBackWebview() {
-        myWebView.goBack();
-
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        String notlink = new String();
+        @SuppressWarnings("RedundantStringConstructorCall") String notlink = new String();
         if (getActivity().getIntent().getBooleanExtra("containsurl", false))
             notlink = getActivity().getIntent().getStringExtra("url");
         View RootView = inflater.inflate(R.layout.fragment_webview, container, false);
@@ -88,6 +73,7 @@ public class WebviewFragment extends Fragment {
         WebSettings webSettings = myWebView.getSettings();
         myWebView.setInitialScale(1);
         webSettings.setJavaScriptEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(false);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         myWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -155,15 +141,6 @@ public class WebviewFragment extends Fragment {
         return RootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-        if (((DrawerActivity) getActivity()).getSupportActionBar() != null)
-        ((DrawerActivity) getActivity()).getSupportActionBar().setTitle("Webview");
-        ((DrawerActivity) getActivity()).appBarLayout.setExpanded(false);
-
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -184,7 +161,7 @@ public class WebviewFragment extends Fragment {
 
     private void optionsDialog() {
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
-        CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "Cgpa/Sgpa", "Open In Browser", "Change Password"};
+        CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "CGPA/SGPA", "Open In Browser", "Change Password"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("WEBKIOSK-JUET");
         builder.setItems(colors, new DialogInterface.OnClickListener() {

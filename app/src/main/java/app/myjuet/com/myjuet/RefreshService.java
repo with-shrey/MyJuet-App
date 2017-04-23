@@ -1,7 +1,6 @@
 package app.myjuet.com.myjuet;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,10 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,20 +27,16 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.web.SettingsActivity;
 import app.myjuet.com.myjuet.web.webUtilities;
-import app.myjuet.com.myjuet.AttendenceActivity;
 
-import static app.myjuet.com.myjuet.AttendenceActivity.Error;
-import static app.myjuet.com.myjuet.AttendenceActivity.HOST_DOWN;
 import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
 
-/**
- * Created by Shrey on 05-Apr-17.
- */
 
+@SuppressWarnings({"RedundantStringConstructorCall", "UnusedAssignment", "TryWithIdenticalCatches"})
 public class RefreshService extends IntentService {
     public RefreshService() {
         super("RefreshService");
@@ -60,6 +53,7 @@ public class RefreshService extends IntentService {
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     protected void onHandleIntent(Intent intent) {
         ConnectivityManager cm =
@@ -70,18 +64,20 @@ public class RefreshService extends IntentService {
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         if (!directory.exists()) {
-            directory.mkdirs();
+            boolean dir = directory.mkdirs();
+
         }
         String date = "date.srl";
         String DateString = new String();
         Boolean today = false;
         ObjectInput dateinput = null;
+        //noinspection TryWithIdenticalCatches
         try {
             dateinput = new ObjectInputStream(new FileInputStream(directory
                     + File.separator + date));
             DateString = (String) dateinput.readObject();
             Date dateobj = new Date();
-            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
+            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
             String temp = formattor.format(dateobj);
             temp = temp.substring(0, temp.indexOf(" "));
             if (DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
@@ -102,7 +98,6 @@ public class RefreshService extends IntentService {
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
         String Content = " ";
-        Log.v("Shrey", user + " " + pass);
 
         if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
             sendNotification("Attendence Sync started", 1);
@@ -120,11 +115,10 @@ public class RefreshService extends IntentService {
                 //REturn statement
             } else {
                 DataAttendence.clear();
-                Log.v("Shrey", "content Empty");
             }
             if (!DataAttendence.isEmpty()) {
                 Date dateobj = new Date();
-                SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm");
+                SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
 
                 String filename = "MessgeScreenList.srl";
                 ObjectOutput out = null;
@@ -150,9 +144,9 @@ public class RefreshService extends IntentService {
             sendNotification("Attendence Synced successfully " + DateString, 1);
         } else if (user.equals("") || pass.equals(""))
             sendNotification("Please Enter Login Details", 0);
-        else if (today || !isConnected) {
-        } else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
-        }
+        else if (today || !isConnected) ;
+        else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) ;
+
         //  sendNotification("Webkiosk Down/Unreachable", 1);
 
         else
@@ -172,7 +166,6 @@ public class RefreshService extends IntentService {
             contentIntent = PendingIntent.getActivity(getApplicationContext(), 55,
                     new Intent(getApplicationContext(), SettingsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
-        long[] patern = {1000, 500, 1000, 500, 1000, 500};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getApplicationContext())
                         .setContentTitle("Attendence")

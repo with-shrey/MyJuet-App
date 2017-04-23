@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,12 +19,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Stack;
 
-import app.myjuet.com.myjuet.data.TimeTableData;
-
-import static android.R.id.message;
-import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -132,7 +126,7 @@ public class NotificationApplicationFragment extends Fragment {
             e.printStackTrace();
         }
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(intent.createChooser(intent, "Send Using.."));
+            startActivity(Intent.createChooser(intent, "Send Using.."));
         } else {
             Toast.makeText(getContext(), "No Email App Found", Toast.LENGTH_LONG).show();
             Uri webpage = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gm&hl=en");

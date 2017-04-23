@@ -229,7 +229,7 @@
         <View
             android:id="@+id/adminview"
             android:layout_width="match_parent"
-            android:layout_height="5dp" />
+            android:layout_height="50dp" />
 
         <EditText
             android:id="@+id/admin_text"

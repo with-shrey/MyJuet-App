@@ -7,22 +7,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Process;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +28,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -44,7 +39,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +51,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import app.myjuet.com.myjuet.AlarmReciever;
-import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
@@ -65,6 +58,7 @@ import app.myjuet.com.myjuet.data.TimeTableData;
 import static app.myjuet.com.myjuet.AttendenceActivity.read;
 import static app.myjuet.com.myjuet.R.array.Days;
 
+@SuppressWarnings("UnusedAssignment")
 public class TableSettingsActivity extends AppCompatActivity implements Runnable {
     public static final int MONDAY = 0;
     public static final int TUESDAY = 1;
@@ -72,14 +66,13 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
     public static final int THURSDAY = 3;
     public static final int FRIDAY = 4;
     public static final int SATURDAY = 5;
-    int length;
+
     ArrayList<TimeTableData> settings = new ArrayList<>();
 
     String batch;
     String sem;
 
 
-    int error = -1;
     ArrayList<String> Subjects = new ArrayList<>();
 
     @Override
@@ -124,7 +117,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
 
         Thread thread = new Thread(this);
-        final ArrayAdapter<String> SubjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Subjects);
+        final ArrayAdapter<String> SubjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Subjects);
         ArrayAdapter<CharSequence> TypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.type, android.R.layout.simple_spinner_item);
         TypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -132,9 +125,11 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         SubjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarsettings);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
         getSupportActionBar().setElevation(5);
-        getSupportActionBar().setTitle("TimeTable Setting");
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("TimeTable Setting");
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Spinner Day = (Spinner) findViewById(R.id.spinner_day);
         final Spinner nine = (Spinner) findViewById(R.id.spinner_9);
         final Spinner ten = (Spinner) findViewById(R.id.spinner_10);
@@ -504,11 +499,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeNine(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocNine().isEmpty()) {
-                    Log.v("nineType", "updated");
                     if (nineType.getSelectedItemPosition() == 1)
-                        nineText.setText("LT-");
+                        nineText.setText(R.string.lt);
                     else if (nineType.getSelectedItemPosition() == 2)
-                        nineText.setText("CR-");
+                        nineText.setText(R.string.cr);
                     else {
                         nineText.setText("");
                     }
@@ -524,11 +518,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeTen(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocTen().isEmpty()) {
-                    Log.v("tenType", "updated");
                     if (tenType.getSelectedItemPosition() == 1)
-                        tenText.setText("LT-");
+                        tenText.setText(R.string.lt);
                     else if (tenType.getSelectedItemPosition() == 2)
-                        tenText.setText("CR-");
+                        tenText.setText(R.string.cr);
                     else {
                         tenText.setText("");
                     }
@@ -544,11 +537,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeEleven(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocEleven().isEmpty()) {
-                    Log.v("elevenType", "updated");
                     if (elevenType.getSelectedItemPosition() == 1)
-                        elevenText.setText("LT-");
+                        elevenText.setText(R.string.lt);
                     else if (elevenType.getSelectedItemPosition() == 2)
-                        elevenText.setText("CR-");
+                        elevenText.setText(R.string.cr);
                     else {
                         elevenText.setText("");
                     }
@@ -564,11 +556,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeTwelve(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocTwelve().isEmpty()) {
-                    Log.v("twelveType", "updated");
                     if (twelveType.getSelectedItemPosition() == 1)
-                        twelveText.setText("LT-");
+                        twelveText.setText(R.string.lt);
                     else if (twelveType.getSelectedItemPosition() == 2)
-                        twelveText.setText("CR-");
+                        twelveText.setText(R.string.cr);
                     else {
                         twelveText.setText("");
                     }
@@ -584,11 +575,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeTwo(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocTwo().isEmpty()) {
-                    Log.v("twoType", "updated");
                     if (twoType.getSelectedItemPosition() == 1)
-                        twoText.setText("LT-");
+                        twoText.setText(R.string.lt);
                     else if (twoType.getSelectedItemPosition() == 2)
-                        twoText.setText("CR-");
+                        twoText.setText(R.string.cr);
                     else {
                         twoText.setText("");
                     }
@@ -604,11 +594,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeThree(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocThree().isEmpty()) {
-                    Log.v("threeType", "updated");
                     if (threeType.getSelectedItemPosition() == 1)
-                        threeText.setText("LT-");
+                        threeText.setText(R.string.lt);
                     else if (threeType.getSelectedItemPosition() == 2)
-                        threeText.setText("CR-");
+                        threeText.setText(R.string.cr);
                     else {
                         threeText.setText("");
                     }
@@ -624,11 +613,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeFour(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocFour().isEmpty()) {
-                    Log.v("fourType", "updated");
                     if (fourType.getSelectedItemPosition() == 1)
-                        fourText.setText("LT-");
+                        fourText.setText(R.string.lt);
                     else if (fourType.getSelectedItemPosition() == 2)
-                        fourText.setText("CR-");
+                        fourText.setText(R.string.cr);
                     else {
                         fourText.setText("");
                     }
@@ -644,11 +632,10 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 settings.get(Day.getSelectedItemPosition()).setTypeFive(pos);
                 if (SpinnerInteractionListener.userSelect || settings.get(Day.getSelectedItemPosition()).getLocFive().isEmpty()) {
-                    Log.v("fiveType", "updated");
                     if (fiveType.getSelectedItemPosition() == 1)
-                        fiveText.setText("LT-");
+                        fiveText.setText(R.string.lt);
                     else if (fiveType.getSelectedItemPosition() == 2)
-                        fiveText.setText("CR-");
+                        fiveText.setText(R.string.cr);
                     else {
                         fiveText.setText("");
                     }
@@ -725,6 +712,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
     }
 
+    @SuppressWarnings("UnusedAssignment")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ConnectivityManager cm =
@@ -736,8 +724,9 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File image = null;
             image = new File(storageDir, sem + "_" + batch + ".txt");
-            if (!storageDir.exists())
-                storageDir.mkdir();
+            if (storageDir != null && !storageDir.exists()) {
+                boolean a = storageDir.mkdir();
+            }
             ObjectOutput out = null;
             try {
                 out = new ObjectOutputStream(new FileOutputStream(image));
@@ -809,6 +798,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         return true;
     }
 
+    @SuppressWarnings({"unchecked", "UnusedAssignment"})
     public ArrayList<TimeTableData> readSettings() throws Exception {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         final String batch = prefs.getString(getString(R.string.key_batch), "").toUpperCase().trim();
@@ -899,9 +889,14 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 try {
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
-                        Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
-                        finish();
                     }
+                    Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
+                    cancelMessAlarms();
+                    cancelttAlarms();
+                    cancelmorningalarm();
+                    Intent intent = new Intent("SetAlarms");
+                    sendBroadcast(intent);
+                    finish();
                 } catch (NullPointerException pe) {
                     Log.e("table Settings", "progress", pe);
                 }
@@ -948,8 +943,9 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 File image = null;
                 image = new File(storageDir, sem + "_" + batch + ".txt");
-                if (!storageDir.exists())
-                    storageDir.mkdir();
+                if (storageDir != null && !storageDir.exists()) {
+                    boolean a = storageDir.mkdir();
+                }
                 ObjectOutput out = null;
                 try {
                     out = new ObjectOutputStream(new FileOutputStream(image));
@@ -1012,7 +1008,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
     private void cancelttAlarms() {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         for (int i = 0; i < 6; i++) {
-            am.cancel(PendingIntent.getBroadcast(this, 0 + (i), new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
+            am.cancel(PendingIntent.getBroadcast(this, (i), new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
             am.cancel(PendingIntent.getBroadcast(this, 6 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 11:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
             am.cancel(PendingIntent.getBroadcast(this, 13 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 12:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
             am.cancel(PendingIntent.getBroadcast(this, 20 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 02:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));

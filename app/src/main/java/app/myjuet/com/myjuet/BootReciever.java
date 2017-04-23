@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.SimpleDateFormat;
 import android.os.Environment;
 import android.util.Log;
 
@@ -20,24 +19,19 @@ import java.util.Calendar;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.timetable.TableSettingsActivity;
 
 import static android.content.Context.ALARM_SERVICE;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static java.lang.reflect.Array.getInt;
 
-/**
- * Created by Shrey on 14-Apr-17.
- */
 
+@SuppressWarnings("unused")
 public class BootReciever extends BroadcastReceiver {
     ArrayList<TimeTableData> datatt = new ArrayList<>();
     ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
 
 
+    @SuppressWarnings("UnusedAssignment")
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v("Alarms", "Set success");
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
         Calendar calendar4 = Calendar.getInstance();
@@ -87,8 +81,11 @@ public class BootReciever extends BroadcastReceiver {
             final String batch = prefs.getString(context.getString(R.string.key_batch), "").toUpperCase().trim();
             final String sem = prefs.getString(context.getString(R.string.key_semester), "").toUpperCase().trim();
             File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            if (!storageDir.exists())
-                storageDir.mkdir();
+            boolean mkd = false;
+            if (storageDir != null && !storageDir.exists())
+                mkd = storageDir.mkdir();
+            if (mkd) {
+            }
             File settings = null;
             settings = new File(storageDir, sem + "_" + batch + ".txt");
             ObjectInput ois = null;
@@ -98,15 +95,23 @@ public class BootReciever extends BroadcastReceiver {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //noinspection TryWithIdenticalCatches
             try {
-                datatt = (ArrayList<TimeTableData>) ois.readObject();
-                ois.close();
+                if (ois != null) {
+                    //noinspection unchecked
+                    datatt = (ArrayList<TimeTableData>) ois.readObject();
+                }
 
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (NullPointerException e) {
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (ois != null) {
+                    ois.close();
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -121,11 +126,12 @@ public class BootReciever extends BroadcastReceiver {
                 int minclass = sharedPref.getInt(context.getString(R.string.key_minutes_before_class), 15);
                 PendingIntent[][] pendingintents = new PendingIntent[6][7];
                 for (int i = 0; i < 6; i++) {
+                    @SuppressWarnings("UnusedAssignment")
                     TimeTableData tempData = new TimeTableData();
                     tempData = datatt.get(i);
 
                     if (tempData.getPosNine() == 0 && !attendenceDatas.get(tempData.getPosNine()).getmName().contains("LAB") && tempData.getPosTen() != 0) {
-                        pendingintents[i][0] = PendingIntent.getBroadcast(context, 0 + (i), new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
+                        pendingintents[i][0] = PendingIntent.getBroadcast(context, (i), new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.DAY_OF_WEEK, i + 2);
                         calendar.set(Calendar.HOUR_OF_DAY, 10);

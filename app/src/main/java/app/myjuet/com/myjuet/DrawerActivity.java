@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -13,12 +14,11 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
-import android.view.KeyEvent;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -53,12 +53,10 @@ public class DrawerActivity extends AppCompatActivity
     public FloatingActionButton fab;
     public AppBarLayout appBarLayout;
     public TabLayout tabLayout;
-    public NavigationView navigationView;
     int activeFragment;
     Toolbar tool;
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
-    private AdView mAdView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,7 +81,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
-
+        AdView mAdView;
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -127,10 +125,11 @@ public class DrawerActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
-        getSupportActionBar().setElevation(5);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setElevation(5);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, tool, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.setDrawerIndicatorEnabled(true);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -148,9 +147,10 @@ public class DrawerActivity extends AppCompatActivity
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
-        } else if (activeFragment == 3)
+        } else if (activeFragment == 3) {
             if (myWebView.canGoBack()) {
                 myWebView.goBack();
+            }
             } else {
                 if (doubleBackToExitPressedOnce) {
                 if (mInterstitialAd.isLoaded()) {
@@ -177,7 +177,7 @@ public class DrawerActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
@@ -185,7 +185,7 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Attendence");
             Fragment fragment = new AttendenceActivity();
             transition.replace(R.id.content_drawer, fragment);
@@ -201,9 +201,10 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.ic_settings);
-            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
+            if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
             appBarLayout.setExpanded(false);
@@ -233,7 +234,7 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.web_view_drawer) {
-            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
+            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
@@ -272,7 +273,7 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Contact Us");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ContactFragment();
@@ -288,7 +289,7 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new NotificationApplicationFragment();
@@ -302,7 +303,7 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.Attendence));
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("FeedBack");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ReportFragment();
@@ -343,14 +344,5 @@ public class DrawerActivity extends AppCompatActivity
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (activeFragment == 3)
-            if ((keyCode == KeyEvent.KEYCODE_BACK) && myWebView.canGoBack()) {
-                myWebView.goBack();
-                return true;
-            }
-        return super.onKeyDown(keyCode, event);
-    }
 
 }

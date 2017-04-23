@@ -57,4 +57,7 @@
     <string name="key_minutes_before_class">beforeclassminute</string>
     <string name="key_notification_mess">notificationmess</string>
     <string name="key_notification_tt">notificationtt</string>
+    <string name="admin_key">Myjuet.xyzadmin</string>
+    <string name="lt">LT-</string>
+    <string name="cr">CR-</string>
 </resources>
