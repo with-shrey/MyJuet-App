@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -159,7 +160,12 @@ public class MessFragment extends Fragment {
         StorageReference storageRef = storage.getReference();
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading");
+        progressDialog.setMessage("Refreshing...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setProgressNumberFormat(null);
+        progressDialog.setProgressPercentFormat(null);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
 
 
@@ -209,7 +215,7 @@ public class MessFragment extends Fragment {
         StorageReference storageRef = storage.getReference();
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        String admin = prefs.getString("admin", getString(R.string.defaultuser));//TODO: implement admin key
+        String admin = prefs.getString("admin", "");//TODO: implement admin key
         String File = "mess/image.jpg";
         if (admin.equals("Myjuet.xyzadmin"))
             File = "MessImage.jpg";
@@ -240,7 +246,12 @@ public class MessFragment extends Fragment {
                 if (ERROR == 1)
                     file = data.getData();
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Uploading");
+                progressDialog.setMessage("Uploading...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setProgressNumberFormat(null);
+                progressDialog.setProgressPercentFormat(null);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.show();
             // Get the Uri of the selected file
             StorageReference riversRef = storageRef.child(File);

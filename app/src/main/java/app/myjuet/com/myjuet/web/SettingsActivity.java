@@ -2,8 +2,10 @@ package app.myjuet.com.myjuet.web;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
@@ -12,8 +14,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,7 +29,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import app.myjuet.com.myjuet.AlarmReciever;
@@ -36,14 +42,15 @@ public class SettingsActivity extends AppCompatActivity {
     TextInputEditText enrollment;
     TextInputEditText password;
     TextInputEditText preferred;
-    NumberPicker ttmin;
-    NumberPicker messmin;
+    TextView ttmin;
+    TextView messmin;
     TextInputEditText sem;
     TextInputEditText batch;
     LinearLayout ttmin_layout;
     LinearLayout messmin_layout;
     String ringtonett;
     String ringtonemess;
+    EditText admin;
 
 
     Switch morningtt;
@@ -61,10 +68,13 @@ public class SettingsActivity extends AppCompatActivity {
         enrollment = (TextInputEditText) findViewById(R.id.preference_enrollment);
         password = (TextInputEditText) findViewById(R.id.preference_password);
         preferred = (TextInputEditText) findViewById(R.id.preference_percent);
-        ttmin = (NumberPicker) findViewById(R.id.preference_minutes_timetable);
-        messmin = (NumberPicker) findViewById(R.id.preference_minutes_mess);
+        ttmin = (TextView) findViewById(R.id.preference_minutes_timetable);
+        messmin = (TextView) findViewById(R.id.preference_minutes_mess);
         sem = (TextInputEditText) findViewById(R.id.preference_semester);
         batch = (TextInputEditText) findViewById(R.id.preference_batch);
+
+        admin = (EditText) findViewById(R.id.admin_text);
+        View view = (View) findViewById(R.id.adminview);
 
         Button ringmess = (Button) findViewById(R.id.mess_ring);
         Button ringtt = (Button) findViewById(R.id.tt_ring);
@@ -75,7 +85,12 @@ public class SettingsActivity extends AppCompatActivity {
         morningtt = (Switch) findViewById(R.id.preference_tt_morning);
         beforemeal = (Switch) findViewById(R.id.preference_mess_before);
         beforeclass = (Switch) findViewById(R.id.preference_tt_before);
-
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                admin.setVisibility(View.VISIBLE);
+            }
+        });
         ringmess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,10 +118,13 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     messmin_layout.setVisibility(View.VISIBLE);
-                    messmin.setMaxValue(59);
-                    messmin.setWrapSelectorWheel(false);
-                    messmin.setMinValue(0);
-                    messmin.setValue(15);
+                    messmin_layout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String temp = messmin.getText().toString();
+                            show(Integer.valueOf(temp), messmin);
+                        }
+                    });
                 } else
                     messmin_layout.setVisibility(View.GONE);
             }
@@ -116,15 +134,60 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     ttmin_layout.setVisibility(View.VISIBLE);
-                    ttmin.setMaxValue(59);
-                    ttmin.setMinValue(0);
-                    ttmin.setValue(15);
+                    ttmin_layout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String temp = ttmin.getText().toString();
+                            show(Integer.valueOf(temp), ttmin);
+                        }
+                    });
                 } else
                     ttmin_layout.setVisibility(View.GONE);
             }
         });
         initialize();
     }
+
+    public void show(int value, final TextView textView) {
+
+        RelativeLayout linearLayout = new RelativeLayout(SettingsActivity.this);
+        final NumberPicker aNumberPicker = new NumberPicker(SettingsActivity.this);
+        aNumberPicker.setMaxValue(59);
+        aNumberPicker.setMinValue(0);
+        aNumberPicker.setValue(value);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
+        RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        numPicerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        linearLayout.setLayoutParams(params);
+        linearLayout.addView(aNumberPicker, numPicerParams);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
+        alertDialogBuilder.setTitle("SELECT MINUTES");
+        alertDialogBuilder.setView(linearLayout);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                textView.setText(String.valueOf(aNumberPicker.getValue()));
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
+
 
     private void initialize() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
@@ -142,11 +205,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
         if (sharedPref.getBoolean(getString(R.string.key_alarm_meal), true)) {
             beforemeal.setChecked(true);
-            messmin.setValue(sharedPref.getInt("beforemealminute", 15));
+            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
         }
         if (sharedPref.getBoolean(getString(R.string.key_alarm_class), false)) {
             beforeclass.setChecked(true);
-            messmin.setValue(sharedPref.getInt("beforclassminute", 15));
+            ttmin.setText(String.valueOf(sharedPref.getInt("beforclassminute", 15)));
         }
 
 
@@ -162,6 +225,8 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString(getString(R.string.key_batch), batch.getText().toString());
         editor.putString(getString(R.string.key_notification_mess), ringtonemess);
         editor.putString(getString(R.string.key_notification_tt), ringtonett);
+        if (admin.getVisibility() == View.VISIBLE)
+            editor.putString("admin", admin.getText().toString());
         if (morningtt.isChecked()) {
             editor.putBoolean(getString(R.string.key_alarm_morming), true);
         } else {
@@ -170,14 +235,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
         if (beforemeal.isChecked()) {
             editor.putBoolean(getString(R.string.key_alarm_meal), true);
-            editor.putInt(getString(R.string.key_minutes_before_meal), messmin.getValue());
+            editor.putInt(getString(R.string.key_minutes_before_meal), Integer.valueOf(messmin.getText().toString()));
         } else {
             editor.putBoolean(getString(R.string.key_alarm_meal), false);
 
         }
         if (beforeclass.isChecked()) {
             editor.putBoolean(getString(R.string.key_alarm_class), true);
-            editor.putInt(getString(R.string.key_minutes_before_class), ttmin.getValue());
+            editor.putInt(getString(R.string.key_minutes_before_class), Integer.valueOf(ttmin.getText().toString()));
         } else {
             editor.putBoolean(getString(R.string.key_alarm_class), false);
         }

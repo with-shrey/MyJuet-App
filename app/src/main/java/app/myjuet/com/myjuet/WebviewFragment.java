@@ -123,11 +123,11 @@ public class WebviewFragment extends Fragment {
             public void onProgressChanged(WebView view, int progress) {
                 if (mProgress == null) {
                     mProgress = new ProgressDialog(getActivity());
+                    mProgress.setMessage("Loading WebPage..");
                     mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                     mProgress.setMax(100);
                     mProgress.show();
                 }
-                mProgress.setMessage("Loading " + String.valueOf(progress) + "%");
                 mProgress.setProgress(progress);
                 if (progress == 100) {
                     mProgress.dismiss();

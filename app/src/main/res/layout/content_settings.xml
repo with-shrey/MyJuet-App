@@ -138,31 +138,39 @@
             android:layout_height="52dp"
             android:text="notification before irregular class"
             android:textAllCaps="true" />
+        <LinearLayout
+            android:id="@+id/before_class_layout"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MINUTES BEFORE CLASS:\nClick To Change"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/preference_minutes_timetable"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/tt_ring"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CHOOSE NOTIFICATION SOUND" />
-        <LinearLayout
-            android:id="@+id/before_class_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="MINUTES BEFORE CLASS:" />
-
-            <NumberPicker
-                android:id="@+id/preference_minutes_timetable"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -180,6 +188,37 @@
             android:layout_marginBottom="16dp"
             android:text="Notification Before meals"
             android:textAllCaps="true" />
+        <LinearLayout
+            android:id="@+id/before_meal_layout"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MINUTES BEFORE MEAL:\nClick To Change"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/preference_minutes_mess"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/mess_ring"
@@ -187,25 +226,16 @@
             android:layout_height="wrap_content"
             android:text="CHOOSE NOTIFICATION SOUND" />
 
-        <LinearLayout
-            android:id="@+id/before_meal_layout"
+        <View
+            android:id="@+id/adminview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:visibility="gone">
+            android:layout_height="5dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:text="MINUTES BEFORE MEAL:" />
-
-            <NumberPicker
-                android:id="@+id/preference_minutes_mess"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+        <EditText
+            android:id="@+id/admin_text"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:inputType="textPassword"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

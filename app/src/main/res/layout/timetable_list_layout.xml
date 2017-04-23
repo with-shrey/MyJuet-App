@@ -15,7 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
         android:elevation="5dp"
-        card_view:cardBackgroundColor="#cc99ff"
+        card_view:cardBackgroundColor="#78909c"
         card_view:cardCornerRadius="7dp"
         card_view:cardPreventCornerOverlap="false">
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="SUBJECT NAME"
-            android:textColor="#ff3300"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -55,6 +55,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_weight="0.1"
                 android:text="80"
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <TextView
@@ -62,6 +63,8 @@
                 android:layout_height="18dp"
                 android:layout_weight="0.05"
                 android:text="%"
+
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -79,8 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="9:00"
-
                 android:textAlignment="center"
+
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -92,6 +96,7 @@
                 android:text="LT-2"
                 android:textAlignment="center"
                 android:textAllCaps="true"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -102,6 +107,8 @@
                 android:layout_weight="0.5"
                 android:gravity="right"
                 android:text="Lecture"
+                android:textColor="@android:color/white"
+
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>

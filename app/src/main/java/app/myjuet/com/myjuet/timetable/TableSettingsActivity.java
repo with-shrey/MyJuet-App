@@ -835,6 +835,11 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         settings = new File(storageDir, sem + "_" + batch + ".txt");
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading Your Settings...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setProgressNumberFormat(null);
+        progressDialog.setProgressPercentFormat(null);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
         // Get the Uri of the selected file
         Uri file = Uri.fromFile(settings);
@@ -882,6 +887,11 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         settingsFile = new File(storageDir, sem + "_" + batch + ".txt");
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fetching Data...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setProgressNumberFormat(null);
+        progressDialog.setProgressPercentFormat(null);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
         riversRef.getFile(settingsFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
@@ -890,7 +900,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                         Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
-                        recreate();
+                        finish();
                     }
                 } catch (NullPointerException pe) {
                     Log.e("table Settings", "progress", pe);
