@@ -1,5 +1,13 @@
 package app.myjuet.com.myjuet;
 
+import android.app.AlarmManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.IntentFilter;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -81,6 +89,20 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler js =
+                    (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            JobInfo job = null;
+            job = new JobInfo.Builder(0, new ComponentName(this, jobService.class))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setRequiresCharging(false)
+                    .setPeriodic(AlarmManager.INTERVAL_DAY)
+                    .build();
+            js.schedule(job);
+
+        }
+
         AdView mAdView;
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
