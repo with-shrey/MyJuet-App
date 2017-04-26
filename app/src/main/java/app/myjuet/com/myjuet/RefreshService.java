@@ -137,7 +137,9 @@ public class RefreshService extends IntentService {
                             + File.separator + filename));
                     dateout = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + date));
+                    out.flush();
                     out.writeObject(DataAttendence);
+                    dateout.flush();
                     dateout.writeObject(DateString);
                     out.close();
                     dateout.close();

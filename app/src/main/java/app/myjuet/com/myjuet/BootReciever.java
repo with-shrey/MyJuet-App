@@ -23,7 +23,7 @@ import app.myjuet.com.myjuet.data.TimeTableData;
 import static android.content.Context.ALARM_SERVICE;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "StatementWithEmptyBody"})
 public class BootReciever extends BroadcastReceiver {
     ArrayList<TimeTableData> datatt = new ArrayList<>();
     ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
@@ -38,6 +38,8 @@ public class BootReciever extends BroadcastReceiver {
         calendar4.set(Calendar.HOUR_OF_DAY, 0);
         calendar4.set(Calendar.MINUTE, 1);
         calendar4.set(Calendar.SECOND, 0);
+        if (calendar4.before(Calendar.getInstance()))
+            calendar4.add(Calendar.DATE, 1);
         PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY / 4, pendingIntent3);

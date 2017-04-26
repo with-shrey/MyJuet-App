@@ -108,6 +108,7 @@ public class TimeTableFragment extends Fragment {
     @Override
     public void onResume() {
         empty.setVisibility(View.GONE);
+        viewPager.setAdapter(null);
         new Thread(new Runnable() {
             @Override
             public void run() {

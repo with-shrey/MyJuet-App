@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet;
 
+import android.app.ActivityManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +50,8 @@ import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
 import app.myjuet.com.myjuet.web.SettingsActivity;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 
 @SuppressWarnings({"UnusedAssignment", "unused"})
@@ -134,9 +138,12 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         try {
             out = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + filename));
+            out.flush();
             dateout = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + date));
+            out.flush();
             out.writeObject(nameOfClass);
+            dateout.flush();
             dateout.writeObject(DateString);
             out.close();
             dateout.close();
@@ -378,7 +385,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-        if (isConnected) {
+        if (isConnected && !isMyServiceRunning()) {
 
             CookieHandler.setDefault(new CookieManager());
             final LoaderManager loaderAtt = getLoaderManager();
@@ -445,5 +452,15 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
         }
         swipeRefreshLayout.setRefreshing(false);
         super.onPause();
+    }
+
+    private boolean isMyServiceRunning() {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("app.myjuet.com.myjuet.RefreshService".equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
