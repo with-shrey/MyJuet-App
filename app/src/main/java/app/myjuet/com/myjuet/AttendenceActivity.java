@@ -38,13 +38,19 @@ import java.net.CookieManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.TimeTableData;
 import app.myjuet.com.myjuet.web.SettingsActivity;
 
 
+@SuppressWarnings({"UnusedAssignment", "unused"})
 public class AttendenceActivity extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
 
@@ -82,6 +88,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 + File.separator + datefile));
         @SuppressWarnings("unchecked")
         ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
+
         DateString = (String) dateinput.readObject();
         Date dateobj = new Date();
         SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
@@ -100,6 +107,17 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
 
     @SuppressWarnings("UnusedAssignment")
     public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
+        Set<AttendenceData> s = new LinkedHashSet<>(nameOfClass);
+        s.addAll(nameOfClass);
+        nameOfClass.clear();
+        nameOfClass.addAll(s);
+        File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
+                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+        boolean deleted;
+        if (directoryFile.exists()) {
+            deleted = directoryFile.delete();
+
+        }
         File directory = new File(context.getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         boolean make;
@@ -216,16 +234,9 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 FabString = "Webkiosk Down/Timed Out(3s)";
                 ((DrawerActivity) getActivity()).fab.performClick();
             } else if (Error == -1 && !AttendenceDatas.isEmpty()) {
-                File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
-                        + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-                boolean deleted;
-                if (directoryFile.exists()) {
-                    deleted = directoryFile.delete();
-
-                }
                 write(getActivity(), AttendenceDatas);
                 listdata.clear();
-                adapter.notifyDataSetChanged();
+                listdata = new ArrayList<>();
                 list.getRecycledViewPool().clear();
                 listdata.addAll(AttendenceDatas);
                 adapter.notifyDataSetChanged();
@@ -359,14 +370,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     public void refreshData() {
         image.setVisibility(View.GONE);
         swipeRefreshLayout.setKeepScreenOn(true);
-//        if (DateString.contains("Today") && DateString !=null) {
-//            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude80)));
-//            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
-//        }
-//        else
-//            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.magnitude40)));
-//        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
-//        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         FabString = DateString;
         Action = "Refresh";
         Error = -1;

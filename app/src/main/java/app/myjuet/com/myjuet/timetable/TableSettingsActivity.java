@@ -58,7 +58,7 @@ import app.myjuet.com.myjuet.data.TimeTableData;
 import static app.myjuet.com.myjuet.AttendenceActivity.read;
 import static app.myjuet.com.myjuet.R.array.Days;
 
-@SuppressWarnings("UnusedAssignment")
+@SuppressWarnings({"UnusedAssignment", "unused"})
 public class TableSettingsActivity extends AppCompatActivity implements Runnable {
     public static final int MONDAY = 0;
     public static final int TUESDAY = 1;

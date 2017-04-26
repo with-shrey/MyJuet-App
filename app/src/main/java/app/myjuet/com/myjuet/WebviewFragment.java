@@ -73,7 +73,6 @@ public class WebviewFragment extends Fragment {
         WebSettings webSettings = myWebView.getSettings();
         myWebView.setInitialScale(1);
         webSettings.setJavaScriptEnabled(true);
-        WebView.setWebContentsDebuggingEnabled(false);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         myWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -108,6 +107,7 @@ public class WebviewFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 if (mProgress == null) {
+                    ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                     mProgress = new ProgressDialog(getActivity());
                     mProgress.setMessage("Loading WebPage..");
                     mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
@@ -38,6 +39,7 @@ import static app.myjuet.com.myjuet.AttendenceActivity.read;
 /**
  * A simple {@link Fragment} subclass.
  */
+@SuppressWarnings({"UnusedAssignment", "ConstantConditions", "RedundantCast"})
 public class TimeTableFragment extends Fragment {
 
     public static ArrayList<TimeTableData> list = new ArrayList<>();
@@ -88,6 +90,7 @@ public class TimeTableFragment extends Fragment {
                     e.printStackTrace();
                 }
                 getActivity().runOnUiThread(new Runnable() {
+                    @SuppressWarnings("ConstantConditions")
                     @Override
                     public void run() {
                         if (data.isEmpty()) {
@@ -128,7 +131,8 @@ public class TimeTableFragment extends Fragment {
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(3).setText("THURSDAY");
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(4).setText("FRIDAY");
                             ((DrawerActivity) getActivity()).tabLayout.getTabAt(5).setText("SATURDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", 2) - 2).select();
+
+                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) - 2).select();
                         } else {
                             Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
 
@@ -155,6 +159,7 @@ public class TimeTableFragment extends Fragment {
         ObjectInput ois = null;
 
         ois = new ObjectInputStream(new FileInputStream(settings));
+        @SuppressWarnings("unchecked")
         ArrayList<TimeTableData> returnlist = (ArrayList<TimeTableData>) ois.readObject();
 
         ois.close();
@@ -218,6 +223,8 @@ public class TimeTableFragment extends Fragment {
                                 ((DrawerActivity) getActivity()).tabLayout.getTabAt(3).setText("THURSDAY");
                                 ((DrawerActivity) getActivity()).tabLayout.getTabAt(4).setText("FRIDAY");
                                 ((DrawerActivity) getActivity()).tabLayout.getTabAt(5).setText("SATURDAY");
+                                ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) - 2).select();
+
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }

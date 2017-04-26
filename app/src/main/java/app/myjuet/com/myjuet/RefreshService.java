@@ -61,6 +61,13 @@ public class RefreshService extends IntentService {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+        File directoryFile = new File(getFilesDir().getAbsolutePath()
+                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+        boolean deleted;
+        if (directoryFile.exists()) {
+            deleted = directoryFile.delete();
+
+        }
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         if (!directory.exists()) {
