@@ -88,7 +88,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
                 + File.separator + datefile));
         @SuppressWarnings("unchecked")
         ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
-
         DateString = (String) dateinput.readObject();
         Date dateobj = new Date();
         SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
@@ -108,7 +107,6 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     @SuppressWarnings("UnusedAssignment")
     public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
         Set<AttendenceData> s = new LinkedHashSet<>(nameOfClass);
-        s.addAll(nameOfClass);
         nameOfClass.clear();
         nameOfClass.addAll(s);
         File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
@@ -236,8 +234,8 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
             } else if (Error == -1 && !AttendenceDatas.isEmpty()) {
                 write(getActivity(), AttendenceDatas);
                 listdata.clear();
-                listdata = new ArrayList<>();
                 list.getRecycledViewPool().clear();
+                adapter.notifyDataSetChanged();
                 listdata.addAll(AttendenceDatas);
                 adapter.notifyDataSetChanged();
                 list.getRecycledViewPool().clear();

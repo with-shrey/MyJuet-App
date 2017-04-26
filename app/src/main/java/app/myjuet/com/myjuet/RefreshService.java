@@ -61,13 +61,6 @@ public class RefreshService extends IntentService {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-        File directoryFile = new File(getFilesDir().getAbsolutePath()
-                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-        boolean deleted;
-        if (directoryFile.exists()) {
-            deleted = directoryFile.delete();
-
-        }
         File directory = new File(getFilesDir().getAbsolutePath()
                 + File.separator + "serlization");
         if (!directory.exists()) {
@@ -107,6 +100,13 @@ public class RefreshService extends IntentService {
         String Content = " ";
 
         if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
+            File directoryFile = new File(getFilesDir().getAbsolutePath()
+                    + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+            boolean deleted;
+            if (directoryFile.exists()) {
+                deleted = directoryFile.delete();
+
+            }
             sendNotification("Attendence Sync started", 1);
             try {
                     CookieHandler.setDefault(new CookieManager());

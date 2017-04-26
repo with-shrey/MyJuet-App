@@ -258,6 +258,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.apply();
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        cancelMessAlarms();
+        cancelttAlarms();
+        cancelmorningalarm();
+        Intent intent = new Intent("SetAlarms");
+        sendBroadcast(intent);
         finish();
 
     }
@@ -294,13 +299,12 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Batch is Required", Toast.LENGTH_SHORT).show();
             return false;
 
+        } else if (Integer.valueOf(preferred.getText().toString()) >= 100) {
+            Toast.makeText(this, "Preferred Attendence Should Be Less Than 100", Toast.LENGTH_SHORT).show();
+            return false;
         } else {
             save();
-            cancelMessAlarms();
-            cancelttAlarms();
-            cancelmorningalarm();
-            Intent intent = new Intent("SetAlarms");
-            sendBroadcast(intent);
+
             return true;
         }
     }

@@ -79,69 +79,7 @@ public class TimeTableFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_tt);
         empty = (ImageView) view.findViewById(R.id.empty_image_view_tt);
         setHasOptionsMenu(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    data = read(getActivity());
-                    list = readSettings();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @SuppressWarnings("ConstantConditions")
-                    @Override
-                    public void run() {
-                        if (data.isEmpty()) {
-                            Toast.makeText(getContext(), "Refresh Attendence First", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent("refreshAttendence");
-                            getActivity().sendBroadcast(intent);
-                        } else if (!list.isEmpty()) {
-                            viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
-                                @Override
-                                public android.support.v4.app.Fragment getItem(int position) {
-
-                                    switch (position) {
-                                        case TableSettingsActivity.MONDAY:
-                                            return new MondayFragment();
-                                        case TableSettingsActivity.TUESDAY:
-                                            return new TuesdayFragment();
-                                        case TableSettingsActivity.WEDNESDAY:
-                                            return new WednesdayFragment();
-                                        case TableSettingsActivity.THURSDAY:
-                                            return new ThursdayFragment();
-                                        case TableSettingsActivity.FRIDAY:
-                                            return new FridayFragment();
-                                        default:
-                                            return new SaturdayFragment();
-
-                                    }
-                                }
-
-                                @Override
-                                public int getCount() {
-                                    return 6;
-                                }
-                            });
-                            ((DrawerActivity) getActivity()).tabLayout.setupWithViewPager(viewPager);
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(0).setText("MONDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(1).setText("TUESDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(2).setText("WEDNESDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(3).setText("THURSDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(4).setText("FRIDAY");
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(5).setText("SATURDAY");
-
-                            ((DrawerActivity) getActivity()).tabLayout.getTabAt(getActivity().getIntent().getIntExtra("childfragment", Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) - 2).select();
-                        } else {
-                            Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
-
-                        }
-
-                    }
-                });
-            }
-        }).start();
 
 
         // Inflate the layout for this fragment
@@ -169,6 +107,7 @@ public class TimeTableFragment extends Fragment {
 
     @Override
     public void onResume() {
+        empty.setVisibility(View.GONE);
         new Thread(new Runnable() {
             @Override
             public void run() {
