@@ -347,153 +347,160 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 // Another interface callback
             }
         });
-
-
-        nine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        SpinnerInteractionListener ninelistner = new SpinnerInteractionListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosNine(i);
-                if (nine.getSelectedItem().toString().contains("LAB")) {
-                    nineType.setSelection(3, false);
-                } else if (i == 0)
-                    nineType.setSelection(0, false);
-                else
-                    nineType.setSelection(1, false);
-
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeNine(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosNine(pos);
+                    if (nine.getSelectedItem().toString().contains("LAB")) {
+                        nineType.setSelection(3, false);
+                    } else if (pos == 0)
+                        nine.setSelection(0, false);
+                    else
+                        nine.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
+        };
+        nineType.setOnTouchListener(ninelistner);
+        nineType.setOnItemSelectedListener(ninelistner);
 
+        SpinnerInteractionListener tenlistner = new SpinnerInteractionListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeTen(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosTen(pos);
+                    if (ten.getSelectedItem().toString().contains("LAB")) {
+                        tenType.setSelection(3, false);
+                    } else if (pos == 0)
+                        ten.setSelection(0, false);
+                    else
+                        ten.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
-        });
-        ten.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        tenType.setOnTouchListener(tenlistner);
+        tenType.setOnItemSelectedListener(tenlistner);
+
+        SpinnerInteractionListener elevenlistner = new SpinnerInteractionListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosTen(i);
-                if (ten.getSelectedItem().toString().contains("LAB")) {
-                    tenType.setSelection(3, false);
-                } else if (i == 0)
-                    tenType.setSelection(0, false);
-                else
-                    tenType.setSelection(1, false);
-
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeEleven(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosEleven(pos);
+                    if (eleven.getSelectedItem().toString().contains("LAB")) {
+                        elevenType.setSelection(3, false);
+                    } else if (pos == 0)
+                        eleven.setSelection(0, false);
+                    else
+                        eleven.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
+        };
+        elevenType.setOnTouchListener(elevenlistner);
+        elevenType.setOnItemSelectedListener(elevenlistner);
 
+        SpinnerInteractionListener twelvelistner = new SpinnerInteractionListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeTwelve(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosTwelve(pos);
+                    if (twelve.getSelectedItem().toString().contains("LAB")) {
+                        twelveType.setSelection(3, false);
+                    } else if (pos == 0)
+                        twelve.setSelection(0, false);
+                    else
+                        twelve.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
-        });
-        eleven.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        twelveType.setOnTouchListener(twelvelistner);
+        twelveType.setOnItemSelectedListener(twelvelistner);
+
+        SpinnerInteractionListener twolistner = new SpinnerInteractionListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosEleven(i);
-                if (eleven.getSelectedItem().toString().contains("LAB")) {
-                    elevenType.setSelection(3, false);
-                } else if (i == 0)
-                    elevenType.setSelection(0, false);
-                else
-                    elevenType.setSelection(1, false);
-
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeTwo(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosTwo(pos);
+                    if (two.getSelectedItem().toString().contains("LAB")) {
+                        twoType.setSelection(3, false);
+                    } else if (pos == 0)
+                        two.setSelection(0, false);
+                    else
+                        two.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
+        };
+        twoType.setOnTouchListener(twolistner);
+        twoType.setOnItemSelectedListener(twolistner);
 
+        SpinnerInteractionListener threelistner = new SpinnerInteractionListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeThree(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosThree(pos);
+                    if (three.getSelectedItem().toString().contains("LAB")) {
+                        threeType.setSelection(3, false);
+                    } else if (pos == 0)
+                        three.setSelection(0, false);
+                    else
+                        three.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
-        });
-        twelve.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        threeType.setOnTouchListener(threelistner);
+        threeType.setOnItemSelectedListener(threelistner);
+
+
+        SpinnerInteractionListener fourlistner = new SpinnerInteractionListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosTwelve(i);
-                if (twelve.getSelectedItem().toString().contains("LAB")) {
-                    twelveType.setSelection(3, false);
-                } else if (i == 0)
-                    twelveType.setSelection(0, false);
-                else
-                    twelveType.setSelection(1, false);
-
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeFour(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosFour(pos);
+                    if (four.getSelectedItem().toString().contains("LAB")) {
+                        fourType.setSelection(3, false);
+                    } else if (pos == 0)
+                        four.setSelection(0, false);
+                    else
+                        four.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
+        };
+        fourType.setOnTouchListener(fourlistner);
+        fourType.setOnItemSelectedListener(fourlistner);
 
+        SpinnerInteractionListener fivelistner = new SpinnerInteractionListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                settings.get(Day.getSelectedItemPosition()).setTypeFive(pos);
+                if (SpinnerInteractionListener.userSelect) {
+                    settings.get(Day.getSelectedItemPosition()).setPosFive(pos);
+                    if (five.getSelectedItem().toString().contains("LAB")) {
+                        fiveType.setSelection(3, false);
+                    } else if (pos == 0)
+                        five.setSelection(0, false);
+                    else
+                        five.setSelection(1, false);
+                    SpinnerInteractionListener.userSelect = false;
+                }
             }
-        });
-        two.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosTwo(i);
-                if (two.getSelectedItem().toString().contains("LAB")) {
-                    twoType.setSelection(3, false);
-                } else if (i == 0)
-                    twoType.setSelection(0, false);
-                else
-                    twoType.setSelection(1, false);
-            }
+        };
+        fiveType.setOnTouchListener(fivelistner);
+        fiveType.setOnItemSelectedListener(fivelistner);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
-        three.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosThree(i);
-                if (three.getSelectedItem().toString().contains("LAB")) {
-                    threeType.setSelection(3, false);
-                } else if (i == 0)
-                    threeType.setSelection(0, false);
-                else
-                    threeType.setSelection(1, false);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        four.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosFour(i);
-                if (four.getSelectedItem().toString().contains("LAB")) {
-                    fourType.setSelection(3, false);
-                } else if (i == 0)
-                    fourType.setSelection(0, false);
-                else
-                    fourType.setSelection(1, false);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        five.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                settings.get(Day.getSelectedItemPosition()).setPosFive(i);
-                if (five.getSelectedItem().toString().contains("LAB")) {
-                    fiveType.setSelection(3, false);
-                } else if (i == 0)
-                    fiveType.setSelection(0, false);
-                else
-                    fiveType.setSelection(1, false);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
         SpinnerInteractionListener nineTypeListner = new SpinnerInteractionListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
