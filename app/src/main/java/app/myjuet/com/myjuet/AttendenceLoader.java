@@ -8,11 +8,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.web.webUtilities;
+import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import android.support.v4.content.AsyncTaskLoader;
 
-import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
+import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
 
 
 class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
@@ -45,7 +45,7 @@ class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
     @Override
     protected void onStopLoading() {
         cancelLoad();
-        AttendenceActivity.Error = 4;
+        AttendenceFragment.Error = 4;
         cancelLoadInBackground();
         super.onStopLoading();
     }
@@ -61,7 +61,7 @@ class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
                 if (!isLoadInBackgroundCanceled())
                     Content = webUtilities.GetPageContent(mAttendence);
                 webUtilities.conn.disconnect();
-            } else AttendenceActivity.Error = AttendenceActivity.HOST_DOWN;
+            } else AttendenceFragment.Error = AttendenceFragment.HOST_DOWN;
         } catch (Exception e) {
             e.printStackTrace();
         }

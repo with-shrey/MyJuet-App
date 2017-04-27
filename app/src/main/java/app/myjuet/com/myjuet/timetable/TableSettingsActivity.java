@@ -50,12 +50,12 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import app.myjuet.com.myjuet.AlarmReciever;
+import app.myjuet.com.myjuet.recievers.AlarmReciever;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
 
-import static app.myjuet.com.myjuet.AttendenceActivity.read;
+import static app.myjuet.com.myjuet.AttendenceFragment.read;
 import static app.myjuet.com.myjuet.R.array.Days;
 
 @SuppressWarnings({"UnusedAssignment", "unused"})

@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -28,12 +26,10 @@ import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.web.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
-import static android.R.attr.data;
-import static android.R.attr.fragment;
 import static android.net.wifi.p2p.nsd.WifiP2pServiceRequest.newInstance;
-import static app.myjuet.com.myjuet.AttendenceActivity.read;
+import static app.myjuet.com.myjuet.AttendenceFragment.read;
 
 
 /**

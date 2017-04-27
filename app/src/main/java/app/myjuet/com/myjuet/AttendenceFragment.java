@@ -17,7 +17,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,22 +38,19 @@ import java.net.CookieManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.web.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
 
 @SuppressWarnings({"UnusedAssignment", "unused"})
-public class AttendenceActivity extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
+public class AttendenceFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
 
 
     //ERROR CONSTANTS
@@ -75,7 +70,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     private String Action = "Refresh";
 
 
-    public AttendenceActivity() {
+    public AttendenceFragment() {
     }
 
     @SuppressWarnings("UnusedAssignment")
@@ -457,7 +452,7 @@ public class AttendenceActivity extends Fragment implements LoaderManager.Loader
     private boolean isMyServiceRunning() {
         ActivityManager manager = (ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("app.myjuet.com.myjuet.RefreshService".equals(service.service.getClassName())) {
+            if ("app.myjuet.com.myjuet.services.RefreshService".equals(service.service.getClassName())) {
                 return true;
             }
         }

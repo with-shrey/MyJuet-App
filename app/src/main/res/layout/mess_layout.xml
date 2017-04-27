@@ -14,7 +14,8 @@
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
-    <app.myjuet.com.myjuet.TouchImageView
+
+    <app.myjuet.com.myjuet.utilities.TouchImageView
         android:id="@+id/anapurna_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

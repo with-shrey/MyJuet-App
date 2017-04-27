@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +12,9 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import app.myjuet.com.myjuet.DrawerActivity;
+import app.myjuet.com.myjuet.R;
 
 
 @SuppressWarnings("SpellCheckingInspection")

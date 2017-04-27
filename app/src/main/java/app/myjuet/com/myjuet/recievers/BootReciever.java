@@ -1,13 +1,15 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.recievers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,8 +19,11 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import app.myjuet.com.myjuet.AttendenceFragment;
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
+import app.myjuet.com.myjuet.services.jobService;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -34,6 +39,18 @@ public class BootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler js =
+                    (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            JobInfo job = null;
+            job = new JobInfo.Builder(0, new ComponentName(context, jobService.class))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setRequiresCharging(false)
+                    .setPeriodic(AlarmManager.INTERVAL_DAY)
+                    .build();
+            js.schedule(job);
+
+        }
         Calendar calendar4 = Calendar.getInstance();
         calendar4.set(Calendar.HOUR_OF_DAY, 0);
         calendar4.set(Calendar.MINUTE, 1);
@@ -119,7 +136,7 @@ public class BootReciever extends BroadcastReceiver {
 
 
             try {
-                attendenceDatas = AttendenceActivity.read(context);
+                attendenceDatas = AttendenceFragment.read(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,7 +149,7 @@ public class BootReciever extends BroadcastReceiver {
                     TimeTableData tempData = new TimeTableData();
                     tempData = datatt.get(i);
 
-                    if (tempData.getPosNine() == 0 && !attendenceDatas.get(tempData.getPosNine()).getmName().contains("LAB") && tempData.getPosTen() != 0) {
+                    if (tempData.getPosNine() == 0 && tempData.getPosTen() != 0) {
                         pendingintents[i][0] = PendingIntent.getBroadcast(context, (i), new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.DAY_OF_WEEK, i + 2);
@@ -144,7 +161,7 @@ public class BootReciever extends BroadcastReceiver {
                         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - (minclass * 60 * 1000), AlarmManager.INTERVAL_DAY * 7, pendingintents[i][0]);
                     }
-                    if (tempData.getPosTen() == 0 && !attendenceDatas.get(tempData.getPosTen()).getmName().contains("LAB") && tempData.getPosEleven() != 0) {
+                    if (tempData.getPosTen() == 0 && !attendenceDatas.get(tempData.getPosNine()).getmName().contains("LAB") && tempData.getPosEleven() != 0) {
                         pendingintents[i][1] = PendingIntent.getBroadcast(context, 6 + i, new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 11:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.DAY_OF_WEEK, i + 2);
@@ -156,7 +173,7 @@ public class BootReciever extends BroadcastReceiver {
                         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - (minclass * 60 * 1000), AlarmManager.INTERVAL_DAY * 7, pendingintents[i][1]);
                     }
-                    if (tempData.getPosEleven() == 0 && !attendenceDatas.get(tempData.getPosEleven()).getmName().contains("LAB") && tempData.getPosTwelve() != 0) {
+                    if (tempData.getPosEleven() == 0 && tempData.getPosTwelve() != 0) {
                         pendingintents[i][2] = PendingIntent.getBroadcast(context, 13 + i, new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 12:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
 
                         Calendar calendar = Calendar.getInstance();
@@ -181,7 +198,7 @@ public class BootReciever extends BroadcastReceiver {
                         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - (minclass * 60 * 1000), AlarmManager.INTERVAL_DAY * 7, pendingintents[i][3]);
                     }
-                    if (tempData.getPosTwo() == 0 && !attendenceDatas.get(tempData.getPosTwo()).getmName().contains("LAB") && tempData.getPosThree() != 0) {
+                    if (tempData.getPosTwo() == 0 && tempData.getPosThree() != 0) {
                         pendingintents[i][4] = PendingIntent.getBroadcast(context, 27 + i, new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 03:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
 
                         Calendar calendar = Calendar.getInstance();
@@ -194,7 +211,7 @@ public class BootReciever extends BroadcastReceiver {
                         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - (minclass * 60 * 1000), AlarmManager.INTERVAL_DAY * 7, pendingintents[i][4]);
                     }
-                    if (tempData.getPosThree() == 0 && !attendenceDatas.get(tempData.getPosThree()).getmName().contains("LAB") && tempData.getPosFour() != 0) {
+                    if (tempData.getPosThree() == 0 && tempData.getPosFour() != 0) {
                         pendingintents[i][5] = PendingIntent.getBroadcast(context, 34 + i, new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 04:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
 
                         Calendar calendar = Calendar.getInstance();
@@ -207,7 +224,7 @@ public class BootReciever extends BroadcastReceiver {
                         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - (minclass * 60 * 1000), AlarmManager.INTERVAL_DAY * 7, pendingintents[i][5]);
                     }
-                    if (tempData.getPosFour() == 0 && !attendenceDatas.get(tempData.getPosFour()).getmName().contains("LAB") && tempData.getPosFive() != 0) {
+                    if (tempData.getPosFour() == 0 && !attendenceDatas.get(tempData.getPosThree()).getmName().contains("LAB") && tempData.getPosFive() != 0) {
                         pendingintents[i][6] = PendingIntent.getBroadcast(context, 41 + i, new Intent(context, AlarmReciever.class).putExtra("title", "Class @ 05:00" + String.valueOf(i)).putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT);
 
                         Calendar calendar = Calendar.getInstance();

@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.utilities;
 /*
  * TouchImageView.java
  * By: Michael Ortiz
@@ -15,7 +15,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;

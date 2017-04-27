@@ -16,23 +16,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".RefreshService"
+            android:name=".services.RefreshService"
             android:exported="false" />
 
-        <receiver android:name=".InternetChangeReciever">
+        <receiver android:name=".recievers.InternetChangeReciever">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="refreshAttendence" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BootReciever">
+        <receiver android:name=".recievers.BootReciever">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="SetAlarms" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".AlarmReciever" />
+        <receiver android:name=".recievers.AlarmReciever" />
 
         <activity
             android:name=".AttendenceDetailsActivity"
@@ -58,7 +58,7 @@
             android:parentActivityName=".DrawerActivity"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".FirebaseNotificationService">
+        <service android:name=".services.FirebaseNotificationService">
                
             <intent-filter>
                  
@@ -67,7 +67,7 @@
         </service>
 
         <activity
-            android:name=".web.SettingsActivity"
+            android:name=".utilities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme"></activity>
     </application>

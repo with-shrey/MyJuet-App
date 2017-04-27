@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.services;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,11 +28,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import app.myjuet.com.myjuet.DrawerActivity;
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.web.SettingsActivity;
-import app.myjuet.com.myjuet.web.webUtilities;
+import app.myjuet.com.myjuet.utilities.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.webUtilities;
 
-import static app.myjuet.com.myjuet.web.webUtilities.AttendenceCrawler;
+import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
 
 
 @SuppressWarnings({"RedundantStringConstructorCall", "UnusedAssignment", "TryWithIdenticalCatches"})

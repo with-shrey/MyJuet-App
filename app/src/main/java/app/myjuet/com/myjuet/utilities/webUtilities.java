@@ -1,25 +1,18 @@
-package app.myjuet.com.myjuet.web;
+package app.myjuet.com.myjuet.utilities;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import app.myjuet.com.myjuet.AttendenceActivity;
+import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
@@ -105,7 +98,7 @@ public class webUtilities extends AppCompatActivity {
         String subPart[] = new String[5];
         Result = Result.trim();
         if (Result.contains("Login</a>")) {
-            AttendenceActivity.Error = AttendenceActivity.WRONG_CREDENTIALS;
+            AttendenceFragment.Error = AttendenceFragment.WRONG_CREDENTIALS;
         }      //get the table body of atendence
 
         else if (Result.contains("<tbody") && Result.contains("</tbody>") && !Result.equals(null)) {
@@ -153,7 +146,7 @@ public class webUtilities extends AppCompatActivity {
             }
             return list;
         }
-        return AttendenceActivity.listdata;
+        return AttendenceFragment.listdata;
 
     }
 

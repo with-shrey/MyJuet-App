@@ -3,11 +3,7 @@ package app.myjuet.com.myjuet;
 import android.app.AlarmManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.IntentFilter;
-import android.icu.util.Calendar;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -50,8 +46,9 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import app.myjuet.com.myjuet.services.jobService;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
-import app.myjuet.com.myjuet.web.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
@@ -89,19 +86,6 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler js =
-                    (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            JobInfo job = null;
-            job = new JobInfo.Builder(0, new ComponentName(this, jobService.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setRequiresCharging(false)
-                    .setPeriodic(AlarmManager.INTERVAL_DAY)
-                    .build();
-            js.schedule(job);
-
-        }
 
         AdView mAdView;
         ConnectivityManager cm =
@@ -184,13 +168,11 @@ public class DrawerActivity extends AppCompatActivity
 
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please Click Back Again To Quit", Toast.LENGTH_SHORT).show();
-                drawer.openDrawer(GravityCompat.START, true);
             new Handler().postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
                     doubleBackToExitPressedOnce = false;
-                    drawer.closeDrawer(GravityCompat.START, true);
                 }
             }, 2000);
 
@@ -209,7 +191,7 @@ public class DrawerActivity extends AppCompatActivity
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Attendence");
-            Fragment fragment = new AttendenceActivity();
+            Fragment fragment = new AttendenceFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             if (mInterstitialAd.isLoaded()) {

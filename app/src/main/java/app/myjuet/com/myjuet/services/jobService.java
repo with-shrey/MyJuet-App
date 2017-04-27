@@ -1,16 +1,12 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.services;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
-/**
- * Created by Shrey on 27-Apr-17.
- */
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+@SuppressLint("NewApi")
 public class jobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {

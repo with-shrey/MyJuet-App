@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.recievers;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,11 +9,12 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import java.util.Calendar;
 
-
+import app.myjuet.com.myjuet.DrawerActivity;
+import app.myjuet.com.myjuet.R;
+import app.myjuet.com.myjuet.services.RefreshService;
 
 
 public class AlarmReciever extends BroadcastReceiver {

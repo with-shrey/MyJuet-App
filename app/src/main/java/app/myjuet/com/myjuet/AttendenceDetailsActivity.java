@@ -30,17 +30,17 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         double Attendence = Integer.parseInt(prefs.getString(getString(R.string.key_preferred_attendence), "90"));
         double t = Attendence / 100;
 
-        int pa = Integer.parseInt(AttendenceActivity.tempData.getmCountPresent()) + Integer.parseInt(AttendenceActivity.tempData.getmCountAbsent());
+        int pa = Integer.parseInt(AttendenceFragment.tempData.getmCountPresent()) + Integer.parseInt(AttendenceFragment.tempData.getmCountAbsent());
 
-        int p = Integer.parseInt(AttendenceActivity.tempData.getmCountPresent());
+        int p = Integer.parseInt(AttendenceFragment.tempData.getmCountPresent());
         int res;
         String ClassText;
         double classes;
-        if (Integer.parseInt(AttendenceActivity.tempData.getmLecTut()) < Attendence) {
+        if (Integer.parseInt(AttendenceFragment.tempData.getmLecTut()) < Attendence) {
             classes = Math.ceil(((t * pa) - p) / (1 - t));
             res = (int) classes;
             ClassText = "You Need To Attend " + String.valueOf(res) + " Classes To Reach Threshold " + String.valueOf(Attendence) + " %";
-        } else if (Integer.parseInt(AttendenceActivity.tempData.getmLecTut()) == Attendence) {
+        } else if (Integer.parseInt(AttendenceFragment.tempData.getmLecTut()) == Attendence) {
             ClassText = "Don't Leave Class";
         } else {
             classes = Math.floor((p - (t * pa)) / (t)) - 1;
@@ -58,7 +58,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.details_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
-        getSupportActionBar().setTitle(AttendenceActivity.tempData.getmName());
+            getSupportActionBar().setTitle(AttendenceFragment.tempData.getmName());
         getSupportActionBar().setElevation(5);
         TextView Present = (TextView) findViewById(R.id.present);
         TextView Absent = (TextView) findViewById(R.id.absent);
@@ -71,16 +71,16 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         TextView classesno = (TextView) findViewById(R.id.noofclasses);
 
         classesno.setText(ClassText);
-        Present.setText(AttendenceActivity.tempData.getmCountPresent());
-        Absent.setText(AttendenceActivity.tempData.getmCountAbsent());
-        leaving.setText(AttendenceActivity.tempData.getmOnLeaving());
-        nextattend.setText(AttendenceActivity.tempData.getmOnNext());
-        lt.setText(AttendenceActivity.tempData.getmLecTut());
-        l.setText(AttendenceActivity.tempData.getmLec());
-        tut.setText(AttendenceActivity.tempData.getmTut());
+        Present.setText(AttendenceFragment.tempData.getmCountPresent());
+        Absent.setText(AttendenceFragment.tempData.getmCountAbsent());
+        leaving.setText(AttendenceFragment.tempData.getmOnLeaving());
+        nextattend.setText(AttendenceFragment.tempData.getmOnNext());
+        lt.setText(AttendenceFragment.tempData.getmLecTut());
+        l.setText(AttendenceFragment.tempData.getmLec());
+        tut.setText(AttendenceFragment.tempData.getmTut());
 
         RecyclerView list = (RecyclerView) findViewById(R.id.listdetails);
-        DetailsAdapter adapter = new DetailsAdapter(this, AttendenceActivity.tempData.getmList());
+        DetailsAdapter adapter = new DetailsAdapter(this, AttendenceFragment.tempData.getmList());
         list.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setReverseLayout(true);

@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import app.myjuet.com.myjuet.AttendenceActivity;
+import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.AttendenceDetailsActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 
-import static app.myjuet.com.myjuet.AttendenceActivity.tempData;
+import static app.myjuet.com.myjuet.AttendenceFragment.tempData;
 
 
 public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHolder> {
@@ -114,7 +114,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            tempData = AttendenceActivity.listdata.get(getAdapterPosition());
+            tempData = AttendenceFragment.listdata.get(getAdapterPosition());
             Intent intent = new Intent(view.getContext(), AttendenceDetailsActivity.class);
             view.getContext().startActivity(intent);
         }

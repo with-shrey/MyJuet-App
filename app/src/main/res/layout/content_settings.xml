@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.myjuet.com.myjuet.web.SettingsActivity"
+    tools:context="app.myjuet.com.myjuet.utilities.SettingsActivity"
     tools:showIn="@layout/activity_settings">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,7 +19,7 @@
         android:paddingRight="16dp"
         android:paddingTop="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="app.myjuet.com.myjuet.web.SettingsActivity"
+        tools:context="app.myjuet.com.myjuet.utilities.SettingsActivity"
         tools:showIn="@layout/activity_settings">
 
         <TextView
@@ -143,8 +143,8 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_margin="16dp"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             android:visibility="gone">
 
             <TextView
@@ -152,7 +152,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="MINUTES BEFORE CLASS:\nClick To Change"
+                android:text="MINUTES BEFORE CLASS:\nCLICK TO CHANGE"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -196,8 +196,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             android:visibility="gone">
 
             <TextView
@@ -205,7 +205,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="MINUTES BEFORE MEAL:\nClick To Change"
+                android:text="MINUTES BEFORE MEAL:\nCLICK TO CHANGE"
                 android:textColor="@android:color/black" />
 
             <TextView

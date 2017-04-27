@@ -122,5 +122,10 @@
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
         android:src="@drawable/fblogo" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/cardview_light_background" />
 </LinearLayout>
 </ScrollView>
