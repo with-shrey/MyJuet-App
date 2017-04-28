@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +61,7 @@ public class DrawerActivity extends AppCompatActivity
     public AppBarLayout appBarLayout;
     public TabLayout tabLayout;
     int activeFragment;
+    ImageView appbarimage;
     Toolbar tool;
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
@@ -86,7 +89,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
-
+        appbarimage = (ImageView) findViewById(R.id.image_appbar);
         AdView mAdView;
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -119,12 +122,8 @@ public class DrawerActivity extends AppCompatActivity
             }
         });
         mAdView = (AdView) findViewById(R.id.adView);
-        if (isConnected) {
         AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
-        } else {
-            mAdView.setVisibility(View.GONE);  //todo:Remove on release
-        }
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_tt);
@@ -186,11 +185,16 @@ public class DrawerActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence, getTheme()));
+            } else {
+                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence));
+            }
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
-            collapsingToolbarLayout.setTitle("Attendence");
+            collapsingToolbarLayout.setTitle("ATTENDENCE");
             Fragment fragment = new AttendenceFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
@@ -202,6 +206,12 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.timetable_drawer) {
             activeFragment = 1;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original, getTheme()));
+            } else {
+                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original));
+            }
             tabLayout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.ic_settings);
@@ -211,8 +221,8 @@ public class DrawerActivity extends AppCompatActivity
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
-            appBarLayout.setExpanded(false);
-            android.support.v4.app.Fragment fragment = new TimeTableFragment();
+            appBarLayout.setExpanded(true);
+            Fragment fragment = new TimeTableFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             activeFragment = 1;
@@ -223,13 +233,13 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.annapurna_drawer) {
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
-
+            appbarimage.setImageDrawable(null);
             activeFragment = 2;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
-            collapsingToolbarLayout.setTitle("Annapurna");
+            collapsingToolbarLayout.setTitle("ANNAPURNA");
             appBarLayout.setExpanded(false);
-            android.support.v4.app.Fragment fragment = new MessFragment();
+            Fragment fragment = new MessFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             if (mInterstitialAd.isLoaded()) {
@@ -241,13 +251,14 @@ public class DrawerActivity extends AppCompatActivity
             fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
+            appbarimage.setImageDrawable(null);
             tabLayout.setVisibility(View.GONE);
 
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
-            collapsingToolbarLayout.setTitle("WebView");           // setSupportActionBar(tool);
+            collapsingToolbarLayout.setTitle("WEBVIEW");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
-            android.support.v4.app.Fragment fragment = new WebviewFragment();
+            Fragment fragment = new WebviewFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             if (mInterstitialAd.isLoaded()) {

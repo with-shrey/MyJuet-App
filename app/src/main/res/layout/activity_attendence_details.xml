@@ -52,7 +52,7 @@
             android:orientation="horizontal">
         <TextView
             style="@style/fixedtext"
-            android:text="Present : " />
+            android:text="@string/details_present" />
 
             <TextView
             android:id="@+id/present"
@@ -67,7 +67,7 @@
             <TextView
                 style="@style/fixedtext"
 
-                android:text="Absent : " />
+                android:text="@string/details_absent" />
 
             <TextView
                 android:id="@+id/absent"
@@ -82,7 +82,7 @@
             <TextView
                 style="@style/fixedtext"
 
-                android:text="Leaving Next Class : " />
+                android:text="@string/details_leaving_next_class" />
 
             <TextView
                 android:id="@+id/leavingdetails"
@@ -97,7 +97,7 @@
             <TextView
                 style="@style/fixedtext"
 
-                android:text="Attending Next Class : " />
+                android:text="@string/details_attending_next_class" />
 
             <TextView
                 android:id="@+id/nextdetails"
@@ -112,7 +112,7 @@
             <TextView
                 style="@style/fixedtext"
                 android:layout_weight="1.65"
-                android:text="Lec + Tut / Lab : " />
+                android:text="@string/details_lec_tut_lab" />
 
             <TextView
                 android:id="@+id/lecandtut"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%"
+                android:text="@string/details_perc"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -136,7 +136,7 @@
                 style="@style/fixedtext"
                 android:layout_weight="1.65"
 
-                android:text="Lecture : " />
+                android:text="@string/details_lecture" />
 
             <TextView
                 android:id="@+id/lec"
@@ -147,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%"
+                android:text="@string/details_perc"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -159,7 +159,7 @@
             <TextView
                 style="@style/fixedtext"
                 android:layout_weight="1.65"
-                android:text="Tutorial : " />
+                android:text="@string/details_tutorial" />
 
             <TextView
                 android:id="@+id/tut"
@@ -170,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="%"
+                android:text="@string/details_perc"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -187,8 +187,10 @@
                 android:id="@+id/noofclasses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="@android:color/black" />

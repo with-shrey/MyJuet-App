@@ -77,8 +77,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
     @Override
     public void run() {
-        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        Subjects.add("NONE");
+        Subjects.add("SUBJECT");
         ArrayList<AttendenceData> data = new ArrayList<>();
         try {
             data = read(this);

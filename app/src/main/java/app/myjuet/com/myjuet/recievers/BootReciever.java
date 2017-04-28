@@ -50,17 +50,17 @@ public class BootReciever extends BroadcastReceiver {
                     .build();
             js.schedule(job);
 
+        } else {
+            Calendar calendar4 = Calendar.getInstance();
+            calendar4.set(Calendar.HOUR_OF_DAY, 0);
+            calendar4.set(Calendar.MINUTE, 1);
+            calendar4.set(Calendar.SECOND, 0);
+            if (calendar4.before(Calendar.getInstance()))
+                calendar4.add(Calendar.DATE, 1);
+            PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY / 4, pendingIntent3);
         }
-        Calendar calendar4 = Calendar.getInstance();
-        calendar4.set(Calendar.HOUR_OF_DAY, 0);
-        calendar4.set(Calendar.MINUTE, 1);
-        calendar4.set(Calendar.SECOND, 0);
-        if (calendar4.before(Calendar.getInstance()))
-            calendar4.add(Calendar.DATE, 1);
-        PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY / 4, pendingIntent3);
-
 
         if (sharedPref.getBoolean(context.getString(R.string.key_alarm_meal), false)) {
             Calendar calendar1 = Calendar.getInstance();

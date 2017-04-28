@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="220dp"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.PopupOverlay">
 
@@ -26,6 +26,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
+                android:id="@+id/image_appbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -46,7 +47,7 @@
                 style="@style/NavigationTab"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom"
                 android:paddingLeft="40dp"
                 android:paddingStart="40dp"
                 app:layout_collapseMode="pin"
@@ -75,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="6dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginRight="@dimen/fab_margin"
         app:fabSize="auto" />
 
@@ -82,7 +84,7 @@
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
+            android:layout_gravity="bottom|start"
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-5004802474664731/5549628407" />
 

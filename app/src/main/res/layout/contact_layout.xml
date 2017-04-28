@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="16dp"
-        android:text="Message/Suggestion:"
+        android:text="@string/contact_message_suggestion"
         android:textAllCaps="true"
         android:textColor="@android:color/black" />
 
@@ -21,18 +21,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title_contact"
         android:cursorVisible="true"
-        android:hint="Enter Your Message Here..." />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/Attendence"
-        android:clickable="true"
-        android:drawableTop="@color/absent"
-        android:gravity="center"
-        android:text="SUBMIT"
-        android:textColor="@color/common_google_signin_btn_text_light_pressed"
-        android:textColorLink="@color/colorPrimary" />
-
+        android:hint="@string/enter_your_message_here" />
 </RelativeLayout>

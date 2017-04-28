@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.recievers.AlarmReciever;
 import app.myjuet.com.myjuet.R;
 
@@ -251,7 +253,25 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putBoolean(getString(R.string.key_alarm_class), false);
         }
 
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        if (!prefs.getBoolean("firstTime", false)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                    shortcutintent.putExtra("duplicate", false);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
+                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
+                    sendBroadcast(shortcutintent);
+                }
+            }).start();
+
+            editor.putBoolean("firstTime", true);
+        }
         editor.apply();
+
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         cancelMessAlarms();
         cancelttAlarms();

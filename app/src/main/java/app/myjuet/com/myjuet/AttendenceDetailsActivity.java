@@ -45,7 +45,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         } else {
             classes = Math.floor((p - (t * pa)) / (t)) - 1;
             res = (int) classes;
-            if (res < 0) {
+            if (res <= 0) {
                 res = 0;
                 ClassText = "Don't Leave Class";
 
@@ -80,6 +80,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         tut.setText(AttendenceFragment.tempData.getmTut());
 
         RecyclerView list = (RecyclerView) findViewById(R.id.listdetails);
+        list.setNestedScrollingEnabled(false);
         DetailsAdapter adapter = new DetailsAdapter(this, AttendenceFragment.tempData.getmList());
         list.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);

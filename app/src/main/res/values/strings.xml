@@ -29,7 +29,7 @@
     <string name="you_will_be_contacted_in_case_of_any_problem">You Will Be Contacted In Case Of Any Problem</string>
 
     <string-array name="type">
-        <item>NONE</item>
+        <item>TYPE</item>
         <item>Lecture</item>
         <item>Tutorial</item>
         <item>Lab</item>
@@ -60,4 +60,16 @@
     <string name="admin_key">Myjuet.xyzadmin</string>
     <string name="lt">LT-</string>
     <string name="cr">CR-</string>
+    <string name="details_present">Present :</string>
+    <string name="details_absent">Absent :</string>
+    <string name="details_leaving_next_class">Leaving Next Class :</string>
+    <string name="details_attending_next_class">Attending Next Class :</string>
+    <string name="details_lec_tut_lab">Lec + Tut / Lab :</string>
+    <string name="details_lecture">Lecture :</string>
+    <string name="details_tutorial">Tutorial :</string>
+    <string name="details_perc">%</string>
+    <string name="attendence">ATTENDENCE</string>
+    <string name="contact_message_suggestion">Message/Suggestion:</string>
+    <string name="enter_your_message_here">Enter Your Message Here...</string>
+    <string name="timetable">TIMETABLE</string>
 </resources>
