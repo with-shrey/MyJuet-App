@@ -9,12 +9,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
+import app.myjuet.com.myjuet.data.ListsReturner;
 
 
 @SuppressWarnings("StringBufferMayBeStringBuilder")
@@ -22,6 +25,7 @@ public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
     public static ArrayList<AttendenceData> list = new ArrayList<>();
     public static HttpURLConnection conn = null;
+    private static ArrayList<ArrayList<AttendenceDetails>> detailsmain = new ArrayList<>();
     private static ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
     private static int[] count = new int[2];
     // Creating url and catching exception
@@ -93,7 +97,7 @@ public class webUtilities extends AppCompatActivity {
     }
 
 
-    public static ArrayList<AttendenceData> AttendenceCrawler(String Result) {
+    public static ListsReturner AttendenceCrawler(String Result) {
         String[] datas = new String[5];
         String subPart[] = new String[5];
         Result = Result.trim();
@@ -132,8 +136,11 @@ public class webUtilities extends AppCompatActivity {
                             datas[3] = tempData;
 
                         if (i == 5) {
-                            if (!listDetails.isEmpty())
-                            list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3], listDetails));
+                            if (!listDetails.isEmpty()) {
+                                list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3]));
+                                detailsmain.add(listDetails);
+                                listDetails = new ArrayList<>();
+                            }
                             else
                                 list.clear();
                         }
@@ -144,10 +151,14 @@ public class webUtilities extends AppCompatActivity {
                 }
                 subPart[0] = subPart[0].replace(temp, "");
             }
-            return list;
-        }
-        return AttendenceFragment.listdata;
+            ListsReturner returner = new ListsReturner(list, detailsmain);
 
+            return returner;
+        }
+        list.clear();
+        detailsmain.clear();
+        ListsReturner returner = new ListsReturner(list, detailsmain);
+        return returner;
     }
 
     //method to extract data from the html tag as argument @AttendenceCrawler

@@ -17,7 +17,6 @@ import app.myjuet.com.myjuet.AttendenceDetailsActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 
-import static app.myjuet.com.myjuet.AttendenceFragment.tempData;
 
 
 public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHolder> {
@@ -75,11 +74,11 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         if ((mLecTut) >= 0 && (mLecTut) <= 40) {
             return R.color.magnitude40;
         } else if ((mLecTut) > 40 && (mLecTut) < 50) {
-            return R.color.magnitude50;
+            return R.color.magnitude40;
         } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
-            return R.color.magnitude60;
+            return R.color.magnitude50;
         } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
-            return R.color.magnitude6070;
+            return R.color.magnitude50;
         } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
             return R.color.magnitude70;
         } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {
@@ -114,8 +113,8 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            tempData = AttendenceFragment.listdata.get(getAdapterPosition());
             Intent intent = new Intent(view.getContext(), AttendenceDetailsActivity.class);
+            intent.putExtra("listno", getAdapterPosition());
             view.getContext().startActivity(intent);
         }
     }

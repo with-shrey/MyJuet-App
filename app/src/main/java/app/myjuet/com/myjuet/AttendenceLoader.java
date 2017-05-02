@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import android.support.v4.content.AsyncTaskLoader;
@@ -15,7 +16,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
 
 
-class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
+class AttendenceLoader extends AsyncTaskLoader<ListsReturner> {
     private String mUrl, mPostParam, mAttendence;
 
     AttendenceLoader(Context context, String url, String PostParam) {
@@ -51,8 +52,8 @@ class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
     }
 
     @Override
-    public ArrayList<AttendenceData> loadInBackground() {
-        ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
+    public ListsReturner loadInBackground() {
+        ListsReturner DataAttendence = new ListsReturner();
         String Content = " ";
         try {
             if (pingHost("webkiosk.juet.ac.in", 80, 5000)) {
@@ -68,8 +69,9 @@ class AttendenceLoader extends AsyncTaskLoader<ArrayList<AttendenceData>> {
         if (!Content.equals(" ")) {
             if (!isLoadInBackgroundCanceled())
             DataAttendence = AttendenceCrawler(Content);
-            if (isLoadInBackgroundCanceled())
+            if (isLoadInBackgroundCanceled()) {
                 DataAttendence.clear();
+            }
             return DataAttendence;
         }
         DataAttendence.clear();

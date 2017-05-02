@@ -31,6 +31,7 @@ import java.util.Locale;
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
@@ -97,15 +98,18 @@ public class RefreshService extends IntentService {
         String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
         String pass = prefs.getString(getString(R.string.key_password), "");
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
-        ArrayList<AttendenceData> DataAttendence = new ArrayList<>();
+        ListsReturner DataAttendence = new ListsReturner();
         String Content = " ";
 
         if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
             File directoryFile = new File(getFilesDir().getAbsolutePath()
                     + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
+            File directorydetails = new File(getFilesDir().getAbsolutePath()
+                    + File.separator + "serlization" + File.separator + "detailsattendence.srl");
             boolean deleted;
             if (directoryFile.exists()) {
                 deleted = directoryFile.delete();
+                deleted = directorydetails.delete();
 
             }
             sendNotification("Attendence Sync started", 1);
@@ -124,13 +128,17 @@ public class RefreshService extends IntentService {
             } else {
                 DataAttendence.clear();
             }
-            if (!DataAttendence.isEmpty()) {
+            if (!DataAttendence.getDataArrayList().isEmpty() && !DataAttendence.getDetailsArrayList().isEmpty()) {
                 Date dateobj = new Date();
                 SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
 
                 String filename = "MessgeScreenList.srl";
+                String detailsfile = "detailsattendence.srl";
+
                 ObjectOutput out = null;
                 ObjectOutput dateout = null;
+                ObjectOutput detailsout = null;
+
                 DateString = formattor.format(dateobj);
 
                 try {
@@ -138,12 +146,17 @@ public class RefreshService extends IntentService {
                             + File.separator + filename));
                     dateout = new ObjectOutputStream(new FileOutputStream(directory
                             + File.separator + date));
+                    detailsout = new ObjectOutputStream(new FileOutputStream(directory
+                            + File.separator + detailsfile));
                     out.flush();
-                    out.writeObject(DataAttendence);
+                    out.writeObject(DataAttendence.getDataArrayList());
                     dateout.flush();
                     dateout.writeObject(DateString);
+                    detailsout.flush();
+                    detailsout.writeObject(DataAttendence.getDetailsArrayList());
                     out.close();
                     dateout.close();
+                    detailsout.close();
                 } catch (FileNotFoundException e) {
 
                     e.printStackTrace();

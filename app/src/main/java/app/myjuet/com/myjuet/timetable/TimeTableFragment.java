@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -43,9 +44,8 @@ import static app.myjuet.com.myjuet.AttendenceFragment.read;
 @SuppressWarnings({"UnusedAssignment", "ConstantConditions", "RedundantCast"})
 public class TimeTableFragment extends Fragment {
 
-    public static ArrayList<TimeTableData> list = new ArrayList<>();
-    public static String[][] data = new String[15][2];
-    public static int[] count = new int[]{0, 0, 0, 0, 0, 0};
+    public static ArrayList<TimeTableData> list;
+    public static String[][] data;
     ViewPager viewPager;
     boolean attendence = false;
     ImageView empty;
@@ -58,6 +58,7 @@ public class TimeTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        data = new String[15][2];
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
@@ -80,17 +81,27 @@ public class TimeTableFragment extends Fragment {
         });
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_tt);
         empty = (ImageView) view.findViewById(R.id.empty_image_view_tt);
-        empty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent settings = new Intent(getActivity(), TableSettingsActivity.class);
-                if (list.isEmpty())
-                    Toast.makeText(getContext(), "Start By Pressing Download Button", Toast.LENGTH_LONG).show();
-                startActivity(settings);
-            }
-        });
         setHasOptionsMenu(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<AttendenceData> datatemp = new ArrayList<AttendenceData>();
+                try {
+                    datatemp = read(getActivity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+                attendence = datatemp.isEmpty();
+                for (int i = 0; i < datatemp.size(); i++) {
+                    data[i][0] = datatemp.get(i).getmName();
+                    data[i][1] = datatemp.get(i).getmLecTut();
+                }
+                datatemp.clear();
+                datatemp = null;
+                System.gc();
+            }
+        }).start();
 
 
         // Inflate the layout for this fragment
@@ -117,16 +128,18 @@ public class TimeTableFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
+        list.clear();
+        list = null;
+        Runtime.getRuntime().gc();
+        System.gc();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         empty.setVisibility(View.GONE);
-        DrawerActivity.appBarLayout.setExpanded(true);
-        viewPager.setAdapter(null);
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setProgressPercentFormat(null);
         dialog.setProgressNumberFormat(null);
@@ -138,16 +151,8 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    ArrayList<AttendenceData> datatemp = new ArrayList<AttendenceData>();
-                    datatemp = read(getActivity());
+                    list = new ArrayList<>();
                     list = readSettings();
-                    attendence = datatemp.isEmpty();
-                    for (int i = 0; i < datatemp.size(); i++) {
-                        data[i][0] = datatemp.get(i).getmName();
-                        data[i][1] = datatemp.get(i).getmLecTut();
-                    }
-                    datatemp.clear();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -156,16 +161,14 @@ public class TimeTableFragment extends Fragment {
                     public void run() {
                         if (attendence) {
                             empty.setVisibility(View.VISIBLE);
-                            DrawerActivity.appBarLayout.setExpanded(false);
 
                             makeText(getContext(), "Refresh Attendence First", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent("refreshAttendence");
                             getActivity().sendBroadcast(intent);
                         } else if (!list.isEmpty()) {
                             empty.setVisibility(View.GONE);
-                            DrawerActivity.appBarLayout.setExpanded(true);
 
-                            viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
+                            viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
                                 @Override
                                 public android.support.v4.app.Fragment getItem(int position) {
 
@@ -206,7 +209,6 @@ public class TimeTableFragment extends Fragment {
                             }
                         } else {
                             empty.setVisibility(View.VISIBLE);
-                            DrawerActivity.appBarLayout.setExpanded(false);
 
                         }
                         dialog.dismiss();

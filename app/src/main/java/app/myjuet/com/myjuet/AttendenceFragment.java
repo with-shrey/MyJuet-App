@@ -17,6 +17,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,30 +45,31 @@ import java.util.Set;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.AttendenceDetails;
+import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
 
 @SuppressWarnings({"UnusedAssignment", "unused"})
-public class AttendenceFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<AttendenceData>> {
+public class AttendenceFragment extends Fragment implements LoaderManager.LoaderCallbacks<ListsReturner> {
 
 
     //ERROR CONSTANTS
     public static final int WRONG_CREDENTIALS = 1;
     public static final int HOST_DOWN = 2;
     public static final int NO_INTERNET = 3;
-    public static ArrayList<AttendenceData> listdata = new ArrayList<>();
-    public static AttendenceData tempData;
     public static int Error = -1;
-    private static String DateString = "";
+    private static String DateString;
+    ArrayList<AttendenceData> listdata;
     SwipeRefreshLayout swipeRefreshLayout;
     View.OnClickListener infoListner;
     String FabString;
     ImageView image;
     private RecyclerView list;
     private AttendenceAdapter adapter;
-    private String Action = "Refresh";
+    private String Action;
 
 
     public AttendenceFragment() {
@@ -104,10 +106,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     }
 
     @SuppressWarnings("UnusedAssignment")
-    public void write(Context context, ArrayList<AttendenceData> nameOfClass) {
-        Set<AttendenceData> s = new LinkedHashSet<>(nameOfClass);
-        nameOfClass.clear();
-        nameOfClass.addAll(s);
+    public void write(Context context, ArrayList<AttendenceData> nameOfClass, ArrayList<ArrayList<AttendenceDetails>> details) {
         File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         boolean deleted;
@@ -126,8 +125,10 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
 
         String filename = "MessgeScreenList.srl";
         String date = "date.srl";
+        String detailsfile = "detailsattendence.srl";
         ObjectOutput out = null;
         ObjectOutput dateout = null;
+        ObjectOutput detailsout = null;
         DateString = formattor.format(dateobj);
         FabString = "Synced Today " + DateString.substring(DateString.indexOf(" "));
         try {
@@ -136,12 +137,16 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             out.flush();
             dateout = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + date));
-            out.flush();
+            detailsout = new ObjectOutputStream(new FileOutputStream(directory
+                    + File.separator + detailsfile));
             out.writeObject(nameOfClass);
             dateout.flush();
             dateout.writeObject(DateString);
+            detailsout.flush();
+            detailsout.writeObject(details);
             out.close();
             dateout.close();
+            detailsout.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,7 +154,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
 
 
     @Override
-    public Loader<ArrayList<AttendenceData>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<ListsReturner> onCreateLoader(int i, Bundle bundle) {
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
@@ -184,19 +189,16 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
 
     @SuppressWarnings("unused")
     @Override
-    public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
+    public void onLoadFinished(Loader<ListsReturner> loader, ListsReturner AttendenceDatas) {
         image.setVisibility(View.GONE);
-        DrawerActivity.appBarLayout.setExpanded(true);
         swipeRefreshLayout.setKeepScreenOn(false);
         ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
         ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         if (adapter.getItemCount() == 0) {
             image.setVisibility(View.VISIBLE);
-            DrawerActivity.appBarLayout.setExpanded(false);
         } else {
             image.setVisibility(View.GONE);
-            DrawerActivity.appBarLayout.setExpanded(true);
         }
         FabString = "Synced Today";
         Action = "Refresh";
@@ -235,21 +237,20 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "Webkiosk Down/Timed Out(3s)";
                 ((DrawerActivity) getActivity()).fab.performClick();
-            } else if (Error == -1 && !AttendenceDatas.isEmpty()) {
+            } else if (Error == -1 && !AttendenceDatas.getDataArrayList().isEmpty() && !AttendenceDatas.getDetailsArrayList().isEmpty()) {
 
-                write(getActivity(), AttendenceDatas);
+                write(getActivity(), AttendenceDatas.getDataArrayList(), AttendenceDatas.getDetailsArrayList());
+                Log.v("details data", AttendenceDatas.getDetailsArrayList().get(0).get(0).getmDate());
                 listdata.clear();
                 list.getRecycledViewPool().clear();
                 adapter.notifyDataSetChanged();
-                listdata.addAll(AttendenceDatas);
+                listdata.addAll(AttendenceDatas.getDataArrayList());
                 adapter.notifyDataSetChanged();
                 list.getRecycledViewPool().clear();
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
-                    DrawerActivity.appBarLayout.setExpanded(false);
                 } else {
                     image.setVisibility(View.GONE);
-                    DrawerActivity.appBarLayout.setExpanded(true);
                 }
 
             }
@@ -262,7 +263,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<AttendenceData>> loader) {
+    public void onLoaderReset(android.support.v4.content.Loader<ListsReturner> loader) {
         listdata.clear();
         adapter.notifyDataSetChanged();
         list.getRecycledViewPool().clear();
@@ -273,6 +274,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         setHasOptionsMenu(true);
+        Action = "Refresh";
+        DateString = "";
         ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
         infoListner = new View.OnClickListener() {
             @Override
@@ -285,14 +288,9 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 }).show();
             }
         };
+        listdata = new ArrayList<>();
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         image = (ImageView) rootView.findViewById(R.id.attendence_emptyview);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refreshData();
-            }
-        });
         list = (RecyclerView) rootView.findViewById(R.id.list_view);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -309,7 +307,6 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         list.getRecycledViewPool().clear();
         adapter.notifyDataSetChanged();
         if (layoutManager.findFirstVisibleItemPosition() == 1) {
-            ((DrawerActivity) getActivity()).appBarLayout.setExpanded(true);
         }
 
         File directory = new File(getActivity().getFilesDir().getAbsolutePath()
@@ -344,10 +341,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                             }
                             if (adapter.getItemCount() == 0) {
                                 image.setVisibility(View.VISIBLE);
-                                DrawerActivity.appBarLayout.setExpanded(false);
                             } else {
                                 image.setVisibility(View.GONE);
-                                DrawerActivity.appBarLayout.setExpanded(true);
                             }
                             ((DrawerActivity) getActivity()).fab.performClick();
                         }
@@ -369,10 +364,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             adapter.notifyDataSetChanged();
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
-                    DrawerActivity.appBarLayout.setExpanded(false);
                 } else {
                     image.setVisibility(View.GONE);
-                    DrawerActivity.appBarLayout.setExpanded(true);
                 }
             } else {
                 Intent login = new Intent(getActivity(), SettingsActivity.class);
@@ -381,10 +374,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 ((DrawerActivity) getActivity()).fab.performClick();
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
-                    DrawerActivity.appBarLayout.setExpanded(false);
                 } else {
                     image.setVisibility(View.GONE);
-                    DrawerActivity.appBarLayout.setExpanded(true);
                 }
             }
         }
@@ -436,13 +427,23 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                     loaderAtt.getLoader(0).stopLoading();
                     if (adapter.getItemCount() == 0) {
                         image.setVisibility(View.VISIBLE);
-                        DrawerActivity.appBarLayout.setExpanded(false);
                     } else {
                         image.setVisibility(View.GONE);
-                        DrawerActivity.appBarLayout.setExpanded(true);
                     }
                 }
             });
+        } else if (isMyServiceRunning()) {
+            if (adapter.getItemCount() == 0)
+                image.setVisibility(View.VISIBLE);
+            else
+                image.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+            FabString = "BackGround Sync In Progress";
+            ((DrawerActivity) getActivity()).fab.performClick();
+            Error = NO_INTERNET;
+            swipeRefreshLayout.setKeepScreenOn(false);
         } else {
             if (adapter.getItemCount() == 0)
                 image.setVisibility(View.VISIBLE);
@@ -465,11 +466,27 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         super.onResume();
     }
 
+    @Override
+    public void onPause() {
+        LoaderManager loaderManager = getLoaderManager();
+        try {
+            if (loaderManager.getLoader(0) != null) {
+                loaderManager.getLoader(0).stopLoading();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+    }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
+        listdata.clear();
+        adapter = null;
+        listdata = null;
         Runtime.getRuntime().gc();
+        System.gc();
     }
 
     private boolean isMyServiceRunning() {

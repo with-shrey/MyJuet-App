@@ -38,6 +38,7 @@ import java.util.Locale;
 
 
 import static android.app.Activity.RESULT_OK;
+import static com.google.android.gms.internal.zzs.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +49,7 @@ public class MessFragment extends Fragment {
 
     String mCurrentPhotoPath;
     ImageView mImageView;
-    Bitmap bitmap;
+    Bitmap bitmap = null;
 
 
     public MessFragment() {
@@ -75,25 +76,52 @@ public class MessFragment extends Fragment {
         if (image.exists()) {
             new Thread(new Runnable() {
                 public void run() {
-                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    int IMAGE_MAX_SIZE = 500000;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+                    int scale = 1;
+                    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) >
+                            IMAGE_MAX_SIZE) {
+                        scale++;
+                    }
+                    if (scale > 1) {
+                        scale--;
+                        options = new BitmapFactory.Options();
+                        options.inSampleSize = scale;
+                        bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+                        int height = bitmap.getHeight();
+                        int width = bitmap.getWidth();
+
+                        double y = Math.sqrt(IMAGE_MAX_SIZE
+                                / (((double) width) / height));
+                        double x = (y / height) * width;
+                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, (int) x,
+                                (int) y, true);
+                        bitmap.recycle();
+                        bitmap = scaledBitmap;
+                        System.gc();
+                    } else {
+                        bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+
+                    }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mImageView.setImageBitmap(bitmap);
                         }
                     });
-                }
+
             }
-            ).start();
+
+            }).start();
+
 
         } else {
             refreshimage();
         }
-
-
-
         return RootView;
+
     }
 
     @Override
@@ -149,9 +177,35 @@ public class MessFragment extends Fragment {
         imageRef.getFile(image).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                int IMAGE_MAX_SIZE = 500000;
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+                int scale = 1;
+                while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) >
+                        IMAGE_MAX_SIZE) {
+                    scale++;
+                }
+                if (scale > 1) {
+                    scale--;
+                    options = new BitmapFactory.Options();
+                    options.inSampleSize = scale;
+                    bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+                    int height = bitmap.getHeight();
+                    int width = bitmap.getWidth();
+
+                    double y = Math.sqrt(IMAGE_MAX_SIZE
+                            / (((double) width) / height));
+                    double x = (y / height) * width;
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, (int) x,
+                            (int) y, true);
+                    bitmap.recycle();
+                    bitmap = scaledBitmap;
+                    System.gc();
+                } else {
+                    bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+
+                }
                 mImageView.setImageBitmap(bitmap);
                 try {
                     if (progressDialog.isShowing()) {
@@ -179,10 +233,12 @@ public class MessFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
         bitmap.recycle();
         bitmap = null;
+        Runtime.getRuntime().gc();
+        System.gc();
     }
 
     @Override

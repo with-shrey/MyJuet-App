@@ -57,14 +57,12 @@ import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static AppBarLayout appBarLayout;
     public FloatingActionButton fab;
     public TabLayout tabLayout;
     int activeFragment;
-
-
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
+    private AppBarLayout appBarLayout;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,6 +177,10 @@ public class DrawerActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
+
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence, getTheme()));
@@ -193,13 +195,14 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new AttendenceFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+
             activeFragment = 0;
 
 
         } else if (id == R.id.timetable_drawer) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             activeFragment = 1;
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -216,15 +219,17 @@ public class DrawerActivity extends AppCompatActivity
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
+            appBarLayout.setExpanded(false);
             Fragment fragment = new TimeTableFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
             activeFragment = 1;
+
+
+        } else if (id == R.id.annapurna_drawer) {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-
-        } else if (id == R.id.annapurna_drawer) {
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
             activeFragment = 2;
@@ -235,12 +240,13 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new MessFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+
 
 
         } else if (id == R.id.web_view_drawer) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
@@ -253,9 +259,7 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new WebviewFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+
 
             activeFragment = 3;
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -277,6 +281,9 @@ public class DrawerActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.contact_drawer) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -286,13 +293,14 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new ContactFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+
             activeFragment = 5;
 
 
         } else if (id == R.id.request_notification) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -302,11 +310,12 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new NotificationApplicationFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
+
+            activeFragment = 6;
+        } else if (id == R.id.feedback_drawer) {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            activeFragment = 6;
-        } else if (id == R.id.feedback_drawer) {
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -316,13 +325,14 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new ReportFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+
             activeFragment = 7;
 
 
         } else if (id == R.id.settings_master) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.exit) {

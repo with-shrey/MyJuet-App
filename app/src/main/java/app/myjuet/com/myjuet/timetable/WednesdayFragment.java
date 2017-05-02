@@ -28,10 +28,8 @@ public class WednesdayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_time_table_display, container, false);
         final RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int i = 0; i < 8; i++) {
                     if (list.get(WEDNESDAY).getPos(i) != 0) {
                         info[info[8]++] = i;
@@ -39,17 +37,11 @@ public class WednesdayFragment extends Fragment {
                     }
 
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TimeTableAdapter adapter = new TimeTableAdapter(getActivity(), list.get(WEDNESDAY), data, WEDNESDAY, info[8], info);
+
+        TimeTableAdapter adapter = new TimeTableAdapter(getActivity(), list.get(WEDNESDAY), data, WEDNESDAY, info[8], info);
                         recyclerView.getRecycledViewPool().clear();
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    }
-                });
-            }
-        }).start();
 
 
         return RootView;
