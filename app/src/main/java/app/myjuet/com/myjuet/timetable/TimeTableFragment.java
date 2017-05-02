@@ -47,6 +47,7 @@ public class TimeTableFragment extends Fragment {
     public static String[][] data = new String[15][2];
     public static int[] count = new int[]{0, 0, 0, 0, 0, 0};
     ViewPager viewPager;
+    boolean attendence = false;
     ImageView empty;
 
 
@@ -140,6 +141,7 @@ public class TimeTableFragment extends Fragment {
                     ArrayList<AttendenceData> datatemp = new ArrayList<AttendenceData>();
                     datatemp = read(getActivity());
                     list = readSettings();
+                    attendence = datatemp.isEmpty();
                     for (int i = 0; i < datatemp.size(); i++) {
                         data[i][0] = datatemp.get(i).getmName();
                         data[i][1] = datatemp.get(i).getmLecTut();
@@ -152,7 +154,7 @@ public class TimeTableFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (data[0][0].isEmpty()) {
+                        if (attendence) {
                             empty.setVisibility(View.VISIBLE);
                             DrawerActivity.appBarLayout.setExpanded(false);
 
