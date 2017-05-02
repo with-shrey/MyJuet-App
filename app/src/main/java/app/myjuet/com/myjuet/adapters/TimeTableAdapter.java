@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,13 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
     private int day;
     private int Count;
     private int[] Detailsdata;
+    private Context mContext;
     private TimeTableData list;
-    private ArrayList<AttendenceData> dataAttendence;
+    private String[][] dataAttendence;
     // Store the context for easy access
 
-    public TimeTableAdapter(TimeTableData dataTT, ArrayList<AttendenceData> MdataAttendence, int i, int count, int[] detailsData) {
+    public TimeTableAdapter(Context con, TimeTableData dataTT, String[][] MdataAttendence, int i, int count, int[] detailsData) {
+        mContext = con;
         list = dataTT;
         dataAttendence = MdataAttendence;
         day = i;
@@ -58,12 +61,12 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         TextView Type = viewHolder.Type;
         ProgressBar Progress = viewHolder.Progress;
 
-        Name.setText(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmName());
+        Name.setText(dataAttendence[list.getPos(Detailsdata[position]) - 1][0]);
         Location.setText(list.getLoc(Detailsdata[position]));
         Time.setText(time[Detailsdata[position]]);
-        percent.setText(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut());
+        percent.setText(dataAttendence[list.getPos(Detailsdata[position]) - 1][1]);
         Type.setText(typeGiver(list.getType(Detailsdata[position])));
-        Progress.setProgress(Integer.valueOf(dataAttendence.get(list.getPos(Detailsdata[position]) - 1).getmLecTut()));
+        Progress.setProgress(Integer.valueOf(dataAttendence[list.getPos(Detailsdata[position]) - 1][1]));
 
     }
 
@@ -84,23 +87,23 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
             return "Lab";
     }
 
-//    public int getmColor(int mLecTut) {
-//        if ((mLecTut) >= 0 && (mLecTut) <= 40) {
-//            return R.color.magnitude40;
-//        } else if ((mLecTut) > 40 && (mLecTut) < 50) {
-//            return R.color.magnitude50;
-//        } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
-//            return R.color.magnitude60;
-//        } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
-//            return R.color.magnitude6070;
-//        } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
-//            return R.color.magnitude70;
-//        } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {
-//            return R.color.magnitude80;
-//        } else {
-//            return R.color.magnitude90;
-//        }
-//    }
+    public int getmColor(int mLecTut) {
+        if ((mLecTut) >= 0 && (mLecTut) <= 40) {
+            return R.color.magnitude40;
+        } else if ((mLecTut) > 40 && (mLecTut) < 50) {
+            return R.color.magnitude50;
+        } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
+            return R.color.magnitude60;
+        } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
+            return R.color.magnitude6070;
+        } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
+            return R.color.magnitude70;
+        } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {
+            return R.color.magnitude80;
+        } else {
+            return R.color.magnitude90;
+        }
+    }
 
     @SuppressWarnings("WeakerAccess")
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

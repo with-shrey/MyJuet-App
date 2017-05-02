@@ -41,7 +41,7 @@ public class FridayFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TimeTableAdapter adapter = new TimeTableAdapter(list.get(FRIDAY), data, FRIDAY, info[8], info);
+                        TimeTableAdapter adapter = new TimeTableAdapter(getActivity(), list.get(FRIDAY), data, FRIDAY, info[8], info);
                         final RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
                         recyclerView.getRecycledViewPool().clear();
                         recyclerView.setAdapter(adapter);

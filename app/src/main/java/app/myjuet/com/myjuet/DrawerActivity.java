@@ -57,12 +57,12 @@ import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static AppBarLayout appBarLayout;
     public FloatingActionButton fab;
-    public AppBarLayout appBarLayout;
     public TabLayout tabLayout;
     int activeFragment;
-    ImageView appbarimage;
-    Toolbar tool;
+
+
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
 
@@ -89,13 +89,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
-        appbarimage = (ImageView) findViewById(R.id.image_appbar);
         AdView mAdView;
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-5004802474664731/9840227206");
@@ -128,7 +122,7 @@ public class DrawerActivity extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_tt);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        tool = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setElevation(5);
@@ -185,6 +179,7 @@ public class DrawerActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
         if (id == R.id.attendence_drawer) {
+            ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence, getTheme()));
             } else {
@@ -206,7 +201,7 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.timetable_drawer) {
             activeFragment = 1;
-
+            ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original, getTheme()));
             } else {
@@ -221,7 +216,6 @@ public class DrawerActivity extends AppCompatActivity
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
-            appBarLayout.setExpanded(true);
             Fragment fragment = new TimeTableFragment();
             transition.replace(R.id.content_drawer, fragment);
             transition.commit();
@@ -233,7 +227,6 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.annapurna_drawer) {
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
-            appbarimage.setImageDrawable(null);
             activeFragment = 2;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
@@ -251,7 +244,6 @@ public class DrawerActivity extends AppCompatActivity
             fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
-            appbarimage.setImageDrawable(null);
             tabLayout.setVisibility(View.GONE);
 
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);

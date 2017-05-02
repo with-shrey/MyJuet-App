@@ -40,7 +40,7 @@ public class SaturdayFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TimeTableAdapter adapter = new TimeTableAdapter(list.get(SATURDAY), data, SATURDAY, info[8], info);
+                        TimeTableAdapter adapter = new TimeTableAdapter(getActivity(), list.get(SATURDAY), data, SATURDAY, info[8], info);
                         RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

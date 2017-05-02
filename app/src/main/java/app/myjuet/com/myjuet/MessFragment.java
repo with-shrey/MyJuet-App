@@ -48,7 +48,7 @@ public class MessFragment extends Fragment {
 
     String mCurrentPhotoPath;
     ImageView mImageView;
-
+    Bitmap bitmap;
 
 
     public MessFragment() {
@@ -76,7 +76,7 @@ public class MessFragment extends Fragment {
             new Thread(new Runnable() {
                 public void run() {
                     BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    final Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -124,7 +124,6 @@ public class MessFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
     private void refreshimage() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -152,7 +151,7 @@ public class MessFragment extends Fragment {
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
                 mImageView.setImageBitmap(bitmap);
                 try {
                     if (progressDialog.isShowing()) {
@@ -178,6 +177,14 @@ public class MessFragment extends Fragment {
         });
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bitmap.recycle();
+        bitmap = null;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

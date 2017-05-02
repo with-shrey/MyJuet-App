@@ -186,20 +186,25 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<ArrayList<AttendenceData>> loader, ArrayList<AttendenceData> AttendenceDatas) {
         image.setVisibility(View.GONE);
+        DrawerActivity.appBarLayout.setExpanded(true);
         swipeRefreshLayout.setKeepScreenOn(false);
         ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
         ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+        if (adapter.getItemCount() == 0) {
+            image.setVisibility(View.VISIBLE);
+            DrawerActivity.appBarLayout.setExpanded(false);
+        } else {
+            image.setVisibility(View.GONE);
+            DrawerActivity.appBarLayout.setExpanded(true);
+        }
         FabString = "Synced Today";
         Action = "Refresh";
         try {
 
 
             if (Error == WRONG_CREDENTIALS) {
-                if (adapter.getItemCount() == 0)
-                    image.setVisibility(View.VISIBLE);
-                else
-                    image.setVisibility(View.GONE);
+
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "Wrong Credentials";
@@ -225,15 +230,13 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
 
 
             } else if (Error == HOST_DOWN) {
-                if (adapter.getItemCount() == 0)
-                    image.setVisibility(View.VISIBLE);
-                else
-                    image.setVisibility(View.GONE);
+
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "Webkiosk Down/Timed Out(3s)";
                 ((DrawerActivity) getActivity()).fab.performClick();
             } else if (Error == -1 && !AttendenceDatas.isEmpty()) {
+
                 write(getActivity(), AttendenceDatas);
                 listdata.clear();
                 list.getRecycledViewPool().clear();
@@ -241,6 +244,13 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 listdata.addAll(AttendenceDatas);
                 adapter.notifyDataSetChanged();
                 list.getRecycledViewPool().clear();
+                if (adapter.getItemCount() == 0) {
+                    image.setVisibility(View.VISIBLE);
+                    DrawerActivity.appBarLayout.setExpanded(false);
+                } else {
+                    image.setVisibility(View.GONE);
+                    DrawerActivity.appBarLayout.setExpanded(true);
+                }
 
             }
         } catch (Exception e) {
@@ -277,6 +287,12 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         };
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         image = (ImageView) rootView.findViewById(R.id.attendence_emptyview);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshData();
+            }
+        });
         list = (RecyclerView) rootView.findViewById(R.id.list_view);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -326,10 +342,13 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                                 DateString = "";
                                 DateString = FabString;
                             }
-                            if (adapter.getItemCount() == 0)
+                            if (adapter.getItemCount() == 0) {
                                 image.setVisibility(View.VISIBLE);
-                            else
+                                DrawerActivity.appBarLayout.setExpanded(false);
+                            } else {
                                 image.setVisibility(View.GONE);
+                                DrawerActivity.appBarLayout.setExpanded(true);
+                            }
                             ((DrawerActivity) getActivity()).fab.performClick();
                         }
                     });
@@ -348,19 +367,25 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 listdata.clear();
             list.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();
-                if (adapter.getItemCount() == 0)
+                if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
-                else
+                    DrawerActivity.appBarLayout.setExpanded(false);
+                } else {
                     image.setVisibility(View.GONE);
+                    DrawerActivity.appBarLayout.setExpanded(true);
+                }
             } else {
                 Intent login = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(login);
                 FabString = "Kindly Refresh To Login";
                 ((DrawerActivity) getActivity()).fab.performClick();
-                if (adapter.getItemCount() == 0)
+                if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
-                else
+                    DrawerActivity.appBarLayout.setExpanded(false);
+                } else {
                     image.setVisibility(View.GONE);
+                    DrawerActivity.appBarLayout.setExpanded(true);
+                }
             }
         }
 
@@ -409,10 +434,13 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                     FabString = DateString;
                     Action = "Refresh";
                     loaderAtt.getLoader(0).stopLoading();
-                    if (adapter.getItemCount() == 0)
+                    if (adapter.getItemCount() == 0) {
                         image.setVisibility(View.VISIBLE);
-                    else
+                        DrawerActivity.appBarLayout.setExpanded(false);
+                    } else {
                         image.setVisibility(View.GONE);
+                        DrawerActivity.appBarLayout.setExpanded(true);
+                    }
                 }
             });
         } else {
@@ -437,16 +465,11 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         super.onResume();
     }
 
+
     @Override
-    public void onPause() {
-        try {
-            LoaderManager loaderAtt = getLoaderManager();
-            loaderAtt.getLoader(0).stopLoading();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        swipeRefreshLayout.setRefreshing(false);
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
+        Runtime.getRuntime().gc();
     }
 
     private boolean isMyServiceRunning() {

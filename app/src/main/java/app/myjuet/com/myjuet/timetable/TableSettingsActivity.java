@@ -126,7 +126,7 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
         getSupportActionBar().setElevation(5);
-            getSupportActionBar().setTitle("TimeTable Setting");
+            getSupportActionBar().setTitle("TimeTable");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Spinner Day = (Spinner) findViewById(R.id.spinner_day);
@@ -985,6 +985,12 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Runtime.getRuntime().gc();
     }
 
     @Override

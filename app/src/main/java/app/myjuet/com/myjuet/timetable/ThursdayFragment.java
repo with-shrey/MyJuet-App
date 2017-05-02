@@ -42,7 +42,7 @@ public class ThursdayFragment extends Fragment {
                     @Override
                     public void run() {
                         RecyclerView recyclerView = (RecyclerView) RootView.findViewById(R.id.recyclerview_tt);
-                        TimeTableAdapter adapter = new TimeTableAdapter(list.get(THURSDAY), data, THURSDAY, info[8], info);
+                        TimeTableAdapter adapter = new TimeTableAdapter(getActivity(), list.get(THURSDAY), data, THURSDAY, info[8], info);
                         recyclerView.getRecycledViewPool().clear();
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
