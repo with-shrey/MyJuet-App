@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet;
 
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -67,6 +68,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     View.OnClickListener infoListner;
     String FabString;
     ImageView image;
+    ProgressDialog progress;
     private RecyclerView list;
     private AttendenceAdapter adapter;
     private String Action;
@@ -272,8 +274,17 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         setHasOptionsMenu(true);
+        progress = new ProgressDialog(getActivity());
+        progress.setProgressPercentFormat(null);
+        progress.setProgressNumberFormat(null);
+        progress.setIndeterminate(true);
+        progress.setMessage("Loading...");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.show();
         Action = "Refresh";
         DateString = "";
         ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
@@ -304,18 +315,13 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         list.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
-        list.getRecycledViewPool().clear();
-        adapter.notifyDataSetChanged();
-        if (layoutManager.findFirstVisibleItemPosition() == 1) {
-        }
-
         File directory = new File(getActivity().getFilesDir().getAbsolutePath()
                 + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
         if (directory.isFile()) {
+
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        listdata.clear();
                         listdata.addAll(read(getActivity()));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -344,7 +350,10 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                             } else {
                                 image.setVisibility(View.GONE);
                             }
+                            progress.dismiss();
+                            progress = null;
                             ((DrawerActivity) getActivity()).fab.performClick();
+
                         }
                     });
 
@@ -354,6 +363,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             ).start();
 
         } else {
+            progress.dismiss();
+            progress = null;
             Context context = getActivity();
             SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
             String user = prefs.getString(getString(R.string.key_enrollment), "");
@@ -480,12 +491,19 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
-        listdata.clear();
-        adapter = null;
-        listdata = null;
-        Runtime.getRuntime().gc();
+//        listdata.clear();
+//        adapter.notifyDataSetChanged();
+//        adapter = null;
+//        listdata = null;
+//        Runtime.getRuntime().gc();
         System.gc();
     }
 

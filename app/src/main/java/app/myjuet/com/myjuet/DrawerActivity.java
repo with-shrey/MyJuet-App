@@ -52,6 +52,7 @@ import app.myjuet.com.myjuet.services.jobService;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
+import static android.R.attr.id;
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 
@@ -172,57 +173,67 @@ public class DrawerActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
-        if (id == R.id.attendence_drawer) {
+        final int id = item.getItemId();
+        if (id == R.id.exit) {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
+            finish();
+        }
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                if (id == R.id.attendence_drawer) {
+                    CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                    collapsingToolbarLayout.setTitle("ATTENDENCE");
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                    Fragment fragment = new AttendenceFragment();
+                    if (getSupportActionBar() != null)
+                        getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence, getTheme()));
             } else {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence));
             }
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
-            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
-            collapsingToolbarLayout.setTitle("ATTENDENCE");
-            Fragment fragment = new AttendenceFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+
+                    appBarLayout.setExpanded(true);
 
             activeFragment = 0;
 
 
         } else if (id == R.id.timetable_drawer) {
+                    tabLayout.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
             activeFragment = 1;
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
+                    Fragment fragment = new TimeTableFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original, getTheme()));
             } else {
                 appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original));
             }
-            tabLayout.setVisibility(View.VISIBLE);
-            fab.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.ic_settings);
-            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorAccent)));
+                    fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
-            appBarLayout.setExpanded(false);
-            Fragment fragment = new TimeTableFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
             activeFragment = 1;
 
 
@@ -238,16 +249,14 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("ANNAPURNA");
             appBarLayout.setExpanded(false);
             Fragment fragment = new MessFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
-
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
 
 
         } else if (id == R.id.web_view_drawer) {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.magnitude40)));
+                    fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
@@ -257,8 +266,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("WEBVIEW");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new WebviewFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
 
 
             activeFragment = 3;
@@ -287,12 +295,11 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Contact Us");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ContactFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
 
             activeFragment = 5;
 
@@ -304,12 +311,11 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new NotificationApplicationFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
 
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
@@ -319,12 +325,11 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(this, R.color.Attendence));
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             collapsingToolbarLayout.setTitle("FeedBack");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ReportFragment();
-            transition.replace(R.id.content_drawer, fragment);
-            transition.commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
 
             activeFragment = 7;
 
@@ -333,14 +338,11 @@ public class DrawerActivity extends AppCompatActivity
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
             }
-            Intent intent = new Intent(this, SettingsActivity.class);
+                    Intent intent = new Intent(DrawerActivity.this, SettingsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.exit) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
-            finish();
         }
+            }
+        }, 250);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

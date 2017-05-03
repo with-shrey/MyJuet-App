@@ -49,6 +49,7 @@ public class TimeTableFragment extends Fragment {
     ViewPager viewPager;
     boolean attendence = false;
     ImageView empty;
+    ProgressDialog progress;
 
 
     public TimeTableFragment() {
@@ -58,6 +59,13 @@ public class TimeTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        progress = new ProgressDialog(getActivity());
+        progress.setProgressPercentFormat(null);
+        progress.setProgressNumberFormat(null);
+        progress.setIndeterminate(true);
+        progress.setMessage("Building TimeTable...");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.show();
         data = new String[15][2];
         View view = inflater.inflate(R.layout.fragment_time_table, container, false);
         Context context = getActivity();
@@ -132,7 +140,7 @@ public class TimeTableFragment extends Fragment {
         super.onDetach();
         list.clear();
         list = null;
-        Runtime.getRuntime().gc();
+//        Runtime.getRuntime().gc();
         System.gc();
     }
 
@@ -140,13 +148,6 @@ public class TimeTableFragment extends Fragment {
     public void onResume() {
         super.onResume();
         empty.setVisibility(View.GONE);
-        final ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setProgressPercentFormat(null);
-        dialog.setProgressNumberFormat(null);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Building TimeTable...");
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -211,7 +212,10 @@ public class TimeTableFragment extends Fragment {
                             empty.setVisibility(View.VISIBLE);
 
                         }
-                        dialog.dismiss();
+                        if (progress != null) {
+                            progress.dismiss();
+                            progress = null;
+                        }
                     }
                 });
             }
