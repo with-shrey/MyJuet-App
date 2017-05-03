@@ -38,7 +38,6 @@ import java.util.Locale;
 
 
 import static android.app.Activity.RESULT_OK;
-import static com.google.android.gms.internal.zzs.TAG;
 
 /**
  * A simple {@link Fragment} subclass.

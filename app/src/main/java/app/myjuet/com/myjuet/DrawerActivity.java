@@ -46,6 +46,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import app.myjuet.com.myjuet.services.jobService;
@@ -88,6 +89,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         AdView mAdView;
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-5004802474664731~4072895207");
         mInterstitialAd = new InterstitialAd(this);
@@ -191,9 +193,14 @@ public class DrawerActivity extends AppCompatActivity
                 if (id == R.id.attendence_drawer) {
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     collapsingToolbarLayout.setTitle("ATTENDENCE");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
                     if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
                     }
+                        }
+                    }, 2500);
                     Fragment fragment = new AttendenceFragment();
                     if (getSupportActionBar() != null)
                         getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
@@ -215,9 +222,14 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.timetable_drawer) {
                     tabLayout.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             activeFragment = 1;
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
                     Fragment fragment = new TimeTableFragment();
@@ -238,9 +250,14 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.annapurna_drawer) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
             activeFragment = 2;
@@ -253,9 +270,14 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.web_view_drawer) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
                     fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.magnitude40)));
             fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             fab.setVisibility(View.GONE);
@@ -274,9 +296,14 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.findyourway) {
             activeFragment = 4;
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.acc.juetlocate");
             if (launchIntent != null) {
                 startActivity(launchIntent);//null pointer check in case package name was not found
@@ -289,9 +316,14 @@ public class DrawerActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.contact_drawer) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -305,9 +337,14 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.request_notification) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -319,9 +356,14 @@ public class DrawerActivity extends AppCompatActivity
 
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -335,9 +377,14 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.settings_master) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mInterstitialAd.isLoaded()) {
+                                mInterstitialAd.show();
+                            }
+                        }
+                    }, 2500);
                     Intent intent = new Intent(DrawerActivity.this, SettingsActivity.class);
             startActivity(intent);
         }
