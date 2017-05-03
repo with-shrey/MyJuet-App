@@ -128,7 +128,6 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         getSupportActionBar().setElevation(5);
             getSupportActionBar().setTitle("TimeTable");
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Spinner Day = (Spinner) findViewById(R.id.spinner_day);
         final Spinner nine = (Spinner) findViewById(R.id.spinner_9);
         final Spinner ten = (Spinner) findViewById(R.id.spinner_10);
