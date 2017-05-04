@@ -2,6 +2,7 @@ package app.myjuet.com.myjuet;
 
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.Snackbar;
@@ -23,14 +25,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-
-
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 
 /**
@@ -71,7 +73,6 @@ public class WebviewFragment extends Fragment {
         });
         myWebView = (WebView) RootView.findViewById(R.id.web_view_layout);
         WebSettings webSettings = myWebView.getSettings();
-        myWebView.setInitialScale(1);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
@@ -92,6 +93,20 @@ public class WebviewFragment extends Fragment {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         myWebView.setWebViewClient(new WebViewClient());
+        myWebView.setDownloadListener(new DownloadListener() {
+            public void onDownloadStart(String url, String userAgent,
+                                        String contentDisposition, String mimetype,
+                                        long contentLength) {
+                DownloadManager.Request request = new DownloadManager.Request(
+                        Uri.parse(url));
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "download");
+                DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+                dm.enqueue(request);
+
+            }
+        });
         myWebView.setWebChromeClient(new WebChromeClient() {
             private ProgressDialog mProgress;
 
@@ -107,6 +122,7 @@ public class WebviewFragment extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 if (mProgress == null) {
+                    if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
                     ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                     mProgress = new ProgressDialog(getActivity());
                     mProgress.setMessage("Loading WebPage..");
@@ -124,7 +140,7 @@ public class WebviewFragment extends Fragment {
         });
         if (isConnected) {
             if (!getActivity().getIntent().getBooleanExtra("containsurl", false)) {
-            link = Url + "?" + PostParam;
+                link = Url + "?" + PostParam;
             myWebView.loadUrl(link);
                 optionsDialog();
             } else {

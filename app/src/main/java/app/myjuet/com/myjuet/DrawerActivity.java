@@ -47,6 +47,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
+import static android.R.attr.id;
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 
@@ -128,6 +129,30 @@ public class DrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         int i = getIntent().getIntExtra("fragment", 0);
         navigationView.getMenu().getItem(i).setChecked(true);
+        if (i == 0) {
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            tabLayout.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
+            ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                }
+            }, 2500);
+            Fragment fragment = new AttendenceFragment();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.content_drawer, fragment).commitNow();
+            appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.attendence));
+            collapsingToolbarLayout.setTitle("ATTENDENCE");
+            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
+            appBarLayout.setExpanded(true);
+
+            activeFragment = 0;
+
+
+        } else
         onNavigationItemSelected(navigationView.getMenu().getItem(i));
         name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
