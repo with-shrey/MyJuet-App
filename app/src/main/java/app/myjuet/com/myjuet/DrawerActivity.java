@@ -1,9 +1,5 @@
 package app.myjuet.com.myjuet;
 
-import android.app.AlarmManager;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -14,14 +10,13 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
@@ -49,11 +44,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import app.myjuet.com.myjuet.services.jobService;
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
-import static android.R.attr.id;
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
 
@@ -188,11 +181,14 @@ public class DrawerActivity extends AppCompatActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
-
+                FragmentTransaction transition = getSupportFragmentManager().beginTransaction();
+                // transition.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transition.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
                 if (id == R.id.attendence_drawer) {
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-                    collapsingToolbarLayout.setTitle("ATTENDENCE");
+                    tabLayout.setVisibility(View.GONE);
+                    fab.setVisibility(View.VISIBLE);
+                    ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -202,18 +198,10 @@ public class DrawerActivity extends AppCompatActivity
                         }
                     }, 2500);
                     Fragment fragment = new AttendenceFragment();
-                    if (getSupportActionBar() != null)
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
-            ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence, getTheme()));
-            } else {
-                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.attendence));
-            }
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
+                    appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.attendence));
+                    collapsingToolbarLayout.setTitle("ATTENDENCE");
                     collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
-            tabLayout.setVisibility(View.GONE);
-            fab.setVisibility(View.VISIBLE);
-
                     appBarLayout.setExpanded(true);
 
             activeFragment = 0;
@@ -233,12 +221,8 @@ public class DrawerActivity extends AppCompatActivity
             activeFragment = 1;
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
                     Fragment fragment = new TimeTableFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original, getTheme()));
-            } else {
-                appbarimage.setImageDrawable(getResources().getDrawable(R.drawable.timetable_original));
-            }
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
+                    appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.timetable_original));
             fab.setImageResource(R.drawable.ic_settings);
                     fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -266,7 +250,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("ANNAPURNA");
             appBarLayout.setExpanded(false);
             Fragment fragment = new MessFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
 
 
         } else if (id == R.id.web_view_drawer) {
@@ -288,7 +272,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("WEBVIEW");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new WebviewFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
 
 
             activeFragment = 3;
@@ -331,7 +315,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("Contact Us");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ContactFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
 
             activeFragment = 5;
 
@@ -352,7 +336,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new NotificationApplicationFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
 
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
@@ -371,7 +355,7 @@ public class DrawerActivity extends AppCompatActivity
             collapsingToolbarLayout.setTitle("FeedBack");           // setSupportActionBar(tool);
             appBarLayout.setExpanded(false);
             Fragment fragment = new ReportFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_drawer, fragment).commit();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
 
             activeFragment = 7;
 
@@ -389,7 +373,7 @@ public class DrawerActivity extends AppCompatActivity
             startActivity(intent);
         }
             }
-        }, 250);
+        }, 300);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

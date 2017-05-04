@@ -22,7 +22,7 @@ import static app.myjuet.com.myjuet.timetable.TimeTableFragment.list;
  */
 
 public class ThursdayFragment extends Fragment {
-    int[] info = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int[] info;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,4 +46,5 @@ public class ThursdayFragment extends Fragment {
 
         return RootView;
     }
+
 }

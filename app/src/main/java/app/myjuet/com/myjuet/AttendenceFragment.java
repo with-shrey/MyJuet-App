@@ -68,7 +68,6 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     View.OnClickListener infoListner;
     String FabString;
     ImageView image;
-    ProgressDialog progress;
     private RecyclerView list;
     private AttendenceAdapter adapter;
     private String Action;
@@ -278,13 +277,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
 
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         setHasOptionsMenu(true);
-        progress = new ProgressDialog(getActivity());
-        progress.setProgressPercentFormat(null);
-        progress.setProgressNumberFormat(null);
-        progress.setIndeterminate(true);
-        progress.setMessage("Loading...");
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.show();
+
         Action = "Refresh";
         DateString = "";
         ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
@@ -350,8 +343,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                             } else {
                                 image.setVisibility(View.GONE);
                             }
-                            progress.dismiss();
-                            progress = null;
+
                             ((DrawerActivity) getActivity()).fab.performClick();
 
                         }
@@ -363,8 +355,6 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             ).start();
 
         } else {
-            progress.dismiss();
-            progress = null;
             Context context = getActivity();
             SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
             String user = prefs.getString(getString(R.string.key_enrollment), "");
