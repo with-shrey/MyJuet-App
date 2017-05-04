@@ -1,6 +1,10 @@
 package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +53,7 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
 
     // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(TimeTableAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
         // Get the data model based on position
 
         // Set item views based on your views and data model
@@ -68,6 +72,11 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
         Type.setText(typeGiver(list.getType(Detailsdata[position])));
         Progress.setProgress(Integer.valueOf(dataAttendence[list.getPos(Detailsdata[position]) - 1][1]));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Progress.setProgressTintList(ColorStateList.valueOf(mContext.getResources().getColor(getmColor(Integer.valueOf(dataAttendence[list.getPos(Detailsdata[position]) - 1][1])), mContext.getTheme())));
+        } else
+            Progress.getProgressDrawable().setColorFilter(mContext.getResources().getColor(getmColor(Integer.valueOf(dataAttendence[list.getPos(Detailsdata[position]) - 1][1]))),
+                    PorterDuff.Mode.SRC_IN);
     }
 
     // Returns the total count of items in the list
@@ -87,15 +96,15 @@ public class TimeTableAdapter extends RecyclerView.Adapter<TimeTableAdapter.View
             return "Lab";
     }
 
-    public int getmColor(int mLecTut) {
+    private int getmColor(int mLecTut) {
         if ((mLecTut) >= 0 && (mLecTut) <= 40) {
             return R.color.magnitude40;
         } else if ((mLecTut) > 40 && (mLecTut) < 50) {
-            return R.color.magnitude50;
+            return R.color.magnitude40;
         } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
-            return R.color.magnitude60;
+            return R.color.magnitude50;
         } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
-            return R.color.magnitude6070;
+            return R.color.magnitude50;
         } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
             return R.color.magnitude70;
         } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {

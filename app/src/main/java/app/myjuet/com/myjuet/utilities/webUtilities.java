@@ -158,6 +158,7 @@ public class webUtilities extends AppCompatActivity {
         list.clear();
         detailsmain.clear();
         ListsReturner returner = new ListsReturner(list, detailsmain);
+        conn.disconnect();
         return returner;
     }
 

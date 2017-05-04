@@ -106,12 +106,7 @@ public class RefreshService extends IntentService {
                     + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
             File directorydetails = new File(getFilesDir().getAbsolutePath()
                     + File.separator + "serlization" + File.separator + "detailsattendence.srl");
-            boolean deleted;
-            if (directoryFile.exists()) {
-                deleted = directoryFile.delete();
-                deleted = directorydetails.delete();
 
-            }
             sendNotification("Attendence Sync started", 1);
             try {
                     CookieHandler.setDefault(new CookieManager());
@@ -131,7 +126,12 @@ public class RefreshService extends IntentService {
             if (!DataAttendence.getDataArrayList().isEmpty() && !DataAttendence.getDetailsArrayList().isEmpty()) {
                 Date dateobj = new Date();
                 SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+                boolean deleted;
+                if (directoryFile.exists()) {
+                    deleted = directoryFile.delete();
+                    deleted = directorydetails.delete();
 
+                }
                 String filename = "MessgeScreenList.srl";
                 String detailsfile = "detailsattendence.srl";
 
@@ -163,14 +163,16 @@ public class RefreshService extends IntentService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                sendNotification("Attendence Synced successfully " + DateString, 1);
             }
-            sendNotification("Attendence Synced successfully " + DateString, 1);
         } else if (user.equals("") || pass.equals(""))
             sendNotification("Please Enter Login Details", 0);
         else if (today || !isConnected) ;
         else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) ;
 
-        //  sendNotification("Webkiosk Down/Unreachable", 1);
+
+            //  sendNotification("Webkiosk Down/Unreachable", 1);
 
         else
             sendNotification("Wrong Credentials", 1);

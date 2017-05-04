@@ -101,7 +101,7 @@ public class WebviewFragment extends Fragment {
                         Uri.parse(url));
                 request.allowScanningByMediaScanner();
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "download");
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MyJuetApk");
                 DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
                 dm.enqueue(request);
 

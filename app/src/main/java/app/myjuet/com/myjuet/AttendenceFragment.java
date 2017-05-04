@@ -441,7 +441,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             swipeRefreshLayout.setRefreshing(false);
             ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
             ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
-            FabString = "BackGround Sync In Progress";
+            FabString = "Sync Already In Progress In Background";
             ((DrawerActivity) getActivity()).fab.performClick();
             Error = NO_INTERNET;
             swipeRefreshLayout.setKeepScreenOn(false);

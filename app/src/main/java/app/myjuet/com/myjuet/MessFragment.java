@@ -234,6 +234,7 @@ public class MessFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if (bitmap != null)
         bitmap.recycle();
         bitmap = null;
         Runtime.getRuntime().gc();
