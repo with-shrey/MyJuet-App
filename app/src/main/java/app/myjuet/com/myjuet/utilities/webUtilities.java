@@ -140,9 +140,9 @@ public class webUtilities extends AppCompatActivity {
                                 list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3]));
                                 detailsmain.add(listDetails);
                                 listDetails = new ArrayList<>();
-                            }
-                            else
+                            } else {
                                 list.clear();
+                            }
                         }
                         subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
 
@@ -152,7 +152,7 @@ public class webUtilities extends AppCompatActivity {
                 subPart[0] = subPart[0].replace(temp, "");
             }
             ListsReturner returner = new ListsReturner(list, detailsmain);
-
+            conn.disconnect();
             return returner;
         }
         list.clear();

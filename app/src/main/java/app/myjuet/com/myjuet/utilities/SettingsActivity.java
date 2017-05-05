@@ -211,11 +211,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
         if (sharedPref.getBoolean(getString(R.string.key_alarm_meal), true)) {
             beforemeal.setChecked(true);
-            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
+            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 5)));
         }
         if (sharedPref.getBoolean(getString(R.string.key_alarm_class), true)) {
             beforeclass.setChecked(true);
-            ttmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
+            ttmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 10)));
         }
 
 

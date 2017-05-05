@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.DownloadListener;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -101,7 +102,7 @@ public class WebviewFragment extends Fragment {
                         Uri.parse(url));
                 request.allowScanningByMediaScanner();
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MyJuetApk");
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimetype));
                 DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
                 dm.enqueue(request);
 
@@ -109,15 +110,6 @@ public class WebviewFragment extends Fragment {
         });
         myWebView.setWebChromeClient(new WebChromeClient() {
             private ProgressDialog mProgress;
-
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
-                SnackString = consoleMessage.toString();
-                ((DrawerActivity) getActivity()).fab.performClick();
-
-                return super.onConsoleMessage(consoleMessage);
-            }
 
             @Override
             public void onProgressChanged(WebView view, int progress) {

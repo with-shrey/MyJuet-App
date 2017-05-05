@@ -90,6 +90,8 @@ public class RefreshService extends IntentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (DateString.isEmpty())
+            today = true;
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";

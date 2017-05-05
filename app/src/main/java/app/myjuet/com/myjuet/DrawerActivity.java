@@ -91,8 +91,12 @@ public class DrawerActivity extends AppCompatActivity
 
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void onAdClosed() {
-                requestNewInterstitial();
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                }
+
             }
         });
 
@@ -134,21 +138,12 @@ public class DrawerActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
             ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    }
-                }
-            }, 2500);
             Fragment fragment = new AttendenceFragment();
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.content_drawer, fragment).commitNow();
             appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.attendence));
             collapsingToolbarLayout.setTitle("ATTENDENCE");
             collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
             appBarLayout.setExpanded(true);
-
             activeFragment = 0;
 
 
@@ -162,6 +157,7 @@ public class DrawerActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        requestNewInterstitial();
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
@@ -194,6 +190,7 @@ public class DrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+        requestNewInterstitial();
         // Handle navigation view item clicks here.
         final int id = item.getItemId();
         if (id == R.id.exit) {
@@ -213,41 +210,28 @@ public class DrawerActivity extends AppCompatActivity
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     tabLayout.setVisibility(View.GONE);
                     fab.setVisibility(View.VISIBLE);
-                    ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
+
+                    Fragment fragment = new AttendenceFragment();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
+                    collapsingToolbarLayout.setTitle("ATTENDENCE");
+                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    }
-                        }
-                    }, 2500);
-                    Fragment fragment = new AttendenceFragment();
-                    transition.replace(R.id.content_drawer, fragment).commitNow();
-                    appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.attendence));
-                    collapsingToolbarLayout.setTitle("ATTENDENCE");
-                    collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
-                    appBarLayout.setExpanded(true);
 
+                            appBarLayout.setExpanded(true);
+                        }
+                    }, 1000);
             activeFragment = 0;
 
 
         } else if (id == R.id.timetable_drawer) {
                     tabLayout.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            activeFragment = 1;
-            ImageView appbarimage = (ImageView) findViewById(R.id.image_appbar);
+
+                    activeFragment = 1;
                     Fragment fragment = new TimeTableFragment();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
-                    appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.timetable_original));
             fab.setImageResource(R.drawable.ic_settings);
                     fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.colorAccent)));
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -255,19 +239,13 @@ public class DrawerActivity extends AppCompatActivity
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
-            activeFragment = 1;
+
+                    activeFragment = 1;
 
 
         } else if (id == R.id.annapurna_drawer) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            fab.setVisibility(View.GONE);
+
+                    fab.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
             activeFragment = 2;
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -305,15 +283,8 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.findyourway) {
             activeFragment = 4;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.acc.juetlocate");
+
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.acc.juetlocate");
             if (launchIntent != null) {
                 startActivity(launchIntent);//null pointer check in case package name was not found
             } else {
@@ -325,15 +296,8 @@ public class DrawerActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.contact_drawer) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            tabLayout.setVisibility(View.GONE);
+
+                    tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
@@ -346,15 +310,8 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.request_notification) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            tabLayout.setVisibility(View.GONE);
+
+                    tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
@@ -365,15 +322,8 @@ public class DrawerActivity extends AppCompatActivity
 
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
-            tabLayout.setVisibility(View.GONE);
+
+                    tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
@@ -386,14 +336,7 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else if (id == R.id.settings_master) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
-                        }
-                    }, 2500);
+
                     Intent intent = new Intent(DrawerActivity.this, SettingsActivity.class);
             startActivity(intent);
         }

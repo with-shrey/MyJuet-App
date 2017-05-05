@@ -340,6 +340,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                             }
                             if (adapter.getItemCount() == 0) {
                                 image.setVisibility(View.VISIBLE);
+                                image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
+
                             } else {
                                 image.setVisibility(View.GONE);
                             }
@@ -365,6 +367,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
             adapter.notifyDataSetChanged();
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
+                    image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
                 } else {
                     image.setVisibility(View.GONE);
                 }
@@ -375,6 +378,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 ((DrawerActivity) getActivity()).fab.performClick();
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
+                    image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
                 } else {
                     image.setVisibility(View.GONE);
                 }

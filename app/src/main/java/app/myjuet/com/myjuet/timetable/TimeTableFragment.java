@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -94,7 +95,7 @@ public class TimeTableFragment extends Fragment {
                 }
 
                 attendence = datatemp.isEmpty();
-                for (int i = 0; i < datatemp.size(); i++) {
+                for (int i = 0; i < datatemp.size() && i < 15; i++) {
                     data[i][0] = datatemp.get(i).getmName();
                     data[i][1] = datatemp.get(i).getmLecTut();
                 }
@@ -155,7 +156,7 @@ public class TimeTableFragment extends Fragment {
                     public void run() {
                         if (attendence) {
                             empty.setVisibility(View.VISIBLE);
-
+                            empty.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.tt_nodata));
                             makeText(getContext(), "Refresh Attendence First", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent("refreshAttendence");
                             getActivity().sendBroadcast(intent);
@@ -203,6 +204,7 @@ public class TimeTableFragment extends Fragment {
                             }
                         } else {
                             empty.setVisibility(View.VISIBLE);
+                            empty.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.tt_nodata));
 
                         }
                     }
