@@ -116,7 +116,6 @@ public class webUtilities extends AppCompatActivity {
                 } else
                     break;
                 String temp = subPart[1];
-
                 //loop for columns
                 for (int i = 0; i < 6; i++) {
 
@@ -176,8 +175,6 @@ public class webUtilities extends AppCompatActivity {
                     Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
                     Url = Url.replace("amp;", "");
                     listDetails = AttendenceDetailsFinder(Url);
-
-
                 }
             case 3:
             case 4:
