@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.utilities;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -18,6 +19,7 @@ import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.ListsReturner;
+import app.myjuet.com.myjuet.data.SgpaData;
 
 
 @SuppressWarnings("StringBufferMayBeStringBuilder")
@@ -174,7 +176,7 @@ public class webUtilities extends AppCompatActivity {
                 if (data.contains("href")) {
                     Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
                     Url = Url.replace("amp;", "");
-                    listDetails = AttendenceDetailsFinder(Url);
+                    listDetails = AttendenceDetailsFinder(Url);   //NILL IF EMPTY URL
                 }
             case 3:
             case 4:
@@ -284,5 +286,58 @@ public class webUtilities extends AppCompatActivity {
         return listDetails;
     }
 
+    public static ArrayList<SgpaData> crawlCGPA(String Content) {
+        ArrayList<SgpaData> datasg = new ArrayList<>();
+        String p1 = Content.substring(Content.indexOf("<tbody>"), Content.indexOf("</tbody>"));
+        for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
+            String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
+            p1 = p1.substring(p1.indexOf("</tr>") + 5);
+//             Log.v(Integer.toString(i),p2);
+            SgpaData data = new SgpaData();
+            for (int j = 1; j <= 8; j++) {
+                switch (j) {
+                    case 1:
+                        // data.setmSem(Integer.valueOf(p2.substring(p2.indexOf("</a>")-5,p2.indexOf("</a>")-4)));
+                        String temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                        data.setmSem(Integer.valueOf(temp1.substring(temp1.indexOf("</a>") - 1, temp1.indexOf("</a>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
 
+                    case 2:
+                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                        data.setmGradePoints(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                    case 3:
+                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                        data.setMcoursecredits(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                    case 4:
+                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                        data.setMearned(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                    case 5:
+                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                        data.setmPointssecuredcgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                    // case 6:
+
+                    case 7:
+                        temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                        data.setmSgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td") + 17, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                    case 8:
+                        temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                        data.setmCgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td") + 17, temp1.indexOf("</td>"))));
+                        p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        break;
+                }
+            }
+        }
+        return datasg;
+    }
 }

@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginRight="5dp"
+    android:orientation="vertical"
+    tools:context="app.myjuet.com.myjuet.SgpaCgpa">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshsgpa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/graphsgpa"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/sgparecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/graphsgpa" />
+            </RelativeLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

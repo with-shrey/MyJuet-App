@@ -339,7 +339,19 @@ public class DrawerActivity extends AppCompatActivity
 
                     Intent intent = new Intent(DrawerActivity.this, SettingsActivity.class);
             startActivity(intent);
-        }
+        } else if (id == R.id.cgpa_drawer) {
+
+                    fab.setVisibility(View.GONE);
+                    tabLayout.setVisibility(View.GONE);
+                    activeFragment = 2;
+                    CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                    collapsingToolbarLayout.setContentScrimColor(Color.GREEN);
+                    collapsingToolbarLayout.setTitle("CGPA/SGPA");
+                    appBarLayout.setExpanded(false);
+                    Fragment fragment = new SgpaCgpa();
+                    transition.replace(R.id.content_drawer, fragment).commitNow();
+                }
+
             }
         }, 300);
 
