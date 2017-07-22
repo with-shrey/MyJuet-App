@@ -54,7 +54,13 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         TextView Leaving = viewHolder.Leaving;
 
         GradientDrawable magnitudeCircle = (GradientDrawable) Total.getBackground();
-        int color = getmColor(Integer.parseInt(data.getmLecTut()));
+        int color;
+        try {
+            color = getmColor(Integer.parseInt(data.getmLecTut()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            color = R.color.magnitude90;
+        }
         magnitudeCircle.setColor(ContextCompat.getColor(mContext, color));
         Name.setText(data.getmName());
         Total.setText(data.getmLecTut());

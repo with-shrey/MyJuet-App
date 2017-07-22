@@ -177,6 +177,10 @@ public class webUtilities extends AppCompatActivity {
                     Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
                     Url = Url.replace("amp;", "");
                     listDetails = AttendenceDetailsFinder(Url);   //NILL IF EMPTY URL
+                } else if (data.contains("&nbsp;")) {
+                    Url = "N/A";
+                    if (listDetails.isEmpty())
+                        listDetails = AttendenceDetailsFinder(Url);
                 }
             case 3:
             case 4:
@@ -203,7 +207,6 @@ public class webUtilities extends AppCompatActivity {
                 extracted = "N/A";
 
         }
-
         return extracted;
 
     }
@@ -211,14 +214,19 @@ public class webUtilities extends AppCompatActivity {
     private static ArrayList<AttendenceDetails> AttendenceDetailsFinder(String link) {
 
         String Content = "";
-        try {
-            Content = GetPageContent(link);
-            count[0] = Content.split("Present").length - 1;
-            count[1] = Content.split("Absent").length - 2;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (link.equals("N/A")) {
+            count[0] = 0;
+            count[1] = 0;
+            Content = "N/A";
+        } else {
+            try {
+                Content = GetPageContent(link);
+                count[0] = Content.split("Present").length - 1;
+                count[1] = Content.split("Absent").length - 2;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
         return DetailsCrawler(Content);
     }
 
@@ -226,6 +234,10 @@ public class webUtilities extends AppCompatActivity {
         String subPart[] = new String[5];
         ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
         String[] data = new String[3];
+        if (Result.contains("N/A")) {
+            AttendenceDetails dataDetailed = new AttendenceDetails("N/A", "N/A", "N/A");
+            listDetails.add(dataDetailed);
+        }
         //get the table body of atendence
         if (Result.contains("</thead><tbody>") && Result.contains("</tbody>")) {
             subPart[0] = Result.substring(Result.indexOf("</thead><tbody>") + 8, Result.indexOf("</tbody>"));
@@ -240,6 +252,7 @@ public class webUtilities extends AppCompatActivity {
                 String temp = subPart[1];
 
                 //loop for columns
+
                 for (int i = 0; i < 6; i++) {
 
                     if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
@@ -292,7 +305,6 @@ public class webUtilities extends AppCompatActivity {
         for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
             String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
             p1 = p1.substring(p1.indexOf("</tr>") + 5);
-//             Log.v(Integer.toString(i),p2);
             SgpaData data = new SgpaData();
             for (int j = 1; j <= 8; j++) {
                 switch (j) {
@@ -305,36 +317,40 @@ public class webUtilities extends AppCompatActivity {
 
                     case 2:
                         temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setmGradePoints(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        data.setmGradePoints(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
                         break;
                     case 3:
                         temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setMcoursecredits(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        data.setMcoursecredits(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
                         break;
                     case 4:
                         temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setMearned(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        data.setMearned(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
                         break;
                     case 5:
                         temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setmPointssecuredcgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>"))));
+                        data.setmPointssecuredcgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
                         break;
-                    // case 6:
+                    case 6:
+                        break;
 
                     case 7:
                         temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
-                        data.setmSgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td") + 17, temp1.indexOf("</td>"))));
+                        data.setmSgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
                         break;
                     case 8:
                         temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
-                        data.setmCgpa(Integer.valueOf(temp1.substring(temp1.indexOf("<td") + 17, temp1.indexOf("</td>"))));
+                        data.setmCgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>")))));
                         p2 = p2.substring(p2.indexOf("</td>") + 5);
+                        datasg.add(data);
+                        data = new SgpaData();
                         break;
+
                 }
             }
         }

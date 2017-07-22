@@ -18,17 +18,19 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <com.jjoe64.graphview.GraphView
                     android:id="@+id/graphsgpa"
                     android:layout_width="match_parent"
                     android:layout_height="200dip" />
 
-                <android.support.v7.widget.RecyclerView
+                <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/sgparecycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/graphsgpa" />
+                    android:layout_below="@id/graphsgpa"
+                    tools:listitem="@layout/cgpadatalayout" />
+
+
             </RelativeLayout>
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>

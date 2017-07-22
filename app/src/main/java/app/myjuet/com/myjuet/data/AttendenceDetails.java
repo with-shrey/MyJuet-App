@@ -14,10 +14,17 @@ public class AttendenceDetails implements java.io.Serializable {
 
 
     public AttendenceDetails(String mDate, String mStatus, String mType) {
-        this.mStatus = mStatus;
-        this.mType = mType;
-        mTime = mDate.substring(mDate.indexOf(" "));
-        this.mDate = mDate.replace(mTime, "");
+        if (mDate.contains("N/A")) {
+            this.mStatus = "Present";
+            this.mType = mType;
+            mTime = "N/A";
+            this.mDate = "N/A";
+        } else {
+            this.mStatus = mStatus;
+            this.mType = mType;
+            mTime = mDate.substring(mDate.indexOf(" "));
+            this.mDate = mDate.replace(mTime, "");
+        }
     }
 
 

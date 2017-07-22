@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
+import app.myjuet.com.myjuet.adapters.CgpaAdapter;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
@@ -32,9 +36,10 @@ import static app.myjuet.com.myjuet.R.string.url;
  * A simple {@link Fragment} subclass.
  */
 public class SgpaCgpa extends Fragment {
+    CgpaAdapter adapter;
+    RecyclerView list;
     private ArrayList<SgpaData> data;
     private SwipeRefreshLayout refreshLayout;
-
     public SgpaCgpa() {
         // Required empty public constructor
     }
@@ -44,8 +49,13 @@ public class SgpaCgpa extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         data = new ArrayList<>();
+        adapter = new CgpaAdapter(getActivity(), data);
         // Inflate the layout for this fragment
         View RootView = inflater.inflate(R.layout.fragment_sgpa_cgpa, container, false);
+        list = (RecyclerView) RootView.findViewById(R.id.sgparecycler);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        list.setLayoutManager(layoutManager);
+        list.setAdapter(adapter);
         GraphView graph = (GraphView) RootView.findViewById(R.id.graphsgpa);
         refreshLayout = (SwipeRefreshLayout) RootView.findViewById(R.id.refreshsgpa);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -140,6 +150,9 @@ public class SgpaCgpa extends Fragment {
             refreshLayout.setRefreshing(false);
             data.clear();
             data.addAll(sgpaDatas);
+            adapter.notifyDataSetChanged();
+            list.getRecycledViewPool().clear();
+            // writeTodisk();
         }
 
     }

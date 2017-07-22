@@ -10,22 +10,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import app.myjuet.com.myjuet.AttendenceDetailsActivity;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
 import app.myjuet.com.myjuet.R;
-import app.myjuet.com.myjuet.data.AttendenceData;
+import app.myjuet.com.myjuet.data.SgpaData;
+
 
 /**
  * Created by Shrey on 20-Jul-17.
  */
 
-public class CgpaAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHolder> {
+public class CgpaAdapter extends RecyclerView.Adapter<CgpaAdapter.ViewHolder> {
+    private ArrayList<SgpaData> list;
+    // Store the context for easy access
+    private Context mContext;
+
+    public CgpaAdapter(Context context, ArrayList<SgpaData> contacts) {
+        list = contacts;
+        mContext = context;
+    }
     @Override
-    public AttendenceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CgpaAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.list_layout, parent, false);
+        View contactView = inflater.inflate(R.layout.cgpadatalayout, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(contactView);
@@ -33,34 +45,42 @@ public class CgpaAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHold
 
     // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(AttendenceAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(CgpaAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        AttendenceData data = list.get(position);
+        SgpaData data = list.get(position);
 
         // Set item views based on your views and data model
-        TextView Name = viewHolder.Name;
-        TextView Total = viewHolder.Total;
-        TextView Next = viewHolder.Next;
-        TextView Leaving = viewHolder.Leaving;
+        TextView GradePoints = viewHolder.GradePoints;
+        TextView PointsSecured = viewHolder.PointsSecured;
+        TextView CourseCredits = viewHolder.CourseCredits;
+        TextView EarnedCredits = viewHolder.EarnedCredits;
+        TextView Cgpa = viewHolder.Cgpa;
+        TextView Sgpa = viewHolder.Sgpa;
+        TextView Sem = viewHolder.Semester;
 
-        GradientDrawable magnitudeCircle = (GradientDrawable) Total.getBackground();
-        int color = getmColor(Integer.parseInt(data.getmLecTut()));
-        magnitudeCircle.setColor(ContextCompat.getColor(mContext, color));
-        Name.setText(data.getmName());
-        Total.setText(data.getmLecTut());
-        String next = "Leaving Next:" + data.getmOnLeaving();
-        String attendnext = "Attending Next:" + data.getmOnNext();
-        Leaving.setText(next);
-        Next.setText(attendnext);
+        GradientDrawable CgpaRect = (GradientDrawable) Cgpa.getBackground();
+        GradientDrawable SgpaRect = (GradientDrawable) Sgpa.getBackground();
+        CgpaRect.setColor(ContextCompat.getColor(mContext, getmColor(data.getmCgpa())));
+        SgpaRect.setColor(ContextCompat.getColor(mContext, getmColor(data.getmSgpa())));
+
+        Sem.setText(data.getmSem());
+        GradePoints.setText(data.getmGradePoints());
+        PointsSecured.setText(data.getmPointssecuredcgpa());
+        EarnedCredits.setText(data.getMearned());
+        CourseCredits.setText(data.getMcoursecredits());
+        Cgpa.setText(String.valueOf(data.getmCgpa()));
+        Cgpa.setText(String.valueOf(data.getmCgpa()));
+
     }
 
-    // Returns the total count of items in the list
+    // Returns the PointsSecured count of items in the list
     @Override
     public int getItemCount() {
         return list.size();
+        //list.size();
     }
 
-    private int getmColor(int mLecTut) {
+    private int getmColor(float mLecTut) {
         if ((mLecTut) >= 0 && (mLecTut) <= 40) {
             return R.color.magnitude40;
         } else if ((mLecTut) > 40 && (mLecTut) < 50) {
@@ -79,13 +99,16 @@ public class CgpaAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHold
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        private TextView Name;
-        private TextView Total;
-        private TextView Next;
-        private TextView Leaving;
+        private TextView GradePoints;
+        private TextView PointsSecured;
+        private TextView CourseCredits;
+        private TextView EarnedCredits;
+        private TextView Semester;
+        private TextView Cgpa;
+        private TextView Sgpa;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -94,18 +117,14 @@ public class CgpaAdapter extends RecyclerView.Adapter<AttendenceAdapter.ViewHold
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            Name = (TextView) itemView.findViewById(R.id.name);
-            Total = (TextView) itemView.findViewById(R.id.total);
-            Next = (TextView) itemView.findViewById(R.id.next);
-            Leaving = (TextView) itemView.findViewById(R.id.leaving);
-            itemView.setOnClickListener(this);
+            GradePoints = (TextView) itemView.findViewById(R.id.gradepoints);
+            PointsSecured = (TextView) itemView.findViewById(R.id.pointssecured);
+            CourseCredits = (TextView) itemView.findViewById(R.id.coursecredits);
+            EarnedCredits = (TextView) itemView.findViewById(R.id.earnedcredits);
+            Semester = (TextView) itemView.findViewById(R.id.semesterno);
+            Cgpa = (TextView) itemView.findViewById(R.id.cgpa);
+            Sgpa = (TextView) itemView.findViewById(R.id.sgpa);
         }
 
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), AttendenceDetailsActivity.class);
-            intent.putExtra("listno", getAdapterPosition());
-            view.getContext().startActivity(intent);
-        }
     }
 }

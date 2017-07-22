@@ -1,10 +1,12 @@
 package app.myjuet.com.myjuet.data;
 
+import java.io.Serializable;
+
 /**
  * Created by Shrey on 20-Jul-17.
  */
 
-public class SgpaData {
+public class SgpaData implements java.io.Serializable {
     int mSem, mcoursecredits, mearned, pointssecuredsgpa, mPointssecuredcgpa, mGradePoints;
     float mCgpa, mSgpa;
 

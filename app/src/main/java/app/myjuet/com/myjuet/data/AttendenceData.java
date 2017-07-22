@@ -18,8 +18,13 @@ public constructor
         this.mName = Name;
         this.mCountAbsent = CountAbsent;
         this.mCountPresent = CountPresent;
+        if (CountPresent == 0 && CountAbsent == 0) {
+            this.mOnNext = 100;
+            this.mOnLeaving = 0;
+        } else {
         this.mOnNext = (int) ((float) ((CountPresent + 1) * 100) / (float) (CountPresent + CountAbsent + 1));
         this.mOnLeaving = (int) ((float) (CountPresent * 100) / (float) (CountPresent + CountAbsent + 1));
+        }
         this.mLec = Lec;
         this.mLecTut = LecTut;
         this.mTut = Tut;

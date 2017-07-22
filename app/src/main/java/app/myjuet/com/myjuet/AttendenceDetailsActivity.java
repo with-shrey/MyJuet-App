@@ -56,24 +56,27 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         int res;
         String ClassText;
         double classes;
-        if (Integer.parseInt(tempData.getmLecTut()) < Attendence) {
-            classes = Math.ceil(((t * pa) - p) / (1 - t));
-            res = (int) classes;
-            ClassText = "You Need To Attend " + String.valueOf(res) + " Classes To Reach Threshold " + String.valueOf(Attendence) + " %";
-        } else if (Integer.parseInt(tempData.getmLecTut()) == Attendence) {
-            ClassText = "Don't Leave Class";
-        } else {
-            classes = Math.floor((p - (t * pa)) / (t)) - 1;
-            res = (int) classes;
-            if (res <= 0) {
-                res = 0;
+        if (!tempData.getmLecTut().contains("--")) {
+            if (Integer.parseInt(tempData.getmLecTut()) < Attendence) {
+                classes = Math.ceil(((t * pa) - p) / (1 - t));
+                res = (int) classes;
+                ClassText = "You Need To Attend " + String.valueOf(res) + " Classes To Reach Threshold " + String.valueOf(Attendence) + " %";
+            } else if (Integer.parseInt(tempData.getmLecTut()) == Attendence) {
                 ClassText = "Don't Leave Class";
-
             } else {
-                ClassText = "You Can Leave " + classes + " Classes And Reach Threshold " + String.valueOf(Attendence) + " %\n I suggest NOT to leave a class!!\n";
-            }
+                classes = Math.floor((p - (t * pa)) / (t)) - 1;
+                res = (int) classes;
+                if (res <= 0) {
+                    res = 0;
+                    ClassText = "Don't Leave Class";
 
-        }
+                } else {
+                    ClassText = "You Can Leave " + classes + " Classes And Reach Threshold " + String.valueOf(Attendence) + " %\n I suggest NOT to leave a class!!\n";
+                }
+
+            }
+        } else
+            ClassText = "No Classes Updated Yet!!";
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.details_toolbar);
         setSupportActionBar(toolbar);
