@@ -17,7 +17,7 @@
             android:title="Annapurna menu" />
         <item
             android:id="@+id/cgpa_drawer"
-            android:icon="@drawable/ic_restaurant_black_24dp"
+            android:icon="@drawable/ic_cgpa_sgpa"
             android:title="CGPA/SGPA" />
         <item
             android:id="@+id/web_view_drawer"

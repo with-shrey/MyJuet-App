@@ -34,7 +34,7 @@ public class CgpaAdapter extends RecyclerView.Adapter<CgpaAdapter.ViewHolder> {
     @Override
     public CgpaAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.cgpadatalayout, parent, false);
@@ -63,13 +63,13 @@ public class CgpaAdapter extends RecyclerView.Adapter<CgpaAdapter.ViewHolder> {
         CgpaRect.setColor(ContextCompat.getColor(mContext, getmColor(data.getmCgpa())));
         SgpaRect.setColor(ContextCompat.getColor(mContext, getmColor(data.getmSgpa())));
 
-        Sem.setText(data.getmSem());
-        GradePoints.setText(data.getmGradePoints());
-        PointsSecured.setText(data.getmPointssecuredcgpa());
-        EarnedCredits.setText(data.getMearned());
-        CourseCredits.setText(data.getMcoursecredits());
+        Sem.setText(String.valueOf(data.getmSem()));
+        GradePoints.setText(String.valueOf(data.getmGradePoints()));
+        PointsSecured.setText(String.valueOf(data.getmPointssecuredcgpa()));
+        EarnedCredits.setText(String.valueOf(data.getMearned()));
+        CourseCredits.setText(String.valueOf(data.getMcoursecredits()));
         Cgpa.setText(String.valueOf(data.getmCgpa()));
-        Cgpa.setText(String.valueOf(data.getmCgpa()));
+        Sgpa.setText(String.valueOf(data.getmSgpa()));
 
     }
 
@@ -81,17 +81,11 @@ public class CgpaAdapter extends RecyclerView.Adapter<CgpaAdapter.ViewHolder> {
     }
 
     private int getmColor(float mLecTut) {
-        if ((mLecTut) >= 0 && (mLecTut) <= 40) {
+        if ((mLecTut) >= 0 && (mLecTut) <= 6) {
             return R.color.magnitude40;
-        } else if ((mLecTut) > 40 && (mLecTut) < 50) {
-            return R.color.magnitude40;
-        } else if ((mLecTut) >= 50 && (mLecTut) < 60) {
-            return R.color.magnitude50;
-        } else if ((mLecTut) >= 60 && (mLecTut) < 70) {
-            return R.color.magnitude50;
-        } else if ((mLecTut) >= 70 && (mLecTut) < 80) {
+        } else if ((mLecTut) > 6 && (mLecTut) < 7) {
             return R.color.magnitude70;
-        } else if ((mLecTut) >= 80 && (mLecTut) <= 90) {
+        } else if ((mLecTut) >= 7 && (mLecTut) <= 10) {
             return R.color.magnitude80;
         } else {
             return R.color.magnitude90;

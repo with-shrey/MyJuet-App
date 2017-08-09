@@ -163,7 +163,8 @@ public class DrawerActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START, true);
         } else if (activeFragment == 3) {
             if (myWebView.canGoBack()) {
-                myWebView.goBack();
+                myWebView.loadUrl(WebviewFragment.prev);
+//                myWebView.goBack();
             }
             } else {
                 if (doubleBackToExitPressedOnce) {
@@ -345,7 +346,7 @@ public class DrawerActivity extends AppCompatActivity
                     tabLayout.setVisibility(View.GONE);
                     activeFragment = 2;
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-                    collapsingToolbarLayout.setContentScrimColor(Color.GREEN);
+                    collapsingToolbarLayout.setContentScrimColor(Color.parseColor("#78909c"));
                     collapsingToolbarLayout.setTitle("CGPA/SGPA");
                     appBarLayout.setExpanded(false);
                     Fragment fragment = new SgpaCgpa();

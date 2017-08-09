@@ -301,59 +301,65 @@ public class webUtilities extends AppCompatActivity {
 
     public static ArrayList<SgpaData> crawlCGPA(String Content) {
         ArrayList<SgpaData> datasg = new ArrayList<>();
-        String p1 = Content.substring(Content.indexOf("<tbody>"), Content.indexOf("</tbody>"));
-        for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
-            String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
-            p1 = p1.substring(p1.indexOf("</tr>") + 5);
-            SgpaData data = new SgpaData();
-            for (int j = 1; j <= 8; j++) {
-                switch (j) {
-                    case 1:
-                        // data.setmSem(Integer.valueOf(p2.substring(p2.indexOf("</a>")-5,p2.indexOf("</a>")-4)));
-                        String temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
-                        data.setmSem(Integer.valueOf(temp1.substring(temp1.indexOf("</a>") - 1, temp1.indexOf("</a>"))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
+        if (Content.contains("<tbody>")) {
+            String p1 = Content.substring(Content.indexOf("<tbody>"), Content.indexOf("</tbody>"));
+            for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
+                String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
+                p1 = p1.substring(p1.indexOf("</tr>") + 5);
+                SgpaData data = new SgpaData();
+                for (int j = 1; j <= 8; j++) {
+                    switch (j) {
+                        case 1:
+                            // data.setmSem(Integer.valueOf(p2.substring(p2.indexOf("</a>")-5,p2.indexOf("</a>")-4)));
+                            String temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                            data.setmSem(Integer.valueOf(temp1.substring(temp1.indexOf("</a>") - 1, temp1.indexOf("</a>"))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
 
-                    case 2:
-                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setmGradePoints(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
-                    case 3:
-                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setMcoursecredits(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
-                    case 4:
-                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setMearned(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
-                    case 5:
-                        temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
-                        data.setmPointssecuredcgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
-                    case 6:
-                        break;
+                        case 2:
+                            temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                            data.setmGradePoints(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
+                        case 3:
+                            temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                            data.setMcoursecredits(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
+                        case 4:
+                            temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                            data.setMearned(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
+                        case 5:
+                            temp1 = p2.substring(p2.indexOf("<td>"), p2.indexOf("</td>") + 5);
+                            data.setmPointssecuredcgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf("<td>") + 4, temp1.indexOf("</td>")))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
+                        case 6:
+                            break;
 
-                    case 7:
-                        temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
-                        data.setmSgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        break;
-                    case 8:
-                        temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
-                        data.setmCgpa(Math.round(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>")))));
-                        p2 = p2.substring(p2.indexOf("</td>") + 5);
-                        datasg.add(data);
-                        data = new SgpaData();
-                        break;
+                        case 7:
+                            temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                            data.setmSgpa(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>"))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            break;
+                        case 8:
+                            temp1 = p2.substring(p2.indexOf("<td"), p2.indexOf("</td>") + 5);
+                            data.setmCgpa(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>"))));
+                            p2 = p2.substring(p2.indexOf("</td>") + 5);
+                            datasg.add(data);
+                            Log.v("data", String.valueOf(data.getmSgpa()));
+                            data = new SgpaData();
+                            break;
 
+                    }
                 }
             }
         }
         return datasg;
     }
+
 }
+

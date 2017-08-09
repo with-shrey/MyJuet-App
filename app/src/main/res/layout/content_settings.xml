@@ -30,6 +30,7 @@
 
         <View style="@style/dividerline" />
 
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,6 +82,12 @@
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
+        <Switch
+            android:id="@+id/autosync"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="auto sync"
+            android:textAllCaps="true" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

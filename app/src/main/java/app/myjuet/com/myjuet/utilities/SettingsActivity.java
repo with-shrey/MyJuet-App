@@ -267,6 +267,21 @@ public class SettingsActivity extends AppCompatActivity {
                     sendBroadcast(shortcutintent);
                 }
             }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                    shortcutintent.putExtra("duplicate", false);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk-JUET");
+                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                    Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
+                    drawerIntent.putExtra("fragment", 4);
+                    drawerIntent.putExtra("containsurl", false);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
+                    sendBroadcast(shortcutintent);
+                }
+            }).start();
 
             editor.putBoolean("firstTime", true);
         }

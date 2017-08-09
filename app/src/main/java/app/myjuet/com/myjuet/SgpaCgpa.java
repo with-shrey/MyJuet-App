@@ -4,6 +4,8 @@ package app.myjuet.com.myjuet;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,17 +16,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.adapters.CgpaAdapter;
+import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
@@ -38,6 +53,9 @@ import static app.myjuet.com.myjuet.R.string.url;
 public class SgpaCgpa extends Fragment {
     CgpaAdapter adapter;
     RecyclerView list;
+    GraphView graph;
+    LineGraphSeries<DataPoint> series;
+    LineGraphSeries<DataPoint> series2;
     private ArrayList<SgpaData> data;
     private SwipeRefreshLayout refreshLayout;
     public SgpaCgpa() {
@@ -56,60 +74,63 @@ public class SgpaCgpa extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
-        GraphView graph = (GraphView) RootView.findViewById(R.id.graphsgpa);
+        graph = (GraphView) RootView.findViewById(R.id.graphsgpa);
+        ScrollView scroll = (ScrollView) RootView.findViewById(R.id.cgpascroll);
         refreshLayout = (SwipeRefreshLayout) RootView.findViewById(R.id.refreshsgpa);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                ConnectivityManager cm =
+                        (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+                if (isConnected)
                 refreshcg();
+                else
+                    refreshLayout.setRefreshing(false);
             }
         });
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(1, 1),
-                new DataPoint(2, 5),
-                new DataPoint(3, 8),
-                new DataPoint(4, 1),
-                new DataPoint(5, 5),
-                new DataPoint(6, 8),
-                new DataPoint(7, 5),
-                new DataPoint(8, 8)
-        });
-        series.setTitle("CGPA");
-        series.setColor(Color.GREEN);
-        series.setDrawDataPoints(true);
-        series.setDataPointsRadius(10);
-        series.setThickness(8);
 
-        LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(1, 1),
-                new DataPoint(2, 6),
-                new DataPoint(3, 9),
-                new DataPoint(4, 1),
-                new DataPoint(5, 1),
-                new DataPoint(6, 5),
-                new DataPoint(7, 10),
-                new DataPoint(8, 8)
-        });
-        series2.setTitle("SGPA");
-        series2.setColor(Color.RED);
-        series2.setDrawDataPoints(true);
-        series2.setDataPointsRadius(10);
-        series2.setThickness(8);
+        try {
+            data.addAll(read(getActivity()));
+            adapter.notifyDataSetChanged();
+            list.getRecycledViewPool().clear();
+            series = new LineGraphSeries<>(point2());
+            series.setTitle("CGPA");
+            series.setColor(Color.rgb(255, 128, 128));
 
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(10);
-        graph.getViewport().setMinX(1);
-        graph.getViewport().setMaxX(8);
+            series.setDrawDataPoints(true);
+            series.setDataPointsRadius(7);
+            series.setThickness(5);
+
+            series2 = new LineGraphSeries<>(point1());
+            series2.setTitle("SGPA");
+            series2.setColor(Color.rgb(112, 219, 112));
+            series2.setDrawDataPoints(true);
+            series2.setDataPointsRadius(7);
+            series2.setThickness(5);
+
+            graph.addSeries(series);
+            graph.addSeries(series2);
+            graph.getViewport().setYAxisBoundsManual(true);
+            graph.getViewport().setMinY(graph.getViewport().getMinY(false) - 0.5);
+            graph.getViewport().setMaxY(graph.getViewport().getMaxY(false) + 0.5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         graph.setScaleX(1);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Semester");
-        graph.getGridLabelRenderer().setVerticalAxisTitle("CGPA/SGPA");
         graph.getGridLabelRenderer().setNumHorizontalLabels(8);
-        graph.getGridLabelRenderer().setNumVerticalLabels(11);
-        graph.addSeries(series);
-        graph.addSeries(series2);
-
+        graph.getGridLabelRenderer().setGridColor(Color.rgb(179, 236, 255));
+        graph.getGridLabelRenderer().setHighlightZeroLines(false);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(1);
+        graph.getViewport().setMaxX(8);
+        scroll.smoothScrollTo(0, 0);
         return RootView;
     }
 
@@ -122,6 +143,71 @@ public class SgpaCgpa extends Fragment {
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         String cont = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
         new download().execute(Url, PostParam, cont);
+    }
+
+    public DataPoint[] point1() {
+        int n = data.size();
+        DataPoint[] point = new DataPoint[n];
+        for (int i = 0; i < n; i++) {
+            DataPoint v = new DataPoint(data.get(i).getmSem(), data.get(i).getmCgpa());
+            point[i] = v;
+        }
+        return point;
+    }
+
+    public DataPoint[] point2() {
+        int n = data.size();
+        DataPoint[] point = new DataPoint[n];
+        for (int i = 0; i < n; i++) {
+            DataPoint v = new DataPoint(data.get(i).getmSem(), data.get(i).getmSgpa());
+            point[i] = v;
+        }
+        return point;
+    }
+
+    public void writeTofile(Context context, ArrayList<SgpaData> datalist) {
+        File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
+                + File.separator + "serlization" + File.separator + "sgpa.srl");
+        boolean deleted;
+        if (directoryFile.exists()) {
+            deleted = directoryFile.delete();
+
+        }
+        File directory = new File(context.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization");
+        boolean make;
+        if (!directory.exists()) {
+            make = directory.mkdirs();
+        }
+
+
+        ObjectOutput out = null;
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(directory
+                    + File.separator + "sgpa.srl"));
+            out.flush();
+            out.writeObject(datalist);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<SgpaData> read(Context context) throws Exception {
+        String filename = "sgpa.srl";
+        File directory = new File(context.getFilesDir().getAbsolutePath()
+                + File.separator + "serlization");
+        ObjectInput ois = null;
+
+        ois = new ObjectInputStream(new FileInputStream(directory
+                + File.separator + filename));
+        @SuppressWarnings("unchecked")
+        ArrayList<SgpaData> returnlist = (ArrayList<SgpaData>) ois.readObject();
+
+        ois.close();
+
+        return returnlist;
     }
 
     private class download extends AsyncTask<String, Integer, ArrayList<SgpaData>> {
@@ -147,12 +233,33 @@ public class SgpaCgpa extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<SgpaData> sgpaDatas) {
+            graph.removeAllSeries();
             refreshLayout.setRefreshing(false);
             data.clear();
             data.addAll(sgpaDatas);
             adapter.notifyDataSetChanged();
             list.getRecycledViewPool().clear();
-            // writeTodisk();
+            series = new LineGraphSeries<>(point2());
+            series.setTitle("CGPA");
+            series.setColor(Color.rgb(255, 128, 128));
+
+            series.setDrawDataPoints(true);
+            series.setDataPointsRadius(3);
+            series.setThickness(2);
+
+            series2 = new LineGraphSeries<>(point1());
+            series2.setTitle("SGPA");
+            series2.setColor(Color.rgb(112, 219, 112));
+            series2.setDrawDataPoints(true);
+            series2.setDataPointsRadius(3);
+            series2.setThickness(2);
+
+            graph.addSeries(series);
+            graph.addSeries(series2);
+            graph.getViewport().setYAxisBoundsManual(true);
+            graph.getViewport().setMinY(graph.getViewport().getMinY(false) - 0.5);
+            graph.getViewport().setMaxY(graph.getViewport().getMaxY(false) + 0.5);
+            writeTofile(getActivity(), data);
         }
 
     }

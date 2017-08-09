@@ -2,7 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="60dp"
     android:layout_marginRight="5dp"
+    android:background="@android:color/background_light"
     android:orientation="vertical"
     tools:context="app.myjuet.com.myjuet.SgpaCgpa">
 
@@ -12,6 +14,7 @@
         android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/cgpascroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -23,11 +26,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dip" />
 
+                <TextView
+                    android:id="@+id/colorcgpa"
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:layout_below="@id/graphsgpa"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#70db70" />
+
+                <TextView
+                    android:id="@+id/cgpa1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_below="@id/graphsgpa"
+                    android:layout_margin="10dp"
+                    android:layout_toRightOf="@id/colorcgpa"
+                    android:text="CGPA" />
+
+                <TextView
+                    android:id="@+id/colorsgpa"
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:layout_below="@id/graphsgpa"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/cgpa1"
+                    android:background="#ff8080" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_below="@id/graphsgpa"
+                    android:layout_margin="10dp"
+                    android:layout_toRightOf="@id/colorsgpa"
+                    android:text="SGPA" />
                 <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/sgparecycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/graphsgpa"
+                    android:layout_below="@id/colorcgpa"
                     tools:listitem="@layout/cgpadatalayout" />
 
 
