@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,25 +75,29 @@ public class RefreshService extends IntentService {
         Boolean today = false;
         ObjectInput dateinput = null;
         //noinspection TryWithIdenticalCatches
-        try {
-            dateinput = new ObjectInputStream(new FileInputStream(directory
-                    + File.separator + date));
-            DateString = (String) dateinput.readObject();
-            Date dateobj = new Date();
-            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
-            String temp = formattor.format(dateobj);
-            temp = temp.substring(0, temp.indexOf(" "));
-            if (DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
-                today = true;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (DateString.isEmpty())
-            today = true;
+        if (!intent.getBooleanExtra("manual", false)) {
+            Log.v("background", "indate");
+            Log.v("background", String.valueOf(intent.getBooleanExtra("manual", false)));
 
+            try {
+                dateinput = new ObjectInputStream(new FileInputStream(directory
+                        + File.separator + date));
+                DateString = (String) dateinput.readObject();
+                Date dateobj = new Date();
+                SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+                String temp = formattor.format(dateobj);
+                temp = temp.substring(0, temp.indexOf(" "));
+                if (DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
+                    today = true;
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (DateString.isEmpty())
+                today = true;
+        }
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String mAttendence = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
@@ -102,8 +107,15 @@ public class RefreshService extends IntentService {
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ListsReturner DataAttendence = new ListsReturner();
         String Content = " ";
+        boolean temp = prefs.getBoolean("autosync", true) || intent.getBooleanExtra("manual", false);
+//        Log.v("background","service started");
+//        Log.v("background",String.valueOf((!user.equals("") || !pass.equals(""))));
+//        Log.v("background",String.valueOf(pingHost("webkiosk.juet.ac.in", 80, 5000)));
+//        Log.v("background",String.valueOf(!today));
+//        Log.v("background",String.valueOf(isConnected));
+//        Log.v("background",String.valueOf(temp));
 
-        if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected) {
+        if ((!user.equals("") || !pass.equals("")) && pingHost("webkiosk.juet.ac.in", 80, 5000) && !today && isConnected && temp) {
             File directoryFile = new File(getFilesDir().getAbsolutePath()
                     + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
             File directorydetails = new File(getFilesDir().getAbsolutePath()

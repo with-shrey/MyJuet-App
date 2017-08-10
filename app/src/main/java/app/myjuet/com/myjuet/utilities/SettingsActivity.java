@@ -2,18 +2,23 @@ package app.myjuet.com.myjuet.utilities;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +35,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.recievers.AlarmReciever;
 import app.myjuet.com.myjuet.R;
@@ -41,8 +52,10 @@ public class SettingsActivity extends AppCompatActivity {
     TextInputEditText preferred;
     TextView ttmin;
     TextView messmin;
+    SharedPreferences.Editor editor;
     TextInputEditText sem;
     TextInputEditText batch;
+    int status = -1;
     LinearLayout ttmin_layout;
     LinearLayout messmin_layout;
     String ringtonett;
@@ -53,7 +66,18 @@ public class SettingsActivity extends AppCompatActivity {
     Switch morningtt;
     Switch beforeclass;
     Switch beforemeal;
+    Switch autosync;
 
+    private static boolean pingHost(String host, int port, int timeout) {
+        try {
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), timeout);
+            socket.close();
+            return true;
+        } catch (IOException e) {
+            return false; // Either timeout or unreachable or failed DNS lookup.
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
         ttmin_layout = (LinearLayout) findViewById(R.id.before_class_layout);
         messmin_layout = (LinearLayout) findViewById(R.id.before_meal_layout);
 
+        autosync = (Switch) findViewById(R.id.autosync);
         morningtt = (Switch) findViewById(R.id.preference_tt_morning);
         beforemeal = (Switch) findViewById(R.id.preference_mess_before);
         beforeclass = (Switch) findViewById(R.id.preference_tt_before);
@@ -194,7 +219,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-
     private void initialize() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         enrollment.setText(sharedPref.getString(getString(R.string.key_enrollment), ""));
@@ -205,6 +229,9 @@ public class SettingsActivity extends AppCompatActivity {
         ringtonemess = sharedPref.getString("notificationmess", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
         ringtonett = sharedPref.getString("notificationtt", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
 
+        if (sharedPref.getBoolean("autosync", true)) {
+            autosync.setChecked(true);
+        }
         if (sharedPref.getBoolean(getString(R.string.key_alarm_morming), true)) {
             morningtt.setChecked(true);
 
@@ -223,7 +250,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void save() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
+        editor = sharedPref.edit();
         editor.putString(getString(R.string.key_enrollment), enrollment.getText().toString());
         editor.putString(getString(R.string.key_password), password.getText().toString());
         editor.putString(getString(R.string.key_preferred_attendence), preferred.getText().toString());
@@ -233,6 +260,12 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString(getString(R.string.key_notification_tt), ringtonett);
         if (admin.getVisibility() == View.VISIBLE)
             editor.putString("admin", admin.getText().toString());
+        if (autosync.isChecked()) {
+            editor.putBoolean("autosync", true);
+        } else {
+            editor.putBoolean("autosync", false);
+
+        }
         if (morningtt.isChecked()) {
             editor.putBoolean(getString(R.string.key_alarm_morming), true);
         } else {
@@ -272,12 +305,14 @@ public class SettingsActivity extends AppCompatActivity {
                 public void run() {
                     Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
                     shortcutintent.putExtra("duplicate", false);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk-JUET");
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
                     Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
                     shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
                     Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
                     drawerIntent.putExtra("fragment", 4);
                     drawerIntent.putExtra("containsurl", false);
+                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webview);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
                     shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
                     sendBroadcast(shortcutintent);
                 }
@@ -285,15 +320,22 @@ public class SettingsActivity extends AppCompatActivity {
 
             editor.putBoolean("firstTime", true);
         }
-        editor.apply();
+        String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
+        String user = enrollment.getText().toString().trim().toUpperCase();
+        String pass = password.getText().toString().trim();
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-        cancelMessAlarms();
-        cancelttAlarms();
-        cancelmorningalarm();
-        Intent intent = new Intent("SetAlarms");
-        sendBroadcast(intent);
-        finish();
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (isConnected) {
+            CookieHandler.setDefault(new CookieManager());
+            new login().execute(Url, PostParam, "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp");
+        } else {
+            Toast.makeText(this, "No Internet", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -333,6 +375,7 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Preferred Attendence Should Be Less Than 100", Toast.LENGTH_SHORT).show();
             return false;
         } else {
+
             save();
 
             return true;
@@ -402,5 +445,88 @@ public class SettingsActivity extends AppCompatActivity {
                 this.ringtonett = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString();
             }
         }
+    }
+
+    private class login extends AsyncTask<String, Integer, Integer> {
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(SettingsActivity.this);
+            dialog.setMessage("Connecting...");
+            dialog.setProgressPercentFormat(null);
+            dialog.setProgressNumberFormat(null);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            try {
+                if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+                    return 1;
+                }
+                publishProgress(1);
+                webUtilities.sendPost(strings[0], strings[1]);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String Content = null;
+
+            try {
+                Content = webUtilities.GetPageContent(strings[2]);
+                publishProgress(2);
+                Log.v("Login", Content);
+                if (Content.contains("Login</a>") || Content.contains("Invalid Password") || Content.contains("Wrong Member")) {
+                    return 0;
+                } else
+                    return 2;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            publishProgress(3);
+            return -1;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            if (values[0] == 1)
+                dialog.setMessage("Logging In...");
+            else if (values[0] == 2)
+                dialog.setMessage("Processing Data...");
+            else {
+                dialog.setMessage("Just A Minute...");
+
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer aBoolean) {
+            status = aBoolean;
+            if (aBoolean == 2) {
+                editor.apply();
+                Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
+                cancelMessAlarms();
+                cancelttAlarms();
+                cancelmorningalarm();
+                Intent intent = new Intent("SetAlarms");
+                sendBroadcast(intent);
+                finish();
+            } else if (aBoolean == 0) {
+                Toast.makeText(SettingsActivity.this, "Invalid Login", Toast.LENGTH_LONG).show();
+            } else if (aBoolean == 1) {
+                Toast.makeText(SettingsActivity.this, "Webkiosk Unreachable\nTry Again Later", Toast.LENGTH_LONG).show();
+
+            } else
+                Toast.makeText(SettingsActivity.this, "Unknown Error\nTryAgain Later", Toast.LENGTH_LONG).show();
+            dialog.dismiss();
+        }
+
     }
 }

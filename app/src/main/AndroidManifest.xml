@@ -75,7 +75,7 @@
 
         <activity
             android:name=".utilities.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="Login"
             android:theme="@style/AppTheme" />
     </application>
 

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -32,6 +33,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +48,7 @@ import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static app.myjuet.com.myjuet.R.string.url;
+import static app.myjuet.com.myjuet.utilities.webUtilities.crawlCGPA;
 
 
 /**
@@ -62,6 +66,16 @@ public class SgpaCgpa extends Fragment {
         // Required empty public constructor
     }
 
+    private static boolean pingHost(String host, int port, int timeout) {
+        try {
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), timeout);
+            socket.close();
+            return true;
+        } catch (IOException e) {
+            return false; // Either timeout or unreachable or failed DNS lookup.
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,8 +102,10 @@ public class SgpaCgpa extends Fragment {
                         activeNetwork.isConnectedOrConnecting();
                 if (isConnected)
                 refreshcg();
-                else
+                else {
                     refreshLayout.setRefreshing(false);
+                    Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -142,6 +158,7 @@ public class SgpaCgpa extends Fragment {
         String pass = prefs.getString(getString(R.string.key_password), "");
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         String cont = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
+        CookieHandler.setDefault(new CookieManager());
         new download().execute(Url, PostParam, cont);
     }
 
@@ -214,8 +231,11 @@ public class SgpaCgpa extends Fragment {
 
         @Override
         protected ArrayList<SgpaData> doInBackground(String... strings) {
-            CookieHandler.setDefault(new CookieManager());
+            ArrayList<SgpaData> list = new ArrayList<>();
             try {
+                if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+                    return list;
+                }
                 webUtilities.sendPost(strings[0], strings[1]);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -224,15 +244,20 @@ public class SgpaCgpa extends Fragment {
             String Content = null;
             try {
                 Content = webUtilities.GetPageContent(strings[2]);
-                Log.v("Sgpa", Content);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return webUtilities.crawlCGPA(Content);
+            try {
+                list.addAll(webUtilities.crawlCGPA(Content));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return list;
         }
 
         @Override
         protected void onPostExecute(ArrayList<SgpaData> sgpaDatas) {
+
             graph.removeAllSeries();
             refreshLayout.setRefreshing(false);
             data.clear();
@@ -244,15 +269,15 @@ public class SgpaCgpa extends Fragment {
             series.setColor(Color.rgb(255, 128, 128));
 
             series.setDrawDataPoints(true);
-            series.setDataPointsRadius(3);
-            series.setThickness(2);
+            series.setDataPointsRadius(7);
+            series.setThickness(5);
 
             series2 = new LineGraphSeries<>(point1());
             series2.setTitle("SGPA");
             series2.setColor(Color.rgb(112, 219, 112));
             series2.setDrawDataPoints(true);
-            series2.setDataPointsRadius(3);
-            series2.setThickness(2);
+            series2.setDataPointsRadius(7);
+            series2.setThickness(5);
 
             graph.addSeries(series);
             graph.addSeries(series2);

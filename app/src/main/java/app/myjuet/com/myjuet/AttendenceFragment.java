@@ -177,7 +177,9 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                refreshData();
+                Intent refresh = new Intent("refreshAttendence");
+                refresh.putExtra("manual", true);
+                getActivity().sendBroadcast(refresh);
                 return true;
             case R.id.loginAttendence:
                 Intent login = new Intent(getActivity(), SettingsActivity.class);

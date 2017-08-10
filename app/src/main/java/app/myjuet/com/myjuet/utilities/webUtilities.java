@@ -55,8 +55,8 @@ public class webUtilities extends AppCompatActivity {
         conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         conn.setRequestProperty("Connection", "close");
         conn.setRequestProperty("Referer", "webkiosk.juet.ac.in");
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        conn.setRequestProperty("Content-Length", Integer.toString(postParams.length()));
+        conn.setRequestProperty("Result-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Result-Length", Integer.toString(postParams.length()));
         conn.setDoOutput(true);
         conn.setDoInput(true);
         DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
@@ -103,7 +103,8 @@ public class webUtilities extends AppCompatActivity {
         String[] datas = new String[5];
         String subPart[] = new String[5];
         Result = Result.trim();
-        if (Result.contains("Login</a>")) {
+        Log.v("Result", Result);
+        if (Result.contains("Login</a>") || Result.contains("Invalid Password") || Result.contains("Wrong Member")) {
             AttendenceFragment.Error = AttendenceFragment.WRONG_CREDENTIALS;
         }      //get the table body of atendence
 
@@ -213,21 +214,21 @@ public class webUtilities extends AppCompatActivity {
 
     private static ArrayList<AttendenceDetails> AttendenceDetailsFinder(String link) {
 
-        String Content = "";
+        String Result = "";
         if (link.equals("N/A")) {
             count[0] = 0;
             count[1] = 0;
-            Content = "N/A";
+            Result = "N/A";
         } else {
             try {
-                Content = GetPageContent(link);
-                count[0] = Content.split("Present").length - 1;
-                count[1] = Content.split("Absent").length - 2;
+                Result = GetPageContent(link);
+                count[0] = Result.split("Present").length - 1;
+                count[1] = Result.split("Absent").length - 2;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return DetailsCrawler(Content);
+        return DetailsCrawler(Result);
     }
 
     private static ArrayList<AttendenceDetails> DetailsCrawler(String Result) {
@@ -299,10 +300,10 @@ public class webUtilities extends AppCompatActivity {
         return listDetails;
     }
 
-    public static ArrayList<SgpaData> crawlCGPA(String Content) {
+    public static ArrayList<SgpaData> crawlCGPA(String Result) {
         ArrayList<SgpaData> datasg = new ArrayList<>();
-        if (Content.contains("<tbody>")) {
-            String p1 = Content.substring(Content.indexOf("<tbody>"), Content.indexOf("</tbody>"));
+        if (Result.contains("<tbody>")) {
+            String p1 = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
             for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
                 String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
                 p1 = p1.substring(p1.indexOf("</tr>") + 5);

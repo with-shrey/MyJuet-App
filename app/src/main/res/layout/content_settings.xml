@@ -86,7 +86,7 @@
             android:id="@+id/autosync"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="auto sync"
+            android:text="auto \\ Background Sync"
             android:textAllCaps="true" />
         <TextView
             android:layout_width="wrap_content"
