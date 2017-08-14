@@ -111,6 +111,8 @@ public class SgpaCgpa extends Fragment {
 
         try {
             data.addAll(read(getActivity()));
+            if (data.isEmpty())
+                Toast.makeText(getActivity(), "Swipe Down To Refresh", Toast.LENGTH_LONG).show();
             adapter.notifyDataSetChanged();
             list.getRecycledViewPool().clear();
             series = new LineGraphSeries<>(point2());
@@ -258,7 +260,6 @@ public class SgpaCgpa extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<SgpaData> sgpaDatas) {
 
-            graph.removeAllSeries();
             refreshLayout.setRefreshing(false);
             data.clear();
             data.addAll(sgpaDatas);
@@ -267,7 +268,6 @@ public class SgpaCgpa extends Fragment {
             series = new LineGraphSeries<>(point2());
             series.setTitle("CGPA");
             series.setColor(Color.rgb(255, 128, 128));
-
             series.setDrawDataPoints(true);
             series.setDataPointsRadius(7);
             series.setThickness(5);

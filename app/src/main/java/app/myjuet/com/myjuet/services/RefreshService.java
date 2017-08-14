@@ -180,6 +180,11 @@ public class RefreshService extends IntentService {
 
                 sendNotification("Attendence Synced successfully " + DateString, 1);
             }
+            if (intent.getBooleanExtra("manual", false)) {
+                Intent dialogIntent = new Intent(getBaseContext(), DrawerActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplication().startActivity(dialogIntent);
+            }
         } else if (user.equals("") || pass.equals(""))
             sendNotification("Please Enter Login Details", 0);
         else if (today || !isConnected) ;

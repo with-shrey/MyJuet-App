@@ -55,6 +55,7 @@ public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public FloatingActionButton fab;
     public TabLayout tabLayout;
+    public NavigationView navigationView;
     int activeFragment;
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
@@ -103,7 +104,7 @@ public class DrawerActivity extends AppCompatActivity
         requestNewInterstitial();
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String user = prefs.getString(getString(R.string.key_enrollment), "");
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView name = (TextView) headerView.findViewById(R.id.header_name);
         LinearLayout layoutheader = (LinearLayout) headerView.findViewById(R.id.header_main);
@@ -344,7 +345,7 @@ public class DrawerActivity extends AppCompatActivity
 
                     fab.setVisibility(View.GONE);
                     tabLayout.setVisibility(View.GONE);
-                    activeFragment = 2;
+                    activeFragment = 8;
                     CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                     collapsingToolbarLayout.setContentScrimColor(Color.parseColor("#78909c"));
                     collapsingToolbarLayout.setTitle("CGPA/SGPA");

@@ -251,7 +251,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void save() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         editor = sharedPref.edit();
-        editor.putString(getString(R.string.key_enrollment), enrollment.getText().toString());
+        String temp = enrollment.getText().toString().replaceAll(" ", "");
+        editor.putString(getString(R.string.key_enrollment), temp.toUpperCase().trim());
         editor.putString(getString(R.string.key_password), password.getText().toString());
         editor.putString(getString(R.string.key_preferred_attendence), preferred.getText().toString());
         editor.putString(getString(R.string.key_semester), sem.getText().toString());
@@ -303,25 +304,26 @@ public class SettingsActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                    shortcutintent.putExtra("duplicate", false);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
+                    Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                    shortcutintent1.putExtra("duplicate", false);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
                     Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
                     Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
                     drawerIntent.putExtra("fragment", 4);
                     drawerIntent.putExtra("containsurl", false);
-                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webview);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
-                    sendBroadcast(shortcutintent);
+                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
+                    sendBroadcast(shortcutintent1);
                 }
             }).start();
 
             editor.putBoolean("firstTime", true);
         }
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = enrollment.getText().toString().trim().toUpperCase();
+        String user = enrollment.getText().toString().toUpperCase();
+        user = user.replaceAll(" ", "").trim();
         String pass = password.getText().toString().trim();
         String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ConnectivityManager cm =
@@ -465,7 +467,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(String... strings) {
             try {
-                if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+                if (!pingHost("webkiosk.juet.ac.in", 80, 6000)) {
                     return 1;
                 }
                 publishProgress(1);
@@ -517,6 +519,10 @@ public class SettingsActivity extends AppCompatActivity {
                 cancelmorningalarm();
                 Intent intent = new Intent("SetAlarms");
                 sendBroadcast(intent);
+                Intent refresh = new Intent("refreshAttendence");
+                refresh.putExtra("manual", true);
+                sendBroadcast(refresh);
+                Toast.makeText(SettingsActivity.this, "Background Sync Started", Toast.LENGTH_LONG).show();
                 finish();
             } else if (aBoolean == 0) {
                 Toast.makeText(SettingsActivity.this, "Invalid Login", Toast.LENGTH_LONG).show();

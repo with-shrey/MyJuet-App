@@ -52,7 +52,7 @@ public class WebviewFragment extends Fragment {
     public static String prev;
     boolean isConnected;
     String SnackString;
-    String link;
+    String link = new String();
 
     public WebviewFragment() {
         // Required empty public constructor
@@ -144,8 +144,12 @@ public class WebviewFragment extends Fragment {
                 }
                 progressBar.setProgress(progress);
                 if (progress == 100) {
-                    if (link.equals(Url + "?" + PostParam))
+                    try {
+                        if (link.equals(Url + "?" + PostParam) && ((DrawerActivity) getActivity()).activeFragment == 3)
                         optionsDialog();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     progressBar.setProgress(0);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -191,7 +195,6 @@ public class WebviewFragment extends Fragment {
         } else {
             ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
             myWebView.loadUrl(link);
-            prev = link;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -208,6 +211,7 @@ public class WebviewFragment extends Fragment {
                 switch (which) {
                     case 0:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
                             myWebView.loadUrl(link);
                         prev = link;
 
@@ -215,7 +219,8 @@ public class WebviewFragment extends Fragment {
                     case 1:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
 
@@ -223,26 +228,30 @@ public class WebviewFragment extends Fragment {
                     case 2:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
                         break;
                     case 3:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
                         break;
                     case 4:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
                         break;
                     case 5:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
                         break;
@@ -250,7 +259,8 @@ public class WebviewFragment extends Fragment {
 
                         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
-                        myWebView.loadUrl(link);
+                        if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            myWebView.loadUrl(link);
                         prev = link;
 
                         break;
@@ -277,6 +287,7 @@ public class WebviewFragment extends Fragment {
                         change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                     link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
+                                if (((DrawerActivity) getActivity()).activeFragment == 3)
                                     myWebView.loadUrl(link);
                             }
 

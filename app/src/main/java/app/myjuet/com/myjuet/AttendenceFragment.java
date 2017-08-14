@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -180,6 +181,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 Intent refresh = new Intent("refreshAttendence");
                 refresh.putExtra("manual", true);
                 getActivity().sendBroadcast(refresh);
+                Toast.makeText(getActivity(), "Background Sync Started", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.loginAttendence:
                 Intent login = new Intent(getActivity(), SettingsActivity.class);
@@ -343,6 +345,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                             if (adapter.getItemCount() == 0) {
                                 image.setVisibility(View.VISIBLE);
                                 image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
+                                image.setScaleType(ImageView.ScaleType.FIT_XY);
 
                             } else {
                                 image.setVisibility(View.GONE);
@@ -370,6 +373,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
                     image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
+                    image.setScaleType(ImageView.ScaleType.FIT_XY);
+
                 } else {
                     image.setVisibility(View.GONE);
                 }
@@ -381,6 +386,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 if (adapter.getItemCount() == 0) {
                     image.setVisibility(View.VISIBLE);
                     image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
+                    image.setScaleType(ImageView.ScaleType.FIT_XY);
+
                 } else {
                     image.setVisibility(View.GONE);
                 }
@@ -434,6 +441,8 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                     loaderAtt.getLoader(0).stopLoading();
                     if (adapter.getItemCount() == 0) {
                         image.setVisibility(View.VISIBLE);
+                        image.setScaleType(ImageView.ScaleType.FIT_XY);
+
                     } else {
                         image.setVisibility(View.GONE);
                     }
