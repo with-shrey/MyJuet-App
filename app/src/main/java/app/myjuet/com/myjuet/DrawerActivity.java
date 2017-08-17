@@ -101,7 +101,6 @@ public class DrawerActivity extends AppCompatActivity
             }
         });
 
-        requestNewInterstitial();
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String user = prefs.getString(getString(R.string.key_enrollment), "");
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -158,7 +157,6 @@ public class DrawerActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        requestNewInterstitial();
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START, true);
@@ -192,13 +190,10 @@ public class DrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-        requestNewInterstitial();
         // Handle navigation view item clicks here.
+        requestNewInterstitial();
         final int id = item.getItemId();
         if (id == R.id.exit) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
             finish();
         }
 
@@ -257,14 +252,11 @@ public class DrawerActivity extends AppCompatActivity
             Fragment fragment = new MessFragment();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
 
-
-        } else if (id == R.id.web_view_drawer) {
+                } else if (id == R.id.web_view_drawer) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (mInterstitialAd.isLoaded()) {
-                                mInterstitialAd.show();
-                            }
+
                         }
                     }, 2500);
                     fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.magnitude40)));
@@ -278,7 +270,6 @@ public class DrawerActivity extends AppCompatActivity
             appBarLayout.setExpanded(false);
             Fragment fragment = new WebviewFragment();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
-
 
             activeFragment = 3;
             // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -307,7 +298,6 @@ public class DrawerActivity extends AppCompatActivity
             appBarLayout.setExpanded(false);
             Fragment fragment = new ContactFragment();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
-
             activeFragment = 5;
 
 
@@ -321,7 +311,6 @@ public class DrawerActivity extends AppCompatActivity
             appBarLayout.setExpanded(false);
             Fragment fragment = new NotificationApplicationFragment();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
-
             activeFragment = 6;
         } else if (id == R.id.feedback_drawer) {
 

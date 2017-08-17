@@ -380,6 +380,7 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 }
             } else {
                 Intent login = new Intent(getActivity(), SettingsActivity.class);
+                getActivity().finish();
                 startActivity(login);
                 FabString = "Kindly Refresh To Login";
                 ((DrawerActivity) getActivity()).fab.performClick();

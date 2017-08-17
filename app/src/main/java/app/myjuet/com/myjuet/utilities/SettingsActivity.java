@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
@@ -67,6 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
     Switch beforeclass;
     Switch beforemeal;
     Switch autosync;
+    boolean doubleBackToExitPressedOnce = false;
 
     private static boolean pingHost(String host, int port, int timeout) {
         try {
@@ -385,6 +387,23 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please Click Back Again To Quit", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+        }
+//        super.onBackPressed();
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         View view = getCurrentFocus();
         if (view != null && (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) && view instanceof EditText && !view.getClass().getName().startsWith("android.webkit.")) {
@@ -522,6 +541,8 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent refresh = new Intent("refreshAttendence");
                 refresh.putExtra("manual", true);
                 sendBroadcast(refresh);
+                Intent intent2 = new Intent(SettingsActivity.this, DrawerActivity.class);
+                startActivity(intent2);
                 Toast.makeText(SettingsActivity.this, "Background Sync Started", Toast.LENGTH_LONG).show();
                 finish();
             } else if (aBoolean == 0) {
@@ -533,6 +554,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this, "Unknown Error\nTryAgain Later", Toast.LENGTH_LONG).show();
             dialog.dismiss();
         }
+
 
     }
 }
