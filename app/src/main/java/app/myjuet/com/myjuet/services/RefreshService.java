@@ -37,6 +37,7 @@ import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
+import static app.myjuet.com.myjuet.utilities.webUtilities.sendPost;
 
 
 @SuppressWarnings({"RedundantStringConstructorCall", "UnusedAssignment", "TryWithIdenticalCatches"})
@@ -124,7 +125,7 @@ public class RefreshService extends IntentService {
             sendNotification("Attendence Sync started", 1);
             try {
                     CookieHandler.setDefault(new CookieManager());
-                    webUtilities.sendPost(Url, PostParam);
+                String tstring = webUtilities.sendPost(Url, PostParam);
                     Content = webUtilities.GetPageContent(mAttendence);
                 sendNotification("Sync in Progress...", 1);
 

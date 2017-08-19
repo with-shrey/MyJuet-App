@@ -194,6 +194,9 @@ public class DrawerActivity extends AppCompatActivity
         requestNewInterstitial();
         final int id = item.getItemId();
         if (id == R.id.exit) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
             finish();
         }
 
@@ -236,6 +239,7 @@ public class DrawerActivity extends AppCompatActivity
             if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
             collapsingToolbarLayout.setTitle("");
+                    appBarLayout.setExpanded(false);
 
                     activeFragment = 1;
 

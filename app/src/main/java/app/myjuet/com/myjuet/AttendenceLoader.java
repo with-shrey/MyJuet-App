@@ -14,6 +14,7 @@ import app.myjuet.com.myjuet.utilities.webUtilities;
 import android.support.v4.content.AsyncTaskLoader;
 
 import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
+import static app.myjuet.com.myjuet.utilities.webUtilities.sendPost;
 
 
 class AttendenceLoader extends AsyncTaskLoader<ListsReturner> {
@@ -53,12 +54,13 @@ class AttendenceLoader extends AsyncTaskLoader<ListsReturner> {
 
     @Override
     public ListsReturner loadInBackground() {
+        String temp;
         ListsReturner DataAttendence = new ListsReturner();
         String Content = " ";
         try {
             if (pingHost("webkiosk.juet.ac.in", 80, 5000)) {
                 if (!isLoadInBackgroundCanceled())
-                    webUtilities.sendPost(mUrl, mPostParam);
+                    temp = webUtilities.sendPost(mUrl, mPostParam);
                 if (!isLoadInBackgroundCanceled())
                     Content = webUtilities.GetPageContent(mAttendence);
                 webUtilities.conn.disconnect();

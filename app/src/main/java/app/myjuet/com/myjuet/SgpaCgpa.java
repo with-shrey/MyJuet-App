@@ -49,6 +49,7 @@ import app.myjuet.com.myjuet.utilities.webUtilities;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static app.myjuet.com.myjuet.R.string.url;
 import static app.myjuet.com.myjuet.utilities.webUtilities.crawlCGPA;
+import static app.myjuet.com.myjuet.utilities.webUtilities.sendPost;
 
 
 /**
@@ -238,7 +239,7 @@ public class SgpaCgpa extends Fragment {
                 if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
                     return list;
                 }
-                webUtilities.sendPost(strings[0], strings[1]);
+                String temp = webUtilities.sendPost(strings[0], strings[1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }

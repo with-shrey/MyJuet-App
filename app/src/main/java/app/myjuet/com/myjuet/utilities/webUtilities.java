@@ -42,7 +42,7 @@ public class webUtilities extends AppCompatActivity {
     }
 
     //sending Post to a link with paramaters
-    public static void sendPost(String url, String postParams) throws Exception {
+    public static String sendPost(String url, String postParams) throws Exception {
         URL obj = UrlCreator(url);
 
         conn = (HttpsURLConnection) obj.openConnection();
@@ -70,8 +70,7 @@ public class webUtilities extends AppCompatActivity {
             response.append(inputLine);
         }
         in.close();
-
-
+        return response.toString();
     }
 
 

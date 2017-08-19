@@ -480,36 +480,40 @@ public class SettingsActivity extends AppCompatActivity {
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-
         }
 
         @Override
         protected Integer doInBackground(String... strings) {
+            String Content = null;
+
             try {
                 if (!pingHost("webkiosk.juet.ac.in", 80, 6000)) {
                     return 1;
                 }
                 publishProgress(1);
-                webUtilities.sendPost(strings[0], strings[1]);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            String Content = null;
-
-            try {
-                Content = webUtilities.GetPageContent(strings[2]);
+                Content = webUtilities.sendPost(strings[0], strings[1]);
                 publishProgress(2);
                 Log.v("Login", Content);
-                if (Content.contains("Login</a>") || Content.contains("Invalid Password") || Content.contains("Wrong Member")) {
+                if (Content.contains("Login</a>"))
                     return 0;
-                } else
+                else if (Content.contains("Invalid Password"))
+                    return 3;
+                else if (Content.contains("Wrong Member"))
+                    return 4;
+                else
                     return 2;
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
+//            try {
+//                Content = webUtilities.GetPageContent(strings[2]);
+
+
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             publishProgress(3);
             return -1;
         }
@@ -530,23 +534,34 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer aBoolean) {
             status = aBoolean;
+            Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
-                editor.apply();
+                boolean reason = editor.commit();
                 Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
                 cancelMessAlarms();
                 cancelttAlarms();
                 cancelmorningalarm();
                 Intent intent = new Intent("SetAlarms");
                 sendBroadcast(intent);
-                Intent refresh = new Intent("refreshAttendence");
-                refresh.putExtra("manual", true);
-                sendBroadcast(refresh);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent refresh = new Intent("refreshAttendence");
+                        refresh.putExtra("manual", true);
+                        sendBroadcast(refresh);
+                    }
+                }, 2000);
                 Intent intent2 = new Intent(SettingsActivity.this, DrawerActivity.class);
                 startActivity(intent2);
                 Toast.makeText(SettingsActivity.this, "Background Sync Started", Toast.LENGTH_LONG).show();
                 finish();
             } else if (aBoolean == 0) {
                 Toast.makeText(SettingsActivity.this, "Invalid Login", Toast.LENGTH_LONG).show();
+            } else if (aBoolean == 4) {
+                Toast.makeText(SettingsActivity.this, "Wrong Enrollment No", Toast.LENGTH_LONG).show();
+            } else if (aBoolean == 3) {
+                Toast.makeText(SettingsActivity.this, "Wrong Password", Toast.LENGTH_LONG).show();
             } else if (aBoolean == 1) {
                 Toast.makeText(SettingsActivity.this, "Webkiosk Unreachable\nTry Again Later", Toast.LENGTH_LONG).show();
 
