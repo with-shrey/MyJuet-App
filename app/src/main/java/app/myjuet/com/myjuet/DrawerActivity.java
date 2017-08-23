@@ -93,10 +93,10 @@ public class DrawerActivity extends AppCompatActivity
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                super.onAdLoaded();
-                if (mInterstitialAd.isLoaded()) {
+
                     mInterstitialAd.show();
-                }
+                super.onAdLoaded();
+
 
             }
         });
@@ -117,6 +117,7 @@ public class DrawerActivity extends AppCompatActivity
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
+        requestNewInterstitial();
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_tt);
@@ -191,7 +192,9 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
         // Handle navigation view item clicks here.
-        requestNewInterstitial();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
         final int id = item.getItemId();
         if (id == R.id.exit) {
             if (mInterstitialAd.isLoaded()) {
@@ -349,7 +352,7 @@ public class DrawerActivity extends AppCompatActivity
 
             }
         }, 300);
-
+        requestNewInterstitial();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
