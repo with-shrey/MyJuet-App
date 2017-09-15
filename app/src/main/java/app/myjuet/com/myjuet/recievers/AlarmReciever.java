@@ -21,7 +21,7 @@ public class AlarmReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long[] patern = {1000, 1000, 1000, 1000, 1000, 1000};
+        long[] patern = {100, 0, 1000};
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
 
         Uri timetableuri = Uri.parse(sharedPref.getString(context.getString(R.string.key_notification_tt), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));

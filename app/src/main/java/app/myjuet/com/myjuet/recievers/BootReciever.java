@@ -18,6 +18,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.R;
@@ -51,15 +52,18 @@ public class BootReciever extends BroadcastReceiver {
             js.schedule(job);
 
         } else {
+            Random h = new Random();
+            Random m = new Random();
+            Random s = new Random();
             Calendar calendar4 = Calendar.getInstance();
-            calendar4.set(Calendar.HOUR_OF_DAY, 0);
-            calendar4.set(Calendar.MINUTE, 1);
-            calendar4.set(Calendar.SECOND, 0);
+            calendar4.set(Calendar.HOUR_OF_DAY, h.nextInt(6));
+            calendar4.set(Calendar.MINUTE, m.nextInt(59) + 1);
+            calendar4.set(Calendar.SECOND, s.nextInt(59) + 1);
             if (calendar4.before(Calendar.getInstance()))
                 calendar4.add(Calendar.DATE, 1);
             PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY / 4, pendingIntent3);
+            am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_DAY / 4, pendingIntent3);
         }
 
         if (sharedPref.getBoolean(context.getString(R.string.key_alarm_meal), false)) {

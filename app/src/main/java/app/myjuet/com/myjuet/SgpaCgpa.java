@@ -186,32 +186,32 @@ public class SgpaCgpa extends Fragment {
     }
 
     public void writeTofile(Context context, ArrayList<SgpaData> datalist) {
-        File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
-                + File.separator + "serlization" + File.separator + "sgpa.srl");
-        boolean deleted;
-        if (directoryFile.exists()) {
-            deleted = directoryFile.delete();
+        try {
+            File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
+                    + File.separator + "serlization" + File.separator + "sgpa.srl");
+            boolean deleted;
+            if (directoryFile.exists()) {
+                deleted = directoryFile.delete();
 
-        }
-        File directory = new File(context.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization");
-        boolean make;
-        if (!directory.exists()) {
-            make = directory.mkdirs();
-        }
+            }
+            File directory = new File(context.getFilesDir().getAbsolutePath()
+                    + File.separator + "serlization");
+            boolean make;
+            if (!directory.exists()) {
+                make = directory.mkdirs();
+            }
 
 
         ObjectOutput out = null;
-        try {
+
             out = new ObjectOutputStream(new FileOutputStream(directory
                     + File.separator + "sgpa.srl"));
             out.flush();
             out.writeObject(datalist);
             out.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public ArrayList<SgpaData> read(Context context) throws Exception {

@@ -253,6 +253,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void save() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         editor = sharedPref.edit();
+        boolean changed = true;
+        if (enrollment.getText().toString().equals(sharedPref.getString(getString(R.string.key_enrollment), "")) && password.getText().toString().equals(sharedPref.getString("password", "")))
+            changed = false;
+
         String temp = enrollment.getText().toString().replaceAll(" ", "");
         editor.putString(getString(R.string.key_enrollment), temp.toUpperCase().trim());
         editor.putString(getString(R.string.key_password), password.getText().toString());
@@ -291,35 +295,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         if (!prefs.getBoolean("firstTime", false)) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                    shortcutintent.putExtra("duplicate", false);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
-                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
-                    sendBroadcast(shortcutintent);
-                }
-            }).start();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                    shortcutintent1.putExtra("duplicate", false);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
-                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                    Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
-                    drawerIntent.putExtra("fragment", 4);
-                    drawerIntent.putExtra("containsurl", false);
-                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
-                    sendBroadcast(shortcutintent1);
-                }
-            }).start();
 
             editor.putBoolean("firstTime", true);
         }
@@ -334,11 +309,21 @@ public class SettingsActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-        if (isConnected) {
-            CookieHandler.setDefault(new CookieManager());
-            new login().execute(Url, PostParam, "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp");
+        if (changed) {
+            if (isConnected) {
+                CookieHandler.setDefault(new CookieManager());
+                new login().execute(Url, PostParam, "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp");
+            } else {
+                Toast.makeText(this, "No Internet", Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(this, "No Internet", Toast.LENGTH_LONG).show();
+            boolean reason = editor.commit();
+            cancelMessAlarms();
+            cancelttAlarms();
+            cancelmorningalarm();
+            Intent intent = new Intent("SetAlarms");
+            sendBroadcast(intent);
+            finish();
         }
 
     }
@@ -379,7 +364,6 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Preferred Attendence Should Be Less Than 100", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-
             save();
 
             return true;
@@ -537,6 +521,35 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
                 boolean reason = editor.commit();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                        shortcutintent.putExtra("duplicate", false);
+                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
+                        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
+                        sendBroadcast(shortcutintent);
+                    }
+                }).start();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                        shortcutintent1.putExtra("duplicate", false);
+                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
+                        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                        Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
+                        drawerIntent.putExtra("fragment", 4);
+                        drawerIntent.putExtra("containsurl", false);
+                        Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
+                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
+                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
+                        sendBroadcast(shortcutintent1);
+                    }
+                }).start();
                 Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
                 cancelMessAlarms();
                 cancelttAlarms();
