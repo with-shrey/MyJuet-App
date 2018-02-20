@@ -20,19 +20,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SHREY GUPTA"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/black" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="B.TECH (161B222)"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/black" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="JUET\nGUNA"
-        android:textColor="@color/colorPrimary" />
+        android:text="JUET\nGUNA\n8726212000"
+        android:textColor="@color/black" />
 
     <TextView
         android:layout_width="match_parent"
@@ -57,6 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="?android:attr/selectableItemBackground"
             android:scaleType="centerCrop"
             android:src="@drawable/fblogo" />
 
@@ -70,6 +71,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="?android:attr/selectableItemBackground"
             android:scaleType="centerCrop"
             android:src="@drawable/gmaillogo" />
 

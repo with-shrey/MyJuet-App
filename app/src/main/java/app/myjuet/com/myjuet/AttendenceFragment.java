@@ -2,6 +2,7 @@ package app.myjuet.com.myjuet;
 
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -178,10 +180,14 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                Intent refresh = new Intent("refreshAttendence");
-                refresh.putExtra("manual", true);
-                getActivity().sendBroadcast(refresh);
-                Toast.makeText(getActivity(), "Background Sync Started", Toast.LENGTH_LONG).show();
+                if (!isMyServiceRunning()) {
+                    Intent refresh = new Intent("refreshAttendence");
+                    refresh.putExtra("manual", true);
+                    getActivity().sendBroadcast(refresh);
+                    Toast.makeText(getActivity(), "Background Sync Started", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Background Sync Already In Progress\nHave Patience..", Toast.LENGTH_LONG).show();
+                }
                 return true;
             case R.id.loginAttendence:
                 Intent login = new Intent(getActivity(), SettingsActivity.class);
@@ -291,7 +297,10 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
                 Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        refreshData();
+                        Intent refresh = new Intent("refreshAttendence");
+                        refresh.putExtra("manual", true);
+                        getActivity().sendBroadcast(refresh);
+                        Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
                     }
                 }).show();
             }
@@ -304,7 +313,32 @@ public class AttendenceFragment extends Fragment implements LoaderManager.Loader
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setPositiveButton("Background", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (!isMyServiceRunning()) {
+                            Intent refresh = new Intent("refreshAttendence");
+                            refresh.putExtra("manual", true);
+                            getActivity().sendBroadcast(refresh);
+                            Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Background Sync Already Running\nHave Patience...", Toast.LENGTH_LONG).show();
+
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                builder.setNegativeButton("Normal Way", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        refreshData();
+                    }
+                });
+                builder.setMessage("Choose Desired Method Of Attendence Refresh\nBackground Method Is Recommeded");
+                builder.show();
+
+
             }
         });
         listdata = new ArrayList<>();

@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +32,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 
 @SuppressWarnings({"unused", "StatementWithEmptyBody"})
-public class BootReciever extends BroadcastReceiver {
+public class BootReciever extends WakefulBroadcastReceiver {
     ArrayList<TimeTableData> datatt = new ArrayList<>();
     ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
 
@@ -40,18 +42,20 @@ public class BootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler js =
-                    (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            JobInfo job = null;
-            job = new JobInfo.Builder(0, new ComponentName(context, jobService.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setRequiresCharging(false)
-                    .setPeriodic(AlarmManager.INTERVAL_DAY)
-                    .build();
-            js.schedule(job);
+        if (sharedPref.getBoolean("autosync", false)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                Log.v("BootReciever", "SDK > Lollipop");
+                JobScheduler js =
+                        (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                JobInfo job = null;
+                job = new JobInfo.Builder(0, new ComponentName(context, jobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setRequiresCharging(false)
+                        .setPeriodic(AlarmManager.INTERVAL_DAY)
+                        .build();
+                js.schedule(job);
 
-        } else {
+            }
             Random h = new Random();
             Random m = new Random();
             Random s = new Random();
@@ -64,8 +68,8 @@ public class BootReciever extends BroadcastReceiver {
             PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_DAY / 4, pendingIntent3);
-        }
 
+        }
         if (sharedPref.getBoolean(context.getString(R.string.key_alarm_meal), false)) {
             Calendar calendar1 = Calendar.getInstance();
             calendar1.set(Calendar.HOUR_OF_DAY, 7);
@@ -257,5 +261,6 @@ public class BootReciever extends BroadcastReceiver {
             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         }
+        completeWakefulIntent(intent);
     }
 }

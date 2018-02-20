@@ -4,10 +4,13 @@ package app.myjuet.com.myjuet;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
@@ -16,9 +19,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +42,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -53,6 +60,7 @@ public class WebviewFragment extends Fragment {
     boolean isConnected;
     String SnackString;
     String link = new String();
+    AlertDialog.Builder builder = null;
 
     public WebviewFragment() {
         // Required empty public constructor
@@ -123,14 +131,31 @@ public class WebviewFragment extends Fragment {
             public void onDownloadStart(String url, String userAgent,
                                         String contentDisposition, String mimetype,
                                         long contentLength) {
+                final int REQUEST_WRITE_STORAGE = 112;
+                boolean hasPermission = (ContextCompat.checkSelfPermission(getActivity(),
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+                Toast.makeText(getContext(), "Starting Download ...\nPlease Wait..", Toast.LENGTH_LONG).show();
+
                 DownloadManager.Request request = new DownloadManager.Request(
                         Uri.parse(url));
                 request.allowScanningByMediaScanner();
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimetype));
+                final String FileName = URLUtil.guessFileName(url, contentDisposition, mimetype);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, FileName);
                 DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
                 dm.enqueue(request);
-
+                BroadcastReceiver onComplete = new BroadcastReceiver() {
+                    public void onReceive(Context ctxt, Intent intent) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                OpenNewVersion(Environment.getExternalStorageDirectory() + "/Download/", FileName);
+                            }
+                        }, 10000);
+                        getActivity().unregisterReceiver(this);
+                    }
+                };
+                getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
             }
         });
         myWebView.setWebChromeClient(new WebChromeClient() {
@@ -208,112 +233,124 @@ public class WebviewFragment extends Fragment {
         if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "CGPA/SGPA", "Open In Browser", "Change Password"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("WEBKIOSK-JUET");
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
+        if (builder == null) {
+            builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("WEBKIOSK-JUET");
+            builder.setItems(colors, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
-
-                        break;
-                    case 1:
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
+                            break;
+                        case 1:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
 
-                        break;
-                    case 2:
+                            break;
+                        case 2:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
-                        break;
-                    case 3:
+                            break;
+                        case 3:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
-                        break;
-                    case 4:
+                            break;
+                        case 4:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
-                        break;
-                    case 5:
+                            break;
+                        case 5:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
-                        break;
-                    case 6:
+                            break;
+                        case 6:
 
-                        ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
+                            ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
-                        if (((DrawerActivity) getActivity()).activeFragment == 3)
-                            myWebView.loadUrl(link);
-                        prev = link;
+                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                myWebView.loadUrl(link);
+                            prev = link;
+                            builder = null;
 
-                        break;
-                    case 7:
-                        final AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
-                        confirm.setMessage("You Are Going To Open Webkiosk In Your Browser.\nAre You Sure?");
-                        confirm.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                sendIntentBrowser();
-                            }
+                            break;
+                        case 7:
+                            final AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
+                            confirm.setMessage("You Are Going To Open Webkiosk In Your Browser.\nAre You Sure?");
+                            confirm.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    sendIntentBrowser();
+                                }
 
-                        });
-                        confirm.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            });
+                            confirm.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        });
-                        confirm.show();
-                        break;
-                    case 8:
-                        final AlertDialog.Builder change = new AlertDialog.Builder(getActivity());
-                        change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
-                        change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                            confirm.show();
+                            builder = null;
+
+                            break;
+                        case 8:
+                            final AlertDialog.Builder change = new AlertDialog.Builder(getActivity());
+                            change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
+                            change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
                                     link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
-                                if (((DrawerActivity) getActivity()).activeFragment == 3)
-                                    myWebView.loadUrl(link);
-                            }
+                                    if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                        myWebView.loadUrl(link);
+                                }
 
-                        });
-                        change.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            });
+                            change.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        });
-                        change.show();
-                        break;
+                                }
+                            });
+                            change.show();
+                            builder = null;
+                            break;
+                    }
                 }
-            }
 
-        });
-        builder.show();
+            });
+
+            builder.show();
+        }
 
     }
 
-    private void sendIntentBrowser() {
+    public void sendIntentBrowser() {
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         final String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
@@ -326,5 +363,13 @@ public class WebviewFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    void OpenNewVersion(String location, String FileName) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(location + FileName)),
+                "application/vnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

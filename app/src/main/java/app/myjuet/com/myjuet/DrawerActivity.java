@@ -1,8 +1,18 @@
 package app.myjuet.com.myjuet;
 
+import android.*;
+import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +29,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -72,7 +83,7 @@ public class DrawerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void requestNewInterstitial() {
+    public void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
@@ -104,6 +115,25 @@ public class DrawerActivity extends AppCompatActivity
                 super.onAdLoaded();
             }
         });
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            final int REQUEST_WRITE_STORAGE = 112;
+            boolean hasPermission = (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+
+            if (!hasPermission) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_WRITE_STORAGE);
+            }
+            hasPermission = (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+
+            if (!hasPermission) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        2);
+            }
+        }
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String user = prefs.getString(getString(R.string.key_enrollment), "");
@@ -137,6 +167,34 @@ public class DrawerActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         in = getIntent().getIntExtra("fragment", 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                String packageName = this.getPackageName();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                intent.setData(Uri.parse("package:" + packageName));
+                startActivity(intent);
+
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        int latest = sharedPref.getInt("latest_version_number", 0);
+        String latestCode = sharedPref.getString("latest_version_code", "0.0");
+        String url = sharedPref.getString("url", "http://myjuet.tk"), code = "0.0";
+
+        int version = 0;
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionCode;
+            code = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (version < latest && !getIntent().getBooleanExtra("containsurl", false)) {
+            showUpdateAlert(code, latestCode, url);
+        }
         if (in != 4)
             requestNewInterstitial();
         navigationView.getMenu().getItem(in).setChecked(true);
@@ -158,7 +216,6 @@ public class DrawerActivity extends AppCompatActivity
             onNavigationItemSelected(navigationView.getMenu().getItem(in));
         name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
     }
 
@@ -350,8 +407,7 @@ public class DrawerActivity extends AppCompatActivity
                     Fragment fragment = new SgpaCgpa();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
                 }
-                if (!mInterstitialAd.isLoading() && (activeFragment != 3))
-                    requestNewInterstitial();
+
 
             }
         }, 300);
@@ -373,6 +429,32 @@ public class DrawerActivity extends AppCompatActivity
                 ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    void showUpdateAlert(String current, String code, String Url) {
+        final String url = Url;
+        final Context context = DrawerActivity.this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(DrawerActivity.this, DrawerActivity.class);
+                intent.putExtra("fragment", 4);
+                intent.putExtra("url", url);
+                intent.putExtra("containsurl", true);
+                finish();
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("LATER", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setMessage("New App Version " + code + " is Available" + "\nCurrent App Version " + current);
+        builder.show();
     }
 
 
