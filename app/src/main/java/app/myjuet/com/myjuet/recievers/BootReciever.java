@@ -53,7 +53,9 @@ public class BootReciever extends WakefulBroadcastReceiver {
                         .setRequiresCharging(false)
                         .setPeriodic(AlarmManager.INTERVAL_DAY)
                         .build();
-                js.schedule(job);
+                if (js != null) {
+                    js.schedule(job);
+                }
 
             }
             Random h = new Random();
