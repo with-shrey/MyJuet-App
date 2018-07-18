@@ -2,6 +2,8 @@ package app.myjuet.com.myjuet;
 
 import android.*;
 import android.Manifest;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -95,6 +97,7 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        Fabric.with(this, new Crashlytics());
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         AdView mAdView;
@@ -438,11 +441,7 @@ public class DrawerActivity extends AppCompatActivity
         builder.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(DrawerActivity.this, DrawerActivity.class);
-                intent.putExtra("fragment", 4);
-                intent.putExtra("url", url);
-                intent.putExtra("containsurl", true);
-                finish();
+                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://play.google.com/store/apps/details?id="+context.getPackageName()));
                 startActivity(intent);
 
             }
