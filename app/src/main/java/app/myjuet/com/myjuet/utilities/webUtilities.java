@@ -302,7 +302,7 @@ public class webUtilities extends AppCompatActivity {
     public static ArrayList<SgpaData> crawlCGPA(String Result) {
         ArrayList<SgpaData> datasg = new ArrayList<>();
         if (Result.contains("<tbody>")) {
-            String p1 = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
+            String p1 = Result.substring(Result.indexOf("<tbody>", Result.indexOf("<tbody>") + 1), Result.indexOf("</tbody>", Result.indexOf("</tbody>") + 1));
             for (int i = 1; i <= 8 && p1.contains("<tr>"); i++) {
                 String p2 = p1.substring(p1.indexOf("<tr>"), p1.indexOf("</tr>"));
                 p1 = p1.substring(p1.indexOf("</tr>") + 5);

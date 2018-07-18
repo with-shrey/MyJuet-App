@@ -209,7 +209,7 @@ public class SgpaCgpa extends Fragment {
             out.flush();
             out.writeObject(datalist);
             out.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

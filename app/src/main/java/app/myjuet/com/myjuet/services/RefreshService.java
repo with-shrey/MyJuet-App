@@ -33,6 +33,8 @@ import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.ListsReturner;
+import app.myjuet.com.myjuet.recievers.AlarmReciever;
+import app.myjuet.com.myjuet.recievers.InternetChangeReciever;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
@@ -122,12 +124,12 @@ public class RefreshService extends IntentService {
             File directorydetails = new File(getFilesDir().getAbsolutePath()
                     + File.separator + "serlization" + File.separator + "detailsattendence.srl");
 
-            sendNotification("Attendence Sync started", 1);
+            sendNotification("Attendence Sync started", 1, false);
             try {
                     CookieHandler.setDefault(new CookieManager());
                 String tstring = webUtilities.sendPost(Url, PostParam);
                     Content = webUtilities.GetPageContent(mAttendence);
-                sendNotification("Sync in Progress...", 1);
+                sendNotification("Sync in Progress...", 1, true);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,15 +181,18 @@ public class RefreshService extends IntentService {
                     e.printStackTrace();
                 }
 
-                sendNotification("Attendence Synced successfully " + DateString, 1);
+                sendNotification("Attendence Synced successfully " + DateString, 1, false);
             }
             if (intent.getBooleanExtra("manual", false)) {
                 Intent dialogIntent = new Intent(getBaseContext(), DrawerActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplication().startActivity(dialogIntent);
+
+
             }
         } else if (user.equals("") || pass.equals(""))
-            sendNotification("Please Enter Login Details", 0);
+            sendNotification("Please Enter Login Details", 0, false);
         else if (today || !isConnected) ;
         else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) ;
 
@@ -195,12 +200,19 @@ public class RefreshService extends IntentService {
             //  sendNotification("Webkiosk Down/Unreachable", 1);
 
         else
-            sendNotification("Wrong Credentials", 1);
-
-
+            sendNotification("Wrong Credentials", 1, false);
+        try {
+            if (intent.getIntExtra("reciever", 0) == 1) {
+                InternetChangeReciever.completeWakefulIntent(intent);
+            } else if (intent.getIntExtra("reciever", 0) == 2) {
+                AlarmReciever.completeWakefulIntent(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void sendNotification(String msg, int i) {
+    private void sendNotification(String msg, int i, boolean onGoing) {
         PendingIntent contentIntent;
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -218,6 +230,8 @@ public class RefreshService extends IntentService {
                         .setContentText(msg)
                         .setSmallIcon(R.drawable.ic_notification_icon)
                         .setAutoCancel(true);
+        if (onGoing)
+            mBuilder.setOngoing(true);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(3, mBuilder.build());
     }

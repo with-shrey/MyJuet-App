@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +37,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 
 @SuppressWarnings({"unused", "StatementWithEmptyBody"})
-public class BootReciever extends BroadcastReceiver {
+public class BootReciever extends WakefulBroadcastReceiver {
     ArrayList<TimeTableData> datatt = new ArrayList<>();
     ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
 
@@ -45,6 +47,7 @@ public class BootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
+
 
 
             PeriodicWorkRequest workRequest =new PeriodicWorkRequest.Builder(RefreshWorker.class,24, TimeUnit.HOURS)
@@ -247,5 +250,6 @@ public class BootReciever extends BroadcastReceiver {
             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         }
+        completeWakefulIntent(intent);
     }
 }

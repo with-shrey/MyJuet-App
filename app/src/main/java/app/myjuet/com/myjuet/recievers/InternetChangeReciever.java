@@ -5,11 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import app.myjuet.com.myjuet.services.RefreshService;
 
-public class InternetChangeReciever extends BroadcastReceiver {
+public class InternetChangeReciever extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager cm =
@@ -19,16 +20,19 @@ public class InternetChangeReciever extends BroadcastReceiver {
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
             if (!intent.getBooleanExtra("manual", false))
-                context.startService(new Intent(context, RefreshService.class).putExtra("alarm", "no"));
+                startWakefulService(context, new Intent(context, RefreshService.class).putExtra("alarm", "no").putExtra("reciever", 1));
             else {
                 Log.v("background", "intent send");
                 Intent service = new Intent(context, RefreshService.class);
                 service.putExtra("alarm", "no");
                 service.putExtra("manual", true);
-                context.startService(service);
+                service.putExtra("reciever", 1);
+                startWakefulService(context, service);
 
             }
 
         }
+
+        completeWakefulIntent(intent);
     }
 }

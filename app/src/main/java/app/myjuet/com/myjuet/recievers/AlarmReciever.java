@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import java.util.Calendar;
 
@@ -17,11 +18,11 @@ import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.services.RefreshService;
 
 
-public class AlarmReciever extends BroadcastReceiver {
+public class AlarmReciever extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long[] patern = {1000, 1000, 1000, 1000, 1000, 1000};
+        long[] patern = {100, 0, 1000};
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
 
         Uri timetableuri = Uri.parse(sharedPref.getString(context.getString(R.string.key_notification_tt), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
@@ -32,7 +33,7 @@ public class AlarmReciever extends BroadcastReceiver {
 
         String Title = intent.getStringExtra("title");
         if (Title.equals("app"))
-            context.startService(new Intent(context, RefreshService.class).putExtra("alarm", "yes"));
+            startWakefulService(context, new Intent(context, RefreshService.class).putExtra("alarm", "yes").putExtra("reciever", 2));
         else if (intent.getIntExtra("fragmentno", 2) == 2) {
             Intent drawer = new Intent(context, DrawerActivity.class);
             drawer.putExtra("fragment", intent.getIntExtra("fragmentno", 2));
@@ -87,5 +88,6 @@ public class AlarmReciever extends BroadcastReceiver {
             mBuilder.setContentIntent(contentIntent);
             mNotificationManager.notify(2, mBuilder.build());
         }
+        completeWakefulIntent(intent);
     }
 }

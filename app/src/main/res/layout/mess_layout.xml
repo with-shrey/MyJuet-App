@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:orientation="vertical">
+    android:layout_marginBottom="50dp"
+    android:background="@android:color/black">
 
     <TextView
         android:id="@+id/day_mess"
@@ -18,9 +18,11 @@
     <app.myjuet.com.myjuet.utilities.TouchImageView
         android:id="@+id/anapurna_img"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/day_mess"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="50dp"
         android:gravity="center_horizontal|center_vertical" />
 
-</LinearLayout>
+</RelativeLayout>
