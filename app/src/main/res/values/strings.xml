@@ -72,4 +72,5 @@
     <string name="contact_message_suggestion">Message/Suggestion:</string>
     <string name="enter_your_message_here">Enter Your Message Here...</string>
     <string name="timetable">TIMETABLE</string>
+    <string name="io.branch.apiKey" translatable="false">key_live_kbFP07KMrODXA6V6hsdWtjfpFBltcoTZ</string>
 </resources>

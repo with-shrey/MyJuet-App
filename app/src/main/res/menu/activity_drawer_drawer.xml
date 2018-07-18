@@ -58,7 +58,7 @@
                 <item
                     android:id="@+id/contact_drawer"
                     android:icon="@drawable/ic_info_about"
-                    android:title="About" />
+                    android:title="About the Developer" />
 
             </group>
         </menu>

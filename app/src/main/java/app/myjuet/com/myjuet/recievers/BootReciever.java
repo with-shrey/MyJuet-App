@@ -18,12 +18,18 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
 import app.myjuet.com.myjuet.services.jobService;
+import app.myjuet.com.myjuet.workers.RefreshWorker;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -39,28 +45,16 @@ public class BootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler js =
-                    (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            JobInfo job = null;
-            job = new JobInfo.Builder(0, new ComponentName(context, jobService.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setRequiresCharging(false)
-                    .setPeriodic(AlarmManager.INTERVAL_DAY)
-                    .build();
-            js.schedule(job);
 
-        } else {
-            Calendar calendar4 = Calendar.getInstance();
-            calendar4.set(Calendar.HOUR_OF_DAY, 0);
-            calendar4.set(Calendar.MINUTE, 1);
-            calendar4.set(Calendar.SECOND, 0);
-            if (calendar4.before(Calendar.getInstance()))
-                calendar4.add(Calendar.DATE, 1);
-            PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 56, new Intent(context, AlarmReciever.class).putExtra("title", "app"), PendingIntent.FLAG_UPDATE_CURRENT);
-            AlarmManager am3 = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            am3.setRepeating(AlarmManager.RTC_WAKEUP, calendar4.getTimeInMillis(), AlarmManager.INTERVAL_HALF_DAY / 4, pendingIntent3);
-        }
+
+            PeriodicWorkRequest workRequest =new PeriodicWorkRequest.Builder(RefreshWorker.class,24, TimeUnit.HOURS)
+                    .setConstraints(
+                            new Constraints.Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                    ).build();
+            if (WorkManager.getInstance() != null)
+                WorkManager.getInstance().enqueue(workRequest);
 
         if (sharedPref.getBoolean(context.getString(R.string.key_alarm_meal), false)) {
             Calendar calendar1 = Calendar.getInstance();

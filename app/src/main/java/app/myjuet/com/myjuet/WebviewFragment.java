@@ -137,11 +137,16 @@ public class WebviewFragment extends Fragment {
 
             @Override
             public void onProgressChanged(WebView view, int progress) {
+                try{
                 if (progressBar.getVisibility() == View.GONE) {
                     if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
                     ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.VISIBLE);
+
                 }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
                 if (progress == 100) {
                     try {

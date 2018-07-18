@@ -35,7 +35,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -60,7 +61,7 @@ public class DrawerActivity extends AppCompatActivity
     InterstitialAd mInterstitialAd;
     boolean doubleBackToExitPressedOnce = false;
     private AppBarLayout appBarLayout;
-
+    int in=0;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -82,6 +83,7 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_drawer);
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -94,10 +96,13 @@ public class DrawerActivity extends AppCompatActivity
             @Override
             public void onAdLoaded() {
 
-                    mInterstitialAd.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterstitialAd.show();
+                    }
+                }, 5000);
                 super.onAdLoaded();
-
-
             }
         });
 
@@ -117,7 +122,7 @@ public class DrawerActivity extends AppCompatActivity
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
-        requestNewInterstitial();
+
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         fab = (FloatingActionButton) findViewById(R.id.drawer_fab);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_tt);
@@ -132,9 +137,11 @@ public class DrawerActivity extends AppCompatActivity
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        int i = getIntent().getIntExtra("fragment", 0);
-        navigationView.getMenu().getItem(i).setChecked(true);
-        if (i == 0) {
+        in = getIntent().getIntExtra("fragment", 0);
+        if(in!=4)
+        requestNewInterstitial();
+        navigationView.getMenu().getItem(in).setChecked(true);
+        if (in == 0) {
             CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             tabLayout.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
@@ -149,7 +156,7 @@ public class DrawerActivity extends AppCompatActivity
 
 
         } else
-        onNavigationItemSelected(navigationView.getMenu().getItem(i));
+        onNavigationItemSelected(navigationView.getMenu().getItem(in));
         name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -168,9 +175,7 @@ public class DrawerActivity extends AppCompatActivity
             }
             } else {
                 if (doubleBackToExitPressedOnce) {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                }
+                    requestNewInterstitial();
                 super.onBackPressed();
                 return;
             }
@@ -197,9 +202,7 @@ public class DrawerActivity extends AppCompatActivity
         }
         final int id = item.getItemId();
         if (id == R.id.exit) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+            requestNewInterstitial();
             finish();
         }
 
@@ -263,7 +266,6 @@ public class DrawerActivity extends AppCompatActivity
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                         }
                     }, 2500);
                     fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.magnitude40)));
@@ -349,10 +351,12 @@ public class DrawerActivity extends AppCompatActivity
                     Fragment fragment = new SgpaCgpa();
                     transition.replace(R.id.content_drawer, fragment).commitNow();
                 }
+        if (!mInterstitialAd.isLoading() && (activeFragment != 3))
+             requestNewInterstitial();
 
             }
         }, 300);
-        requestNewInterstitial();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

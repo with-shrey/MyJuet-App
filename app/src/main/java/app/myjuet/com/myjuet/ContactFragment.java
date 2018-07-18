@@ -28,7 +28,6 @@ public class ContactFragment extends Fragment {
         setHasOptionsMenu(false);
         ImageButton shreyfb = (ImageButton) view.findViewById(R.id.shrey_fb);
         ImageButton shreygmail = (ImageButton) view.findViewById(R.id.shrey_gmail);
-        ImageButton pa_arts = (ImageButton) view.findViewById(R.id.pa_arts_fb);
 
         shreyfb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +39,7 @@ public class ContactFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:myjuetapp@gmail.com"));
+                intent.setData(Uri.parse("mailto:shrey.gupta1nov@gmail.com"));
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(Intent.createChooser(intent, "Send Using.."));
                 } else {
@@ -51,12 +50,6 @@ public class ContactFragment extends Fragment {
                         startActivity(browser);
                     }
                 }
-            }
-        });
-        pa_arts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendIntent("https://www.facebook.com/PukAggarwal");
             }
         });
 

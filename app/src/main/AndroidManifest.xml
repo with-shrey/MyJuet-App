@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -21,7 +22,9 @@
         <service
             android:name=".services.RefreshService"
             android:exported="false" />
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="bc09003b45b74db6b2b8ab7fe8ad13e6e8f31527" />
         <receiver android:name=".recievers.InternetChangeReciever">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
