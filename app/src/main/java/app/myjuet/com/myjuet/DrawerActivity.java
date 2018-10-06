@@ -3,6 +3,8 @@ package app.myjuet.com.myjuet;
 import android.*;
 import android.Manifest;
 import com.crashlytics.android.Crashlytics;
+
+import app.myjuet.com.myjuet.utilities.webUtilities;
 import io.fabric.sdk.android.Fabric;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -56,6 +58,8 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.io.IOException;
 
 import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
@@ -219,7 +223,6 @@ public class DrawerActivity extends AppCompatActivity
             onNavigationItemSelected(navigationView.getMenu().getItem(in));
         name.setText(user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
     }
 
     @Override

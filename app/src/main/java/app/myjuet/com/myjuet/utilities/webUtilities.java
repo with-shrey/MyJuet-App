@@ -3,8 +3,10 @@ package app.myjuet.com.myjuet.utilities;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -72,6 +74,8 @@ public class webUtilities extends AppCompatActivity {
         in.close();
         return response.toString();
     }
+
+
 
 
     public static String GetPageContent(String url) throws Exception {

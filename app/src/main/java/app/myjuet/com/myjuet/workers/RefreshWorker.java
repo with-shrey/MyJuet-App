@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.ListsReturner;
@@ -36,6 +37,10 @@ import static app.myjuet.com.myjuet.services.RefreshService.pingHost;
 import static app.myjuet.com.myjuet.utilities.webUtilities.AttendenceCrawler;
 
 public class RefreshWorker extends Worker {
+    public RefreshWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
+
     @NonNull
     @Override
     public Result doWork() {

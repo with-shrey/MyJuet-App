@@ -30,7 +30,6 @@ import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
-import app.myjuet.com.myjuet.services.jobService;
 import app.myjuet.com.myjuet.workers.RefreshWorker;
 
 import static android.content.Context.ALARM_SERVICE;

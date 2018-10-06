@@ -1,18 +1,35 @@
 package app.myjuet.com.myjuet.data;
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import app.myjuet.com.myjuet.R;
 
+@Entity
 public class AttendenceData implements java.io.Serializable {
-    private String mLecTut, mTut, mLec, mName;
-    private int mCountPresent, mCountAbsent;
-    private int mOnNext, mOnLeaving;
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String mSubjectCode;
+    private String mSubjectUrl;
+    private String mLecTut;
+    private String mTut;
+    private String mLec;
+    private String mName;
+    private int mCountPresent;
+    private int mCountAbsent;
+    private int mOnNext;
+    private int mOnLeaving;
+    private boolean loading;
 
 /*
 public constructor
  */
+
 
     public AttendenceData(String Name, int CountAbsent, int CountPresent, String LecTut, String Lec, String Tut) {
         this.mName = Name;
@@ -30,8 +47,107 @@ public constructor
         this.mTut = Tut;
 
     }
+    public AttendenceData() {
+        loading = false;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSubjectCode() {
+        return mSubjectCode;
+    }
+
+    public String getLecTut() {
+        return mLecTut;
+    }
+
+    public String getTut() {
+        return mTut;
+    }
+
+    public String getLec() {
+        return mLec;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public int getCountPresent() {
+        return mCountPresent;
+    }
+
+    public int getCountAbsent() {
+        return mCountAbsent;
+    }
+
+    public int getOnNext() {
+        return mOnNext;
+    }
+
+    public int getOnLeaving() {
+        return mOnLeaving;
+    }
 
 
+
+    public String getSubjectUrl() {
+        return mSubjectUrl;
+    }
+
+    public void setSubjectUrl(String subjectUrl) {
+        mSubjectUrl = subjectUrl;
+    }
+
+    public void setSubjectCode(String subjectCode) {
+        mSubjectCode = subjectCode;
+    }
+
+    public void setLecTut(String lecTut) {
+        mLecTut = lecTut;
+    }
+
+    public void setTut(String tut) {
+        mTut = tut;
+    }
+
+    public void setLec(String lec) {
+        mLec = lec;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public void setCountPresent(int countPresent) {
+        mCountPresent = countPresent;
+    }
+
+    public void setCountAbsent(int countAbsent) {
+        mCountAbsent = countAbsent;
+    }
+
+    public void setOnNext(int onNext) {
+        mOnNext = onNext;
+    }
+
+    public void setOnLeaving(int onLeaving) {
+        mOnLeaving = onLeaving;
+    }
 
     public String getmName() {
         return mName;

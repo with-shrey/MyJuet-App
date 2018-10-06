@@ -95,7 +95,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         private TextView Name;
@@ -121,6 +121,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), AttendenceDetailsActivity.class);
             intent.putExtra("listno", getAdapterPosition());
+            intent.putExtra("id", list.get(getAdapterPosition()).getId());
             view.getContext().startActivity(intent);
         }
     }
