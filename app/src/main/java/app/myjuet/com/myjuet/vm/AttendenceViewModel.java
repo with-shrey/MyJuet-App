@@ -7,15 +7,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.URLUtil;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,9 +19,9 @@ import java.util.Map;
 
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
+import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import static app.myjuet.com.myjuet.services.RefreshService.pingHost;
@@ -36,7 +32,7 @@ public class AttendenceViewModel extends AndroidViewModel {
     AppDatabase mAppDatabase;
     Application context;
     Map<String, String> loginCookies;
-    public static enum Status{LOADING,SUCCESS ,WRONG_PASSWORD, NO_INTERNET,WEBKIOSK_DOWN ,FAILED}
+
     public AttendenceViewModel(@NonNull Application application) {
         super(application);
         context = application;
@@ -44,9 +40,9 @@ public class AttendenceViewModel extends AndroidViewModel {
         mAppDatabase = AppDatabase.newInstance(application);
     }
 
-    public LiveData<Status> loginUser(){
-        MutableLiveData<Status> mLoginStatus = new MutableLiveData<>();
-        mLoginStatus.setValue(Status.LOADING);
+    public LiveData<Constants.Status> loginUser(){
+        MutableLiveData<Constants.Status> mLoginStatus = new MutableLiveData<>();
+        mLoginStatus.setValue(Constants.Status.LOADING);
         SharedPreferences prefs = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String user = prefs.getString(context.getString(R.string.key_enrollment), "").toUpperCase().trim();
         String pass = prefs.getString(context.getString(R.string.key_password), "");
@@ -54,12 +50,12 @@ public class AttendenceViewModel extends AndroidViewModel {
         mAppExecutors.networkIO().execute(() -> {
             if (!isConnected(context)){
                 mAppExecutors.mainThread().execute(()-> {
-                    mLoginStatus.setValue(Status.NO_INTERNET);
+                    mLoginStatus.setValue(Constants.Status.NO_INTERNET);
                 }) ;
             }
            else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
                 mAppExecutors.mainThread().execute(()-> {
-                    mLoginStatus.setValue(Status.WEBKIOSK_DOWN);
+                    mLoginStatus.setValue(Constants.Status.WEBKIOSK_DOWN);
                 });
             }else
             try {
@@ -83,19 +79,19 @@ public class AttendenceViewModel extends AndroidViewModel {
                 if(!res.body().contains("Invalid Password")){
                     loginCookies = res.cookies();
                     mAppExecutors.mainThread().execute(()->{
-                        mLoginStatus.setValue(Status.SUCCESS);
+                        mLoginStatus.setValue(Constants.Status.SUCCESS);
                     });
                 }else{
                     loginCookies = null;
                     mAppExecutors.mainThread().execute(()-> {
-                        mLoginStatus.setValue(Status.WRONG_PASSWORD);
+                        mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
                     });
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
                 mAppExecutors.mainThread().execute(()-> {
-                    mLoginStatus.setValue(Status.FAILED);
+                    mLoginStatus.setValue(Constants.Status.FAILED);
                 });
             }
         });
@@ -104,8 +100,8 @@ public class AttendenceViewModel extends AndroidViewModel {
         return mLoginStatus;
     }
 
-    public LiveData<Status> startLoading(){
-        MutableLiveData<Status> dataStatus = new MutableLiveData<>();
+    public LiveData<Constants.Status> startLoading(){
+        MutableLiveData<Constants.Status> dataStatus = new MutableLiveData<>();
         mAppExecutors.networkIO().execute(() -> {
             mAppDatabase.AttendenceDao().updateLoading(true);
             Document doc = null;
@@ -115,13 +111,13 @@ public class AttendenceViewModel extends AndroidViewModel {
                         .get();
                 webUtilities.parseAttendencePage(mAppDatabase,doc);
                 mAppExecutors.mainThread().execute(()-> {
-                    dataStatus.setValue(Status.SUCCESS);
+                    dataStatus.setValue(Constants.Status.SUCCESS);
                 });
 
             } catch (IOException e) {
                 e.printStackTrace();
                 mAppExecutors.mainThread().execute(()-> {
-                    dataStatus.setValue(Status.FAILED);
+                    dataStatus.setValue(Constants.Status.FAILED);
                 });
             }
 
@@ -129,10 +125,10 @@ public class AttendenceViewModel extends AndroidViewModel {
         return dataStatus;
     }
 
-    public  LiveData<Status> loadDetails(){
+    public  LiveData<Constants.Status> loadDetails(){
 //        mAppDatabase.AttendenceDao().updateLoading(true);
         List<AttendenceData> data = mAppDatabase.AttendenceDao().AttendanceData();
-        MutableLiveData<Status> dataStatus = new MutableLiveData<>();
+        MutableLiveData<Constants.Status> dataStatus = new MutableLiveData<>();
         for (AttendenceData datum : data) {
             mAppExecutors.networkIO().execute(() -> {
                 try {
@@ -152,7 +148,7 @@ public class AttendenceViewModel extends AndroidViewModel {
                     e.printStackTrace();
                     mAppDatabase.AttendenceDao().updateLoading(false);
                     mAppExecutors.mainThread().execute(() -> {
-                        dataStatus.setValue(Status.FAILED);
+                        dataStatus.setValue(Constants.Status.FAILED);
                     });
 
                 }

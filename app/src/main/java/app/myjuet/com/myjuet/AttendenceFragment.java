@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -22,7 +21,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,13 +46,11 @@ import java.util.Locale;
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
-import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.AttendenceDataDao;
 import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
-import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.vm.AttendenceViewModel;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -200,7 +196,7 @@ public class AttendenceFragment extends Fragment {
 
     }
 
-    void handleStatusCode(AttendenceViewModel.Status status){
+    void handleStatusCode(Constants.Status status){
         switch (status){
 
             case LOADING:
@@ -424,9 +420,9 @@ public class AttendenceFragment extends Fragment {
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected && !isMyServiceRunning()) {
             mAttendenceViewModel.loginUser().observe(this,status -> {
-                if (status == AttendenceViewModel.Status.SUCCESS){
+                if (status == Constants.Status.SUCCESS){
                     mAttendenceViewModel.startLoading().observe(AttendenceFragment.this,status1 -> {
-                        if (status1 == AttendenceViewModel.Status.SUCCESS){
+                        if (status1 == Constants.Status.SUCCESS){
                             swipeRefreshLayout.setRefreshing(false);
                             Date dateobj = new Date();
                             SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
@@ -437,7 +433,7 @@ public class AttendenceFragment extends Fragment {
                             editor.apply();
                             handleStatusCode(status1);
                             mAttendenceViewModel.loadDetails().observe(AttendenceFragment.this,status2 -> {
-                                if (status2 != AttendenceViewModel.Status.SUCCESS) {
+                                if (status2 != Constants.Status.SUCCESS) {
                                     handleStatusCode(status2);
                                 }
                             });

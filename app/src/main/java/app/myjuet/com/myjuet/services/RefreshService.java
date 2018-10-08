@@ -4,19 +4,15 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.arch.lifecycle.LifecycleService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -24,13 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import androidx.annotation.Nullable;
 import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
-import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.database.AppDatabase;
-import app.myjuet.com.myjuet.recievers.AlarmReciever;
-import app.myjuet.com.myjuet.recievers.InternetChangeReciever;
 import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.vm.AttendenceViewModel;
@@ -89,7 +81,7 @@ public class RefreshService extends LifecycleService {
             return false; // Either timeout or unreachable or failed DNS lookup.
         }
     }
-    void handleStatusCode(AttendenceViewModel.Status status){
+    void handleStatusCode(Constants.Status status){
             switch (status){
                 case LOADING:
                     break;
@@ -140,16 +132,16 @@ public class RefreshService extends LifecycleService {
         if ((!user.equals("") || !pass.equals(""))  && !today && isConnected && temp) {
             sendNotification("Logging In...", 1, false);
             mAttendenceViewModel.loginUser().observe(this,status -> {
-                if (status == AttendenceViewModel.Status.SUCCESS){
+                if (status == Constants.Status.SUCCESS){
                     sendNotification("Sync in Progress...", 1, true);
                     mAttendenceViewModel.startLoading().observe(this, status1 -> {
-                        if (status1 == AttendenceViewModel.Status.SUCCESS){
+                        if (status1 == Constants.Status.SUCCESS){
                             Date dateobj = new Date();
                             SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
                             String DateString = formattor.format(dateobj);
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString(Constants.DATE,DateString);
-                            editor.apply();
+                            editor.commit();
                             sendNotification("Syncing Details In Progress...", 1, true);
                             AppDatabase.newInstance(this).AttendenceDao().AttendanceLoadingPendingCountObserver().observe(this,number -> {
                                 if (number != null && number <= 0){
@@ -158,7 +150,7 @@ public class RefreshService extends LifecycleService {
                                 }
                             });
                             mAttendenceViewModel.loadDetails().observe(this,status2 -> {
-                                if (status2 == AttendenceViewModel.Status.SUCCESS){
+                                if (status2 == Constants.Status.SUCCESS){
                                     sendNotification("Attendence Synced successfully " + DateString, 1, false);
                                     stopSelf();
                                 }else{

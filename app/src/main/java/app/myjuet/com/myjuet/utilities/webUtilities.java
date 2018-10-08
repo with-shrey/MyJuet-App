@@ -254,7 +254,7 @@ public class webUtilities extends AppCompatActivity {
         if (tbodies.size() > 0) {
             Element tbody = tbodies.get(0);
             int CountPresent = tbody.html().split("Present").length - 1;
-            int CountAbsent = tbody.html().split("Absent").length - 2;
+            int CountAbsent = tbody.html().split("Absent").length - 1;
             int mOnNext,mOnLeaving;
             if (CountPresent == 0 && CountAbsent == 0) {
                 mOnNext = 100;
