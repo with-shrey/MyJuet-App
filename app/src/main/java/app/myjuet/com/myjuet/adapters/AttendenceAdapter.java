@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         TextView Total = viewHolder.Total;
         TextView Next = viewHolder.Next;
         TextView Leaving = viewHolder.Leaving;
+        ProgressBar Loading = viewHolder.Loading;
 
         GradientDrawable magnitudeCircle = (GradientDrawable) Total.getBackground();
         int color;
@@ -68,6 +70,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         String attendnext = "Attending Next:" + data.getmOnNext();
         Leaving.setText(next);
         Next.setText(attendnext);
+        Loading.setVisibility(data.isLoading() ? View.VISIBLE : View.GONE);
     }
 
     // Returns the total count of items in the list
@@ -102,6 +105,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
         private TextView Total;
         private TextView Next;
         private TextView Leaving;
+        private ProgressBar Loading;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -114,6 +118,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
             Total = (TextView) itemView.findViewById(R.id.total);
             Next = (TextView) itemView.findViewById(R.id.next);
             Leaving = (TextView) itemView.findViewById(R.id.leaving);
+            Loading = (ProgressBar) itemView.findViewById(R.id.loading);
             itemView.setOnClickListener(this);
         }
 

@@ -20,6 +20,9 @@ public interface AttendenceDataDao {
     @Query("SELECT * from attendencedata")
     LiveData<List<AttendenceData>> AttendanceDataObserver();
 
+ @Query("SELECT COUNT(*) from attendencedata WHERE loading = 0")
+    LiveData<Integer> AttendanceLoadingPendingCountObserver();
+
     @Query("SELECT * from attendencedata")
     List<AttendenceData> AttendanceData();
 

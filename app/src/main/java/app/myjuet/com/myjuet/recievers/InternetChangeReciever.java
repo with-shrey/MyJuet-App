@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class InternetChangeReciever extends WakefulBroadcastReceiver {
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
             if (!intent.getBooleanExtra("manual", false))
-                startWakefulService(context, new Intent(context, RefreshService.class).putExtra("alarm", "no").putExtra("reciever", 1));
+                ActivityCompat.startForegroundService(context, new Intent(context, RefreshService.class).putExtra("alarm", "no").putExtra("reciever", 1));
             else {
                 Log.v("background", "intent send");
                 Intent service = new Intent(context, RefreshService.class);

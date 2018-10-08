@@ -22,7 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
+<RelativeLayout
+    android:layout_width="75dp"
+    android:layout_height="75dp">
+    <ProgressBar
+        android:id="@+id/loading"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
             <TextView
                 android:id="@+id/total"
                 android:layout_width="60dp"
@@ -30,10 +37,14 @@
                 android:layout_gravity="center"
                 android:background="@drawable/shape_circle"
                 android:gravity="center"
+                android:elevation="5dp"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
+                android:layout_centerInParent="true"
                 android:textStyle="bold" />
+
+</RelativeLayout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

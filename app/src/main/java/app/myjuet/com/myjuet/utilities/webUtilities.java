@@ -1,8 +1,16 @@
 package app.myjuet.com.myjuet.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -22,6 +30,7 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.data.SgpaData;
+import app.myjuet.com.myjuet.database.AppDatabase;
 
 
 @SuppressWarnings("StringBufferMayBeStringBuilder")
@@ -41,6 +50,14 @@ public class webUtilities extends AppCompatActivity {
             e.printStackTrace();
         }
         return link;
+    }
+
+    public static boolean isConnected(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return  activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 
     //sending Post to a link with paramaters
@@ -99,208 +116,6 @@ public class webUtilities extends AppCompatActivity {
         in.close();
         return response.toString();
 
-    }
-
-
-    public static ListsReturner AttendenceCrawler(String Result) {
-        String[] datas = new String[5];
-        String subPart[] = new String[5];
-        Result = Result.trim();
-        Log.v("Result", Result);
-        if (Result.contains("Login</a>") || Result.contains("Invalid Password") || Result.contains("Wrong Member")) {
-            AttendenceFragment.Error = AttendenceFragment.WRONG_CREDENTIALS;
-        }      //get the table body of atendence
-
-        else if (Result.contains("<tbody") && Result.contains("</tbody>") && !Result.equals(null)) {
-            subPart[0] = Result.substring(Result.indexOf("<tbody>"), Result.indexOf("</tbody>"));
-            //rows looping
-            for (int j = 0; j < 15; j++) {
-                if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
-
-                    subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
-
-                } else
-                    break;
-                String temp = subPart[1];
-                //loop for columns
-                for (int i = 0; i < 6; i++) {
-
-                    if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
-
-                        subPart[2] = subPart[1].substring(subPart[1].indexOf("<td"), subPart[1].indexOf("</td>") + 5);
-                        String tempData = dataExtractor(subPart[2], i);
-                        if (tempData.equals("N/A"))
-                            tempData = "--";
-                        if (i == 1)  //name
-                            datas[0] = tempData;
-                        else if (i == 2 || (i == 5 && datas[1].equals("--")))  //lec+tut
-                            datas[1] = tempData;
-                        else if (i == 3)  //lec
-                            datas[2] = tempData;
-                        else if (i == 4)  //tut
-                            datas[3] = tempData;
-
-                        if (i == 5) {
-                            if (!listDetails.isEmpty()) {
-                                list.add(new AttendenceData(datas[0], count[1], count[0], datas[1], datas[2], datas[3]));
-                                detailsmain.add(listDetails);
-                                listDetails = new ArrayList<>();
-                            } else {
-                                list.clear();
-                            }
-                        }
-                        subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
-
-                    } else
-                        break;
-                }
-                subPart[0] = subPart[0].replace(temp, "");
-            }
-            ListsReturner returner = new ListsReturner(list, detailsmain);
-            conn.disconnect();
-            return returner;
-        }
-        list.clear();
-        detailsmain.clear();
-        ListsReturner returner = new ListsReturner(list, detailsmain);
-        conn.disconnect();
-        return returner;
-    }
-
-    //method to extract data from the html tag as argument @AttendenceCrawler
-    private static String dataExtractor(String data, int num) {
-        String extracted = "";
-        String Url;
-        switch (num) {
-            case 1:
-                extracted = data.substring(data.indexOf("<td") + 4, data.indexOf(" - "));
-                break;
-            case 5:
-            case 2:
-                if (data.contains("href")) {
-                    Url = "https://webkiosk.juet.ac.in/StudentFiles/Academic/" + data.substring(data.indexOf("href='") + 6, data.indexOf("'>"));
-                    Url = Url.replace("amp;", "");
-                    listDetails = AttendenceDetailsFinder(Url);   //NILL IF EMPTY URL
-                } else if (data.contains("&nbsp;")) {
-                    Url = "N/A";
-                    if (listDetails.isEmpty())
-                        listDetails = AttendenceDetailsFinder(Url);
-                }
-            case 3:
-            case 4:
-
-            case 6:
-
-                if (data.contains("&nbsp;"))
-                    extracted = "N/A";
-                else if (data.contains("align")) {
-                    if (data.contains("<font"))
-                        extracted = data.substring(data.indexOf("</font></a></td>") - 3, data.indexOf("</font></a></td>"));
-                    else
-                        extracted = data.substring(data.indexOf("</a></td>") - 3, data.indexOf("</a></td>"));
-
-                    if (extracted.contains(">"))
-                        extracted = extracted.replace(">", "");
-                } else if (data.contains("<td>")) {
-
-                    extracted = data.substring(data.indexOf("<td>") + 4, data.indexOf("</td>"));
-                }
-                break;
-            default:
-
-                extracted = "N/A";
-
-        }
-        return extracted;
-
-    }
-
-    private static ArrayList<AttendenceDetails> AttendenceDetailsFinder(String link) {
-
-        String Result = "";
-        if (link.equals("N/A")) {
-            count[0] = 0;
-            count[1] = 0;
-            Result = "N/A";
-        } else {
-            try {
-                Result = GetPageContent(link);
-                count[0] = Result.split("Present").length - 1;
-                count[1] = Result.split("Absent").length - 2;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return DetailsCrawler(Result);
-    }
-
-    private static ArrayList<AttendenceDetails> DetailsCrawler(String Result) {
-        String subPart[] = new String[5];
-        ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
-        String[] data = new String[3];
-        if (Result.contains("N/A")) {
-            AttendenceDetails dataDetailed = new AttendenceDetails("N/A", "N/A", "N/A");
-            listDetails.add(dataDetailed);
-        }
-        //get the table body of atendence
-        if (Result.contains("</thead><tbody>") && Result.contains("</tbody>")) {
-            subPart[0] = Result.substring(Result.indexOf("</thead><tbody>") + 8, Result.indexOf("</tbody>"));
-            //rows looping
-            while (subPart[0].contains("<tr")) {
-                if (subPart[0].contains("<tr") & subPart[0].contains("</tr>")) {
-
-                    subPart[1] = subPart[0].substring(subPart[0].indexOf("<tr"), subPart[0].indexOf("</tr>") + 5);
-
-                } else
-                    break;
-                String temp = subPart[1];
-
-                //loop for columns
-
-                for (int i = 0; i < 6; i++) {
-
-                    if (subPart[1].contains("<td") & subPart[1].contains("</td>")) {
-                        if (i < 3)
-                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") + 24, subPart[1].indexOf("</td>"));
-                        else if (i == 3) {
-                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td") - 1, subPart[1].indexOf("</td>"));
-                            if (subPart[2].contains("Present"))
-                                subPart[2] = "Present";
-                            else
-                                subPart[2] = "Absent";
-                        } else if (i == 4)
-                            subPart[2] = subPart[1].substring(subPart[1].indexOf("<td>") + 4, subPart[1].indexOf("</td>"));
-                        else {
-                            subPart[2] = subPart[1].substring(subPart[1].indexOf("color=\"\">") + 9, subPart[1].indexOf("</font></b></td>"));
-
-                        }
-                        subPart[1] = subPart[1].substring(subPart[1].indexOf("</td>") + 5);
-
-                        switch (i) {
-                            case 1:
-                                data[0] = subPart[2];
-                                break;
-                            case 3:
-                                data[1] = subPart[2];
-                                break;
-                            case 5:
-                                data[2] = subPart[2];
-                                AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
-                                listDetails.add(dataDetailed);
-                                break;
-                            default:
-                        }
-                    } else if (i == 5) {
-                        data[2] = "Lab";
-                        AttendenceDetails dataDetailed = new AttendenceDetails(data[0], data[1], data[2]);
-                        listDetails.add(dataDetailed);
-                    } else
-                        break;
-                }
-                subPart[0] = subPart[0].replace(temp, "");
-            }
-        }
-        return listDetails;
     }
 
     public static ArrayList<SgpaData> crawlCGPA(String Result) {
@@ -363,6 +178,133 @@ public class webUtilities extends AppCompatActivity {
             }
         }
         return datasg;
+    }
+
+    public static void parseAttendencePage(AppDatabase mAppDatabase, Document doc){
+        Elements tbodies = doc.getElementById("table-1").getElementsByTag("tbody");
+        if (tbodies.size() > 0){
+            Element tbody = tbodies.get(0);
+            Elements subjects = tbody.children();
+            for (Element subject : subjects) {
+                AttendenceData attendenceData = new AttendenceData();
+                Elements columns = subject.children();
+                for (int i = 0; i < columns.size(); i++) {
+                    switch(i){
+                        case 0:
+                            attendenceData.setId(columns.get(i).text());
+                            break;
+                        case 1:
+                            try {
+                                attendenceData.setName(TextUtils.split(columns.get(i).text(), " - ")[0]);
+                            }catch (Exception e){
+                                attendenceData.setName("--");
+                            }
+                            try {
+                                attendenceData.setSubjectCode(TextUtils.split(columns.get(i).text(), " - ")[1]);
+                            }catch (Exception e){
+                                attendenceData.setSubjectCode("--");
+                            }
+                            break;
+                        case 2:
+                            if (!columns.get(i).text().equals("&nbsp"))
+                                if (columns.get(i).children().size() > 0){
+                                    attendenceData.setSubjectUrl("https://webkiosk.juet.ac.in/StudentFiles/Academic/" +columns.get(i).children().get(0).attr("href"));
+                                    attendenceData.setLecTut(columns.get(i).text().replace("&nbsp","--"));
+                                }
+                                else{
+                                    attendenceData.setLecTut("--");
+                                }
+
+                            break;
+                        case 3:
+                            if (!columns.get(i).text().equals("&nbsp"))
+
+                                attendenceData.setLec(columns.get(i).text().replace("&nbsp","--"));
+                            else{
+                                attendenceData.setLec("--");
+                            }
+                            break;
+                        case 4:
+                            if (!columns.get(i).text().equals("&nbsp"))
+                                if (columns.get(i).children().size() > 0){
+                                    attendenceData.setTut(columns.get(i).text().replace("&nbsp","--"));
+                                }
+                                else{
+                                    attendenceData.setTut("--");
+                                }
+                            break;
+                        case 5:
+                            if (!columns.get(i).text().equals("&nbsp"))
+                                if (columns.get(i).children().size() > 0){
+                                    attendenceData.setSubjectUrl("https://webkiosk.juet.ac.in/StudentFiles/Academic/" +columns.get(i).children().get(0).attr("href"));
+                                    attendenceData.setLecTut(columns.get(i).text().replace("&nbsp","--"));
+                                }
+                            break;
+                    }
+                }
+                Log.v("JSOUP",attendenceData.getId());
+                mAppDatabase.AttendenceDao().insert(attendenceData);
+            }
+
+        }
+    }
+
+    public static void parseAttendenceDetails(AttendenceData datum,AppDatabase mAppDatabase, Document doc){
+        Elements tbodies = doc.getElementById("table-1").getElementsByTag("tbody");
+        if (tbodies.size() > 0) {
+            Element tbody = tbodies.get(0);
+            int CountPresent = tbody.html().split("Present").length - 1;
+            int CountAbsent = tbody.html().split("Absent").length - 2;
+            int mOnNext,mOnLeaving;
+            if (CountPresent == 0 && CountAbsent == 0) {
+                mOnNext = 100;
+                mOnLeaving = 0;
+            } else {
+                mOnNext = (int) ((float) ((CountPresent + 1) * 100) / (float) (CountPresent + CountAbsent + 1));
+                mOnLeaving = (int) ((float) (CountPresent * 100) / (float) (CountPresent + CountAbsent + 1));
+            }
+            mAppDatabase.AttendenceDao().updatePresentAbsent(datum.getId(), CountPresent, CountAbsent,mOnNext,mOnLeaving);
+            Elements classes = tbody.children();
+            for (Element lecture : classes) {
+                Log.v("JSOUPDET", lecture.html());
+                AttendenceDetails details = new AttendenceDetails();
+                Elements columns = lecture.children();
+                details.setSubjectId(datum.getId());
+                for (int i = 0; i < columns.size(); i++) {
+                    switch (i) {
+                        case 0:
+                            details.setId(datum.getId()+"_"+columns.get(i).text());
+                            break;
+                        case 1:
+                            try {
+                                details.setDate(TextUtils.split(columns.get(i).text(), " ")[0]);
+                            } catch (Exception e) {
+                                details.setDate("--");
+                            }
+                            try {
+                                details.setTime(TextUtils.split(columns.get(i).text(), " ")[1]+" "+TextUtils.split(columns.get(i).text(), " ")[2]);
+                            } catch (Exception e) {
+                                details.setTime("--");
+                            }
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            details.setStatus(columns.get(i).text());
+                            break;
+                        case 4:
+
+                            break;
+                        case 5:
+                            details.setType(columns.get(i).text());
+                            break;
+                    }
+                }
+                mAppDatabase.AttendenceDetailsDao().insert(details);
+
+            }
+
+        }
     }
 
 }

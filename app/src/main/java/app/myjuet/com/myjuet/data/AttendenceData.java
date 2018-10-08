@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import app.myjuet.com.myjuet.R;
 
@@ -30,6 +31,16 @@ public class AttendenceData implements java.io.Serializable {
 public constructor
  */
 
+    public boolean equals(AttendenceData that) {
+        return  getOnNext() == that.getOnNext() &&
+                getOnLeaving() == that.getOnLeaving() &&
+                isLoading() == that.isLoading() &&
+                id.equals(that.getId()) &&
+                getSubjectCode().equals(that.getSubjectCode()) &&
+                getName().equals(that.getName());
+    }
+
+
 
     public AttendenceData(String Name, int CountAbsent, int CountPresent, String LecTut, String Lec, String Tut) {
         this.mName = Name;
@@ -48,7 +59,7 @@ public constructor
 
     }
     public AttendenceData() {
-        loading = false;
+        loading = true;
     }
 
     public boolean isLoading() {

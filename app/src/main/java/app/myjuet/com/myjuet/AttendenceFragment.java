@@ -1,8 +1,11 @@
 package app.myjuet.com.myjuet;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +19,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,9 +48,13 @@ import java.util.Locale;
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
+import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.AttendenceDataDao;
+import app.myjuet.com.myjuet.services.RefreshService;
+import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.vm.AttendenceViewModel;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -73,6 +82,16 @@ public class AttendenceFragment extends Fragment {
     AttendenceDataDao mAttendenceDataDao;
 
     public AttendenceFragment() {
+    }
+
+    public void  updateFab(){
+        Date dateobj = new Date();
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+        String temp = formattor.format(dateobj);
+        temp = temp.substring(0, temp.indexOf(" "));
+        if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
+            DateString = "Today " + DateString.substring(DateString.indexOf(" "));
+
     }
 
     @SuppressWarnings("UnusedAssignment")
@@ -181,81 +200,78 @@ public class AttendenceFragment extends Fragment {
 
     }
 
-//    @SuppressWarnings("unused")
-//    public void onLoadFinished(Loader<ListsReturner> loader, ListsReturner AttendenceDatas) {
-//        image.setVisibility(View.GONE);
-//        swipeRefreshLayout.setKeepScreenOn(false);
-//        ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
-//        ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
-//        ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
-//        if (adapter.getItemCount() == 0) {
-//            image.setVisibility(View.VISIBLE);
-//        } else {
-//            image.setVisibility(View.GONE);
-//        }
-//        FabString = "Synced Today";
-//        Action = "Refresh";
-//        try {
-//
-//
-//            if (Error == WRONG_CREDENTIALS) {
-//
-//                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
-//                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
-//                FabString = "Wrong Credentials";
-//                Action = "Login";
-//                ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                Intent login = new Intent(getActivity(), SettingsActivity.class);
-//                                startActivity(login);
-//                                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
-//                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
-//                                ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
-//                                FabString = "Refresh to Login";
-//                                Action = "Refresh";
-//                            }
-//                        }).show();
-//                    }
-//                });
-//                ((DrawerActivity) getActivity()).fab.performClick();
-//
-//
-//            } else if (Error == HOST_DOWN) {
-//
-//                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
-//                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
-//                FabString = "Webkiosk Down/Timed Out(3s)";
-//                ((DrawerActivity) getActivity()).fab.performClick();
-//            } else if (Error == -1 && !AttendenceDatas.getDataArrayList().isEmpty() && !AttendenceDatas.getDetailsArrayList().isEmpty()) {
-//
-//                write(getActivity(), AttendenceDatas.getDataArrayList(), AttendenceDatas.getDetailsArrayList());
-//                Log.v("details data", AttendenceDatas.getDetailsArrayList().get(0).get(0).getmDate());
-//                listdata.clear();
-//                list.getRecycledViewPool().clear();
-//                adapter.notifyDataSetChanged();
-//                listdata.addAll(AttendenceDatas.getDataArrayList());
-//                adapter.notifyDataSetChanged();
-//                list.getRecycledViewPool().clear();
-//                if (adapter.getItemCount() == 0) {
-//                    image.setVisibility(View.VISIBLE);
-//                } else {
-//                    image.setVisibility(View.GONE);
-//                }
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            swipeRefreshLayout.setRefreshing(false);
-//        }
-//
-//    }
     void handleStatusCode(AttendenceViewModel.Status status){
+        switch (status){
 
+            case LOADING:
+                break;
+            case SUCCESS:
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                image.setVisibility(View.GONE);
+                swipeRefreshLayout.setKeepScreenOn(false);
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+                ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+                if (adapter.getItemCount() == 0) {
+                    image.setVisibility(View.VISIBLE);
+                } else {
+                    image.setVisibility(View.GONE);
+                }
+                FabString = "Synced Today";
+                Action = "Refresh";
+
+                break;
+            case WEBKIOSK_DOWN:
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "No Internet";
+                ((DrawerActivity) getActivity()).fab.performClick();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+            case WRONG_PASSWORD:
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "Wrong Credentials";
+                Action = "Login";
+                ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent login = new Intent(getActivity(), SettingsActivity.class);
+                                startActivity(login);
+                                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+                                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
+                                ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
+                                FabString = "Refresh to Login";
+                                Action = "Refresh";
+                            }
+                        }).show();
+                    }
+                });
+                ((DrawerActivity) getActivity()).fab.performClick();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+            case NO_INTERNET:
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "No Internet";
+                ((DrawerActivity) getActivity()).fab.performClick();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+            case FAILED:
+                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+                ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
+                FabString = "Webkiosk Down/Timed Out(3s)";
+                ((DrawerActivity) getActivity()).fab.performClick();
+                swipeRefreshLayout.setRefreshing(false);
+                break;
+        }
     }
 
     @Nullable
@@ -268,49 +284,65 @@ public class AttendenceFragment extends Fragment {
         setHasOptionsMenu(true);
 
         Action = "Refresh";
-        DateString = "";
+        SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        DateString = prefs.getString(Constants.DATE,null);
+        Date dateobj = new Date();
+        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+        String temp = formattor.format(dateobj);
+        temp = temp.substring(0, temp.indexOf(" "));
+        if (DateString != null && DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
+            FabString = "Synced Today";
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        }else if (DateString == null){
+            FabString = "Last Synced Never";
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_action_name);
+        }else{
+            FabString = "Last Synced " + DateString;
+            ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
+            ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        }
         ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
         infoListner = view -> Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, view1 -> {
-            Intent refresh = new Intent("refreshAttendence");
-            refresh.putExtra("manual", true);
-            getActivity().sendBroadcast(refresh);
-            Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
+            if (!isMyServiceRunning()) {
+                Intent refresh = new Intent(getActivity(), RefreshService.class);
+                refresh.putExtra("manual", true);
+                ActivityCompat.startForegroundService(getActivity(), refresh);
+                Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(getActivity(), "Sync Is Running", Toast.LENGTH_LONG).show();
+            }
         }).show();
 
         ((DrawerActivity) getActivity()).fab.setOnClickListener(infoListner);
         image = rootView.findViewById(R.id.attendence_emptyview);
         list = rootView.findViewById(R.id.list_view);
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setPositiveButton("Background", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (!isMyServiceRunning()) {
-                            Intent refresh = new Intent("refreshAttendence");
-                            refresh.putExtra("manual", true);
-                            getActivity().sendBroadcast(refresh);
-                            Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Background Sync Already Running\nHave Patience...", Toast.LENGTH_LONG).show();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setPositiveButton("Background", (dialogInterface, i) -> {
+                if (!isMyServiceRunning()) {
+                    Intent refresh = new Intent(getActivity(),RefreshService.class);
+                    refresh.putExtra("manual", true);
+                    ActivityCompat.startForegroundService(getActivity(),refresh);
+                    Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Background Sync Already Running\nHave Patience...", Toast.LENGTH_LONG).show();
 
-                        }
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-                builder.setNegativeButton("Normal Way", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        refreshData();
-                    }
-                });
-                builder.setMessage("Choose Desired Method Of Attendence Refresh\nBackground Method Is Recommeded");
-                builder.show();
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            });
+            builder.setNegativeButton("Normal Way", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    refreshData();
+                }
+            });
+            builder.setMessage("Choose Desired Method Of Attendence Refresh\nBackground Method Is Recommeded");
+            builder.show();
 
 
-            }
         });
         listdata = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -318,9 +350,33 @@ public class AttendenceFragment extends Fragment {
         adapter = new AttendenceAdapter(getActivity(), listdata);
         list.setAdapter(adapter);
         mAttendenceDataDao.AttendanceDataObserver().observe(this, attendenceData -> {
-            listdata.clear();
-            listdata.addAll(attendenceData);
-            adapter.notifyDataSetChanged();
+            if (attendenceData != null) {
+                DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                    @Override
+                    public int getOldListSize() {
+                        return listdata.size();
+                    }
+
+                    @Override
+                    public int getNewListSize() {
+                        return attendenceData.size();
+                    }
+
+                    @Override
+                    public boolean areItemsTheSame(int i, int i1) {
+                        return  listdata.get(i).getId().equals(attendenceData.get(i1).getId());
+                    }
+
+                    @Override
+                    public boolean areContentsTheSame(int i, int i1) {
+                        return listdata.get(i).equals(attendenceData.get(i1));
+                    }
+                });
+                listdata.clear();
+                listdata.addAll(attendenceData);
+                result.dispatchUpdatesTo(adapter);
+                list.scrollToPosition(0);
+            }
             if (adapter.getItemCount() == 0) {
                 image.setVisibility(View.VISIBLE);
                 image.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attendence_nodata));
@@ -332,7 +388,7 @@ public class AttendenceFragment extends Fragment {
         });
 
             Context context = getActivity();
-            SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+            prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
             String user = prefs.getString(getString(R.string.key_enrollment), "");
             String pass = prefs.getString(getString(R.string.key_password), "");
             if (!user.equals("") || !pass.equals("")) {
@@ -352,6 +408,7 @@ public class AttendenceFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressLint("RestrictedApi")
     public void refreshData() {
         image.setVisibility(View.GONE);
         swipeRefreshLayout.setKeepScreenOn(true);
@@ -371,9 +428,16 @@ public class AttendenceFragment extends Fragment {
                     mAttendenceViewModel.startLoading().observe(AttendenceFragment.this,status1 -> {
                         if (status1 == AttendenceViewModel.Status.SUCCESS){
                             swipeRefreshLayout.setRefreshing(false);
+                            Date dateobj = new Date();
+                            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+                            String DateString = formattor.format(dateobj);
+                            SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString(Constants.DATE,DateString);
+                            editor.apply();
+                            handleStatusCode(status1);
                             mAttendenceViewModel.loadDetails().observe(AttendenceFragment.this,status2 -> {
-                                if (status2 == AttendenceViewModel.Status.SUCCESS){
-                                }else{
+                                if (status2 != AttendenceViewModel.Status.SUCCESS) {
                                     handleStatusCode(status2);
                                 }
                             });

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#FF03CCAA</color>
     <color name="colorPrimaryDark">#FF037662</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#4A7BA7</color>
     <color name="magnitude1">#4A7BA7</color>
 
     <!-- Magnitude circle color for an earthquake with magnitude between 2 and 3 -->

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
@@ -33,7 +34,7 @@ public class AlarmReciever extends WakefulBroadcastReceiver {
 
         String Title = intent.getStringExtra("title");
         if (Title.equals("app"))
-            startWakefulService(context, new Intent(context, RefreshService.class).putExtra("alarm", "yes").putExtra("reciever", 2));
+            ActivityCompat.startForegroundService(context, new Intent(context, RefreshService.class).putExtra("alarm", "yes").putExtra("reciever", 2));
         else if (intent.getIntExtra("fragmentno", 2) == 2) {
             Intent drawer = new Intent(context, DrawerActivity.class);
             drawer.putExtra("fragment", intent.getIntExtra("fragmentno", 2));

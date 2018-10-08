@@ -36,7 +36,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 
 @SuppressWarnings({"unused", "StatementWithEmptyBody"})
-public class BootReciever extends WakefulBroadcastReceiver {
+public class BootReciever extends BroadcastReceiver {
     ArrayList<TimeTableData> datatt = new ArrayList<>();
     ArrayList<AttendenceData> attendenceDatas = new ArrayList<>();
 
@@ -249,6 +249,5 @@ public class BootReciever extends WakefulBroadcastReceiver {
             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         }
-        completeWakefulIntent(intent);
     }
 }
