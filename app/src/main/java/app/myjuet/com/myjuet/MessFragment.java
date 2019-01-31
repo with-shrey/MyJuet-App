@@ -10,9 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,7 +60,7 @@ public class MessFragment extends Fragment {
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.mess_layout, container, false);
         setHasOptionsMenu(true);
-        ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
+        ((View)(((DrawerActivity) getActivity()).fab)).setVisibility(View.GONE);
         mImageView = (ImageView) RootView.findViewById(R.id.anapurna_img);
         TextView day = (TextView) RootView.findViewById(R.id.day_mess);
         String Day = "Today is " + new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date());

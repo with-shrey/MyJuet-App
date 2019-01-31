@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -12,12 +11,11 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Process;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
@@ -32,12 +30,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 
 import java.io.File;
@@ -50,16 +44,15 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.recievers.AlarmReciever;
 import app.myjuet.com.myjuet.R;
-import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
 
-import static app.myjuet.com.myjuet.AttendenceFragment.read;
 import static app.myjuet.com.myjuet.R.array.Days;
 
 @SuppressWarnings({"UnusedAssignment", "unused"})
-public class TableSettingsActivity extends AppCompatActivity implements Runnable {
+public class TableSettingsActivity extends AppCompatActivity  {
     public static final int MONDAY = 0;
     public static final int TUESDAY = 1;
     public static final int WEDNESDAY = 2;
@@ -75,20 +68,6 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
     ArrayList<String> Subjects = new ArrayList<>();
 
-    @Override
-    public void run() {
-        Subjects.add("SUBJECT");
-        ArrayList<AttendenceData> data = new ArrayList<>();
-        try {
-            data = read(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < data.size(); i++) {
-            Subjects.add(data.get(i).getmName());
-        }
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,64 +76,66 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         batch = sharedPref.getString("batch", "").toUpperCase().trim();
         sem = sharedPref.getString("semester", "").toUpperCase().trim();
-        new Thread(new Runnable() {
-            public void run() {
-
-                try {
-                    settings = readSettings();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (settings.isEmpty()) {
-                    for (int i = 0; i < 6; i++)
-                        settings.add(new TimeTableData());
-                }
+        AppDatabase.newInstance(this).AttendenceDao().AttendanceDataObserver().observe(this,attendenceData -> {
+            Subjects.clear();
+            Subjects.add("SUBJECT");
+            for (int i = 0; i < attendenceData.size(); i++) {
+                Subjects.add(attendenceData.get(i).getmName());
             }
+        });
+        new Thread(() -> {
 
+            try {
+                settings = readSettings();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (settings.isEmpty()) {
+                for (int i = 0; i < 6; i++)
+                    settings.add(new TimeTableData());
+            }
         }
         ).start();
 
 
-        Thread thread = new Thread(this);
         final ArrayAdapter<String> SubjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Subjects);
         ArrayAdapter<CharSequence> TypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.type, android.R.layout.simple_spinner_item);
         TypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        thread.run();
         SubjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarsettings);
+        Toolbar toolbar = findViewById(R.id.toolbarsettings);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
         getSupportActionBar().setElevation(5);
             getSupportActionBar().setTitle("TimeTable");
         }
-        final Spinner Day = (Spinner) findViewById(R.id.spinner_day);
-        final Spinner nine = (Spinner) findViewById(R.id.spinner_9);
-        final Spinner ten = (Spinner) findViewById(R.id.spinner_10);
-        final Spinner eleven = (Spinner) findViewById(R.id.spinner_11);
-        final Spinner twelve = (Spinner) findViewById(R.id.spinner_12);
-        final Spinner two = (Spinner) findViewById(R.id.spinner_2);
-        final Spinner three = (Spinner) findViewById(R.id.spinner_3);
-        final Spinner four = (Spinner) findViewById(R.id.spinner_4);
-        final Spinner five = (Spinner) findViewById(R.id.spinner_5);
+        final Spinner Day = findViewById(R.id.spinner_day);
+        final Spinner nine = findViewById(R.id.spinner_9);
+        final Spinner ten = findViewById(R.id.spinner_10);
+        final Spinner eleven = findViewById(R.id.spinner_11);
+        final Spinner twelve = findViewById(R.id.spinner_12);
+        final Spinner two = findViewById(R.id.spinner_2);
+        final Spinner three = findViewById(R.id.spinner_3);
+        final Spinner four = findViewById(R.id.spinner_4);
+        final Spinner five = findViewById(R.id.spinner_5);
 
-        final Spinner nineType = (Spinner) findViewById(R.id.spinner_9_type);
-        final Spinner tenType = (Spinner) findViewById(R.id.spinner_10_type);
-        final Spinner elevenType = (Spinner) findViewById(R.id.spinner_11_type);
-        final Spinner twelveType = (Spinner) findViewById(R.id.spinner_12_type);
-        final Spinner twoType = (Spinner) findViewById(R.id.spinner_2_type);
-        final Spinner threeType = (Spinner) findViewById(R.id.spinner_3_type);
-        final Spinner fourType = (Spinner) findViewById(R.id.spinner_4_type);
-        final Spinner fiveType = (Spinner) findViewById(R.id.spinner_5_type);
+        final Spinner nineType = findViewById(R.id.spinner_9_type);
+        final Spinner tenType = findViewById(R.id.spinner_10_type);
+        final Spinner elevenType = findViewById(R.id.spinner_11_type);
+        final Spinner twelveType = findViewById(R.id.spinner_12_type);
+        final Spinner twoType = findViewById(R.id.spinner_2_type);
+        final Spinner threeType = findViewById(R.id.spinner_3_type);
+        final Spinner fourType = findViewById(R.id.spinner_4_type);
+        final Spinner fiveType = findViewById(R.id.spinner_5_type);
 
-        final TextInputEditText nineText = (TextInputEditText) findViewById(R.id.spinner_9_text);
-        final TextInputEditText tenText = (TextInputEditText) findViewById(R.id.spinner_10_text);
-        final TextInputEditText elevenText = (TextInputEditText) findViewById(R.id.spinner_11_text);
-        final TextInputEditText twelveText = (TextInputEditText) findViewById(R.id.spinner_12_text);
-        final TextInputEditText twoText = (TextInputEditText) findViewById(R.id.spinner_2_text);
-        final TextInputEditText threeText = (TextInputEditText) findViewById(R.id.spinner_3_text);
-        final TextInputEditText fourText = (TextInputEditText) findViewById(R.id.spinner_4_text);
-        final TextInputEditText fiveText = (TextInputEditText) findViewById(R.id.spinner_5_text);
+        final TextInputEditText nineText = findViewById(R.id.spinner_9_text);
+        final TextInputEditText tenText = findViewById(R.id.spinner_10_text);
+        final TextInputEditText elevenText = findViewById(R.id.spinner_11_text);
+        final TextInputEditText twelveText = findViewById(R.id.spinner_12_text);
+        final TextInputEditText twoText = findViewById(R.id.spinner_2_text);
+        final TextInputEditText threeText = findViewById(R.id.spinner_3_text);
+        final TextInputEditText fourText = findViewById(R.id.spinner_4_text);
+        final TextInputEditText fiveText = findViewById(R.id.spinner_5_text);
 
         nine.setAdapter(SubjectsAdapter);
         ten.setAdapter(SubjectsAdapter);
@@ -831,18 +812,8 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
                 Intent intent = new Intent("SetAlarms");
                 sendBroadcast(intent);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        uploadtt();
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
+                builder.setPositiveButton("Yes", (dialogInterface, i) -> uploadtt());
+                builder.setNegativeButton("No", (dialogInterface, i) -> finish());
                 builder.setMessage("Upload Your Settings For Your BatctchMates\nDo You Want To Upload Your Settings?");
                 builder.show();
             } catch (IOException e) {
@@ -861,28 +832,22 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         else if (item.getItemId() == R.id.table_download) {
             final AlertDialog.Builder confirm = new AlertDialog.Builder(TableSettingsActivity.this);
             confirm.setMessage("Your Existing Settings Will Be Replaced\nAre You Sure?");
-            confirm.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    ConnectivityManager cm =
-                            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                    boolean isConnected = activeNetwork != null &&
-                            activeNetwork.isConnectedOrConnecting();
-                    if (isConnected) {
-                        DownloadData();
-                    }
-                    else
-                        Toast.makeText(TableSettingsActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
-
-
+            confirm.setPositiveButton("Yes", (dialog, id) -> {
+                ConnectivityManager cm1 =
+                        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork1 = cm1.getActiveNetworkInfo();
+                boolean isConnected1 = activeNetwork1 != null &&
+                        activeNetwork1.isConnectedOrConnecting();
+                if (isConnected1) {
+                    DownloadData();
                 }
+                else
+                    Toast.makeText(TableSettingsActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
+
 
             });
-            confirm.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            confirm.setNegativeButton("No", (dialogInterface, i) -> {
 
-                }
             });
             confirm.show();
         }
@@ -928,32 +893,26 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
 
         StorageReference riversRef = storageRef.child(File);
 
-        riversRef.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                try {
-                    Toast.makeText(TableSettingsActivity.this, "Upload Success", Toast.LENGTH_LONG).show();
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                } catch (NullPointerException pe) {
-                    Log.e("table Settings", "progress", pe);
+        riversRef.putFile(file).addOnSuccessListener(taskSnapshot -> {
+            try {
+                Toast.makeText(TableSettingsActivity.this, "Upload Success", Toast.LENGTH_LONG).show();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
+            } catch (NullPointerException pe) {
+                Log.e("table Settings", "progress", pe);
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(TableSettingsActivity.this, "Upload Failed", Toast.LENGTH_LONG).show();
-                        try {
-                            if (progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                        } catch (NullPointerException pe) {
-                            Log.e("mess", "progress", pe);
+                .addOnFailureListener(exception -> {
+                    Toast.makeText(TableSettingsActivity.this, "Upload Failed", Toast.LENGTH_LONG).show();
+                    try {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
                         }
-
+                    } catch (NullPointerException pe) {
+                        Log.e("mess", "progress", pe);
                     }
+
                 });
 
 
@@ -975,39 +934,33 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
         progressDialog.setIndeterminate(true);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
-        riversRef.getFile(settingsFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                try {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
-                    cancelMessAlarms();
-                    cancelttAlarms();
-                    cancelmorningalarm();
-                    Intent intent = new Intent("SetAlarms");
-                    sendBroadcast(intent);
-                    finish();
-                } catch (NullPointerException pe) {
-                    Log.e("table Settings", "progress", pe);
+        riversRef.getFile(settingsFile).addOnSuccessListener(taskSnapshot -> {
+            try {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
+                Toast.makeText(TableSettingsActivity.this, "Data Updated Successfully", Toast.LENGTH_SHORT).show();
+                cancelMessAlarms();
+                cancelttAlarms();
+                cancelmorningalarm();
+                Intent intent = new Intent("SetAlarms");
+                sendBroadcast(intent);
+                finish();
+            } catch (NullPointerException pe) {
+                Log.e("table Settings", "progress", pe);
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                try {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                        String text;
-                        if (e.toString().contains(":") && e.toString().contains("Object"))
-                            text = e.toString().substring(e.toString().indexOf(":") + 1).replace("Object", "Data");
-                        else text = e.toString();
-                        Toast.makeText(TableSettingsActivity.this, text, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (NullPointerException pe) {
-                    Log.e("Fetch Data", "progress", pe);
+        }).addOnFailureListener(e -> {
+            try {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    String text;
+                    if (e.toString().contains(":") && e.toString().contains("Object"))
+                        text = e.toString().substring(e.toString().indexOf(":") + 1).replace("Object", "Data");
+                    else text = e.toString();
+                    Toast.makeText(TableSettingsActivity.this, text, Toast.LENGTH_SHORT).show();
                 }
+            } catch (NullPointerException pe) {
+                Log.e("Fetch Data", "progress", pe);
             }
         });
 
@@ -1016,59 +969,38 @@ public class TableSettingsActivity extends AppCompatActivity implements Runnable
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                TableSettingsActivity.super.onBackPressed();
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setPositiveButton("Yes", (dialogInterface, i) -> TableSettingsActivity.super.onBackPressed());
+        builder.setNegativeButton("No", (dialogInterface, i) -> {
 
-            }
         });
         builder.setMessage("Unsaved Data Will Be Lost\nDo You Want To Leave?");
-        builder.setNeutralButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                File image = null;
-                image = new File(storageDir, sem + "_" + batch + ".txt");
-                if (storageDir != null && !storageDir.exists()) {
-                    boolean a = storageDir.mkdir();
-                }
-                ObjectOutput out = null;
-                try {
-                    out = new ObjectOutputStream(new FileOutputStream(image));
-                    out.writeObject(settings);
-                    out.close();
-                    Toast.makeText(TableSettingsActivity.this, "Settings Saved Successfully\nUpload Data if Completed", Toast.LENGTH_LONG).show();
-                    cancelMessAlarms();
-                    cancelttAlarms();
-                    cancelmorningalarm();
-                    Intent intent = new Intent("SetAlarms");
-                    sendBroadcast(intent);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(TableSettingsActivity.this);
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            uploadtt();
-                        }
-                    });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    });
-                    builder.setMessage("Upload Your Settings For Your BatctchMates\nDo You Want To Upload Your Settings?");
-                    builder.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+        builder.setNeutralButton("Save", (dialogInterface, i) -> {
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = null;
+            image = new File(storageDir, sem + "_" + batch + ".txt");
+            if (storageDir != null && !storageDir.exists()) {
+                boolean a = storageDir.mkdir();
             }
+            ObjectOutput out = null;
+            try {
+                out = new ObjectOutputStream(new FileOutputStream(image));
+                out.writeObject(settings);
+                out.close();
+                Toast.makeText(TableSettingsActivity.this, "Settings Saved Successfully\nUpload Data if Completed", Toast.LENGTH_LONG).show();
+                cancelMessAlarms();
+                cancelttAlarms();
+                cancelmorningalarm();
+                Intent intent = new Intent("SetAlarms");
+                sendBroadcast(intent);
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(TableSettingsActivity.this);
+                builder1.setPositiveButton("Yes", (dialogInterface12, i12) -> uploadtt());
+                builder1.setNegativeButton("No", (dialogInterface1, i1) -> finish());
+                builder1.setMessage("Upload Your Settings For Your BatctchMates\nDo You Want To Upload Your Settings?");
+                builder1.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
         builder.show();
     }

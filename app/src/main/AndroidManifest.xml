@@ -11,7 +11,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-
+    <uses-feature android:name="android.hardware.fingerprint"
+        android:required="false"/>
+    <uses-permission
+        android:name="android.permission.USE_BIOMETRIC" />
     <application
         android:name=".MyJuetApplication"
         android:allowBackup="false"
@@ -28,20 +31,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="bc09003b45b74db6b2b8ab7fe8ad13e6e8f31527" />
-
-        <receiver android:name=".recievers.InternetChangeReciever">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="refreshAttendence" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".recievers.BootReciever">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="SetAlarms" />
-            </intent-filter>
-        </receiver>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5004802474664731~4072895207"/>
         <receiver android:name=".recievers.AlarmReciever" />
 
         <activity

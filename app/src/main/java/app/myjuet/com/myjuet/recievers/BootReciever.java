@@ -2,16 +2,11 @@ package app.myjuet.com.myjuet.recievers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +21,10 @@ import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
+import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.workers.RefreshWorker;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -132,7 +127,7 @@ public class BootReciever extends BroadcastReceiver {
 
 
             try {
-                attendenceDatas = AttendenceFragment.read(context);
+                attendenceDatas  = new ArrayList<>(AppDatabase.newInstance(context.getApplicationContext()).AttendenceDao().AttendanceData());
             } catch (Exception e) {
                 e.printStackTrace();
             }

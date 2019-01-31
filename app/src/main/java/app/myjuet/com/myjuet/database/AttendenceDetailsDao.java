@@ -1,16 +1,16 @@
 package app.myjuet.com.myjuet.database;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
 
 import java.util.List;
 
-import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 
-import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface AttendenceDetailsDao {
@@ -19,4 +19,5 @@ public interface AttendenceDetailsDao {
 
     @Query("SELECT * from attendencedetails WHERE mSubjectId = :id")
     LiveData<List<AttendenceDetails>> AttendenceDetails(String id);
+
 }

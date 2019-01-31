@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="app.myjuet.com.myjuet.SgpaCgpa">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshsgpa"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -61,7 +61,7 @@
                     android:layout_margin="10dp"
                     android:layout_toRightOf="@id/colorsgpa"
                     android:text="SGPA" />
-                <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <androidx.recyclerview.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/sgparecycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -71,5 +71,5 @@
 
             </RelativeLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

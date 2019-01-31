@@ -1,12 +1,12 @@
 package app.myjuet.com.myjuet.vm;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.webkit.URLUtil;
 
 import org.jsoup.Connection;
@@ -14,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,16 +77,27 @@ public class AttendenceViewModel extends AndroidViewModel {
                         .execute();
 
 
-                if(!res.body().contains("Invalid Password")){
-                    loginCookies = res.cookies();
-                    mAppExecutors.mainThread().execute(()->{
-                        mLoginStatus.setValue(Constants.Status.SUCCESS);
-                    });
-                }else{
+                if(res.body().contains("Invalid Password")){
                     loginCookies = null;
                     mAppExecutors.mainThread().execute(()-> {
                         mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
                     });
+                }else  if(res.body().contains("Wrong Member")){
+                    loginCookies = null;
+                    mAppExecutors.mainThread().execute(()-> {
+                        mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
+                    });
+                }else if(res.body().contains("Login</a>")){
+                    loginCookies = null;
+                    mAppExecutors.mainThread().execute(()-> {
+                        mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
+                    });
+                }else{
+                    loginCookies = res.cookies();
+                    mAppExecutors.mainThread().execute(()->{
+                        mLoginStatus.setValue(Constants.Status.SUCCESS);
+                    });
+
                 }
 
             } catch (IOException e) {
@@ -107,7 +119,7 @@ public class AttendenceViewModel extends AndroidViewModel {
             Document doc = null;
             try {
                 doc = Jsoup.connect("https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp")
-                        .cookies(loginCookies)
+                        .cookies(loginCookies != null  ? loginCookies : new HashMap<>())
                         .get();
                 webUtilities.parseAttendencePage(mAppDatabase,doc);
                 mAppExecutors.mainThread().execute(()-> {

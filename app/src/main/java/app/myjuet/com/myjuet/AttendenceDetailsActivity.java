@@ -2,32 +2,25 @@ package app.myjuet.com.myjuet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import app.myjuet.com.myjuet.adapters.DetailsAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.database.AppDatabase;
 
-import static app.myjuet.com.myjuet.AttendenceFragment.read;
 
 
 public class AttendenceDetailsActivity extends AppCompatActivity {

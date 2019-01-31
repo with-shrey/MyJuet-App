@@ -7,10 +7,10 @@ android {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 5
-        versionName '3.0'
+        versionCode 7
+        versionName '3.2'
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -40,34 +40,35 @@ android {
 dependencies {
     def lifecycle_version = "1.1.1"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:customtabs:28.0.0'
-    implementation 'com.android.support:animated-vector-drawable:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.google.firebase:firebase-messaging:17.3.2'
-    implementation 'com.google.firebase:firebase-storage:16.0.2'
-    implementation 'com.google.firebase:firebase-auth:16.0.3'
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.google.firebase:firebase-ads:15.0.1'
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-storage:16.0.5'
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.google.firebase:firebase-ads:17.1.1'
     implementation 'com.jjoe64:graphview:4.2.1'
-    def work_version = "1.0.0-alpha09"
+    def work_version = "1.0.0-alpha11"
 
     implementation "android.arch.work:work-runtime:$work_version" // use -ktx for Kotlin
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true;
     }
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.1" // use kapt for Kotlin
+    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '16.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
+    implementation "androidx.room:room-runtime:2.1.0-alpha02"
+    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha02" // use kapt for Kotlin
     implementation 'org.jsoup:jsoup:1.10.3'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'

@@ -8,11 +8,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,21 +35,11 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
-import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.adapters.CgpaAdapter;
-import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.utilities.webUtilities;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static app.myjuet.com.myjuet.R.string.url;
-import static app.myjuet.com.myjuet.utilities.webUtilities.crawlCGPA;
-import static app.myjuet.com.myjuet.utilities.webUtilities.sendPost;
 
 
 /**
@@ -85,28 +75,25 @@ public class SgpaCgpa extends Fragment {
         adapter = new CgpaAdapter(getActivity(), data);
         // Inflate the layout for this fragment
         View RootView = inflater.inflate(R.layout.fragment_sgpa_cgpa, container, false);
-        list = (RecyclerView) RootView.findViewById(R.id.sgparecycler);
+        list = RootView.findViewById(R.id.sgparecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
-        graph = (GraphView) RootView.findViewById(R.id.graphsgpa);
-        ScrollView scroll = (ScrollView) RootView.findViewById(R.id.cgpascroll);
-        refreshLayout = (SwipeRefreshLayout) RootView.findViewById(R.id.refreshsgpa);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                ConnectivityManager cm =
-                        (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        graph = RootView.findViewById(R.id.graphsgpa);
+        ScrollView scroll = RootView.findViewById(R.id.cgpascroll);
+        refreshLayout = RootView.findViewById(R.id.refreshsgpa);
+        refreshLayout.setOnRefreshListener(() -> {
+            ConnectivityManager cm =
+                    (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                boolean isConnected = activeNetwork != null &&
-                        activeNetwork.isConnectedOrConnecting();
-                if (isConnected)
-                refreshcg();
-                else {
-                    refreshLayout.setRefreshing(false);
-                    Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_SHORT).show();
-                }
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+            if (isConnected)
+            refreshcg();
+            else {
+                refreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
 

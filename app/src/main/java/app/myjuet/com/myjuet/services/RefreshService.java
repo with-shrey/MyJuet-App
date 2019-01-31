@@ -4,14 +4,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.arch.lifecycle.LifecycleService;
+import androidx.lifecycle.LifecycleService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -57,7 +57,7 @@ public class RefreshService extends LifecycleService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
                 .setOngoing(true)
                 .setContentTitle("MyJuet Is Running")
-                .setContentText("waiting For Synsc to Finish")
+                .setContentText("Waiting For Sync to Finish")
                 .setSmallIcon(R.drawable.ic_notification_icon);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             notificationBuilder.setCategory(Notification.CATEGORY_SERVICE);
@@ -133,7 +133,7 @@ public class RefreshService extends LifecycleService {
             sendNotification("Logging In...", 1, false);
             mAttendenceViewModel.loginUser().observe(this,status -> {
                 if (status == Constants.Status.SUCCESS){
-                    sendNotification("Sync in Progress...", 1, true);
+                    sendNotification("Sync in Progress...", 1, false);
                     mAttendenceViewModel.startLoading().observe(this, status1 -> {
                         if (status1 == Constants.Status.SUCCESS){
                             Date dateobj = new Date();
@@ -142,7 +142,7 @@ public class RefreshService extends LifecycleService {
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString(Constants.DATE,DateString);
                             editor.commit();
-                            sendNotification("Syncing Details In Progress...", 1, true);
+                            sendNotification("Syncing Details In Progress...", 1, false);
                             AppDatabase.newInstance(this).AttendenceDao().AttendanceLoadingPendingCountObserver().observe(this,number -> {
                                 if (number != null && number <= 0){
                                     sendNotification("Attendence Synced successfully " , 1, false);
@@ -212,6 +212,7 @@ public class RefreshService extends LifecycleService {
 
     @Override
     public void onDestroy() {
+        AppDatabase.newInstance(this).AttendenceDao().updateLoading(false);
         super.onDestroy();
     }
 

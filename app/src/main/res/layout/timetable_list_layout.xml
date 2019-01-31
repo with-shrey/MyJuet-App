@@ -9,7 +9,7 @@
     android:layout_marginTop="10dp"
     tools:showIn="@layout/fragment_time_table_display">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardview_tt"
         android:layout_width="match_parent"
@@ -116,5 +116,5 @@
 
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
 </LinearLayout>

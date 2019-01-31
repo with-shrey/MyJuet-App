@@ -1,14 +1,9 @@
 package app.myjuet.com.myjuet.data;
 
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.Objects;
-
-import app.myjuet.com.myjuet.R;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 @Entity
 public class AttendenceData implements java.io.Serializable {

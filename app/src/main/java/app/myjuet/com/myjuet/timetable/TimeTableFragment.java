@@ -1,19 +1,15 @@
 package app.myjuet.com.myjuet.timetable;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +27,10 @@ import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.TimeTableData;
+import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 
-import static android.R.attr.bitmap;
-import static android.net.wifi.p2p.nsd.WifiP2pServiceRequest.newInstance;
 import static android.widget.Toast.makeText;
-import static app.myjuet.com.myjuet.AttendenceFragment.read;
 
 
 /**
@@ -84,16 +78,8 @@ public class TimeTableFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager_tt);
         empty = (ImageView) view.findViewById(R.id.empty_image_view_tt);
         setHasOptionsMenu(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<AttendenceData> datatemp = new ArrayList<AttendenceData>();
-                try {
-                    datatemp = read(getActivity());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+            AppDatabase.newInstance(getActivity()).AttendenceDao().AttendanceDataObserver().observe(this, attendenceData -> {
+                ArrayList<AttendenceData> datatemp = new ArrayList<>(attendenceData);
                 attendence = datatemp.isEmpty();
                 for (int i = 0; i < datatemp.size() && i < 15; i++) {
                     data[i][0] = datatemp.get(i).getmName();
@@ -101,9 +87,8 @@ public class TimeTableFragment extends Fragment {
                 }
                 datatemp.clear();
                 datatemp = null;
-                System.gc();
-            }
-        }).start();
+            });
+
 
 
         // Inflate the layout for this fragment
@@ -165,7 +150,7 @@ public class TimeTableFragment extends Fragment {
 
                             viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
                                 @Override
-                                public android.support.v4.app.Fragment getItem(int position) {
+                                public Fragment getItem(int position) {
 
                                     switch (position) {
                                         case TableSettingsActivity.MONDAY:

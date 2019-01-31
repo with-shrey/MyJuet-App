@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/absent"
+    android:background="@color/browser_actions_bg_grey"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
         <ImageView android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_width="110dp"
+            android:elevation="15dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="20dp"
 
+            android:layout_gravity="center_horizontal" />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="MY JUET"
+    android:elevation="15dp"
+    android:textAlignment="center"
+    android:fontFamily="casual"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:textSize="18sp"/>
         <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -31,10 +43,10 @@
                 android:maxLength="7"
                 android:inputType="textCapCharacters"
                 android:hint="Enrollment Number" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -44,12 +56,49 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.v7.widget.AppCompatButton
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="1"
+                android:inputType="textCapCharacters"
+                android:hint="Semester" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_batch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="3"
+                android:inputType="textCapCharacters"
+                android:hint="Batch" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_attendence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="3"
+                android:text="90"
+                android:inputType="number"
+                android:hint="Desired Attendence" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"

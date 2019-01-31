@@ -3,7 +3,7 @@ package app.myjuet.com.myjuet.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,21 +14,16 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import app.myjuet.com.myjuet.AttendenceFragment;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
-import app.myjuet.com.myjuet.data.ListsReturner;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.database.AppDatabase;
 

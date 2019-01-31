@@ -1,12 +1,12 @@
 package app.myjuet.com.myjuet;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -73,6 +73,7 @@ public class LoginViewModel extends AndroidViewModel {
                         mAppExecutors.mainThread().execute(()->{
                             prefs.putString(context.getString(R.string.key_enrollment), user);
                             prefs.putString(context.getString(R.string.key_password), pass);
+                            prefs.putBoolean("autosync", true);
                             prefs.apply();
                             mLoginStatus.setValue(Constants.Status.SUCCESS);
                         });

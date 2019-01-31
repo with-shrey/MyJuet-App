@@ -5,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,12 +17,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +31,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -116,73 +114,50 @@ public class SettingsActivity extends AppCompatActivity {
         morningtt = (Switch) findViewById(R.id.preference_tt_morning);
         beforemeal = (Switch) findViewById(R.id.preference_mess_before);
         beforeclass = (Switch) findViewById(R.id.preference_tt_before);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                admin.setVisibility(View.VISIBLE);
-            }
+        view.setOnClickListener(view15 -> admin.setVisibility(View.VISIBLE));
+        ringmess.setOnClickListener(view14 -> {
+            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For Mess");
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonemess));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+            startActivityForResult(intent, 1);
         });
-        ringmess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For Mess");
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonemess));
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-                startActivityForResult(intent, 1);
-            }
+        ringtt.setOnClickListener(view13 -> {
+            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For TimeTable");
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonett));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+            startActivityForResult(intent, 2);
         });
-        ringtt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For TimeTable");
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonett));
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-                startActivityForResult(intent, 2);
-            }
-        });
-        beforemeal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    messmin_layout.setVisibility(View.VISIBLE);
-                    messmin.setText("10");
+        beforemeal.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                messmin_layout.setVisibility(View.VISIBLE);
+                messmin.setText("10");
 
-                } else
-                    messmin_layout.setVisibility(View.GONE);
-            }
+            } else
+                messmin_layout.setVisibility(View.GONE);
         });
-        messmin_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        messmin_layout.setOnClickListener(view12 -> {
+            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
 
-                messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
-                String temp = messmin.getText().toString();
-                show(Integer.valueOf(temp), messmin);
-            }
+            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
+            String temp = messmin.getText().toString();
+            show(Integer.valueOf(temp), messmin);
         });
-        beforeclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    ttmin_layout.setVisibility(View.VISIBLE);
-                    ttmin.setText("10");
-                } else
-                    ttmin_layout.setVisibility(View.GONE);
-            }
+        beforeclass.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                ttmin_layout.setVisibility(View.VISIBLE);
+                ttmin.setText("10");
+            } else
+                ttmin_layout.setVisibility(View.GONE);
         });
-        ttmin_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-                messmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
-                String temp = ttmin.getText().toString();
-                show(Integer.valueOf(temp), ttmin);
-            }
+        ttmin_layout.setOnClickListener(view1 -> {
+            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+            messmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
+            String temp = ttmin.getText().toString();
+            show(Integer.valueOf(temp), ttmin);
         });
         initialize();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -228,20 +203,9 @@ public class SettingsActivity extends AppCompatActivity {
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                textView.setText(String.valueOf(aNumberPicker.getValue()));
-
-                            }
-                        })
+                        (dialog, id) -> textView.setText(String.valueOf(aNumberPicker.getValue())))
                 .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                dialog.cancel();
-                            }
-                        });
+                        (dialog, id) -> dialog.cancel());
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
 
@@ -400,13 +364,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBackPressed() {
         this.doubleBackToExitPressedOnce = true;
         Toast.makeText(this, "Please Click Back Again To Quit", Toast.LENGTH_SHORT).show();
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
         }
@@ -547,34 +505,28 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
                 boolean reason = editor.commit();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                        shortcutintent.putExtra("duplicate", false);
-                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
-                        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
-                        sendBroadcast(shortcutintent);
-                    }
+                new Thread(() -> {
+                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                    shortcutintent.putExtra("duplicate", false);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
+                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
+                    sendBroadcast(shortcutintent);
                 }).start();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                        shortcutintent1.putExtra("duplicate", false);
-                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
-                        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                        Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
-                        drawerIntent.putExtra("fragment", 4);
-                        drawerIntent.putExtra("containsurl", false);
-                        Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
-                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
-                        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
-                        sendBroadcast(shortcutintent1);
-                    }
+                new Thread(() -> {
+                    Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                    shortcutintent1.putExtra("duplicate", false);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
+                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+                    Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
+                    drawerIntent.putExtra("fragment", 4);
+                    drawerIntent.putExtra("containsurl", false);
+                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
+                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
+                    sendBroadcast(shortcutintent1);
                 }).start();
                 Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
                 cancelMessAlarms();
@@ -583,13 +535,10 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent("SetAlarms");
                 sendBroadcast(intent);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent refresh = new Intent("refreshAttendence");
-                        refresh.putExtra("manual", true);
-                        sendBroadcast(refresh);
-                    }
+                new Handler().postDelayed(() -> {
+                    Intent refresh = new Intent("refreshAttendence");
+                    refresh.putExtra("manual", true);
+                    sendBroadcast(refresh);
                 }, 2000);
                 Intent intent2 = new Intent(SettingsActivity.this, DrawerActivity.class);
                 startActivity(intent2);

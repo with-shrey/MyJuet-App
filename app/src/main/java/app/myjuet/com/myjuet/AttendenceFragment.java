@@ -2,25 +2,25 @@ package app.myjuet.com.myjuet;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,14 +30,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +37,6 @@ import java.util.Locale;
 
 import app.myjuet.com.myjuet.adapters.AttendenceAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
-import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.AttendenceDataDao;
 import app.myjuet.com.myjuet.services.RefreshService;
@@ -61,21 +52,20 @@ public class AttendenceFragment extends Fragment {
 
 
     //ERROR CONSTANTS
+    DrawerViewModel viewModel ;
     public static final int WRONG_CREDENTIALS = 1;
     public static final int HOST_DOWN = 2;
-    public static final int NO_INTERNET = 3;
-    public static int Error = -1;
+    private static final int NO_INTERNET = 3;
     private static String DateString;
-    ArrayList<AttendenceData> listdata;
-    SwipeRefreshLayout swipeRefreshLayout;
-    View.OnClickListener infoListner;
-    String FabString;
+    private ArrayList<AttendenceData> listdata;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private View.OnClickListener infoListner;
+    private String FabString;
     ImageView image;
     private RecyclerView list;
     private AttendenceAdapter adapter;
     private String Action;
-    AttendenceViewModel mAttendenceViewModel;
-    AttendenceDataDao mAttendenceDataDao;
+    private AttendenceViewModel mAttendenceViewModel;
 
     public AttendenceFragment() {
     }
@@ -88,83 +78,6 @@ public class AttendenceFragment extends Fragment {
         if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
             DateString = "Today " + DateString.substring(DateString.indexOf(" "));
 
-    }
-
-    @SuppressWarnings("UnusedAssignment")
-    public static ArrayList<AttendenceData> read(Context context) throws Exception {
-        String filename = "MessgeScreenList.srl";
-        String datefile = "date.srl";
-        File directory = new File(context.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization");
-        ObjectInput ois = null;
-        ObjectInput dateinput = null;
-        ois = new ObjectInputStream(new FileInputStream(directory
-                + File.separator + filename));
-        dateinput = new ObjectInputStream(new FileInputStream(directory
-                + File.separator + datefile));
-        @SuppressWarnings("unchecked")
-        ArrayList<AttendenceData> returnlist = (ArrayList<AttendenceData>) ois.readObject();
-        DateString = (String) dateinput.readObject();
-        Date dateobj = new Date();
-        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
-        String temp = formattor.format(dateobj);
-        temp = temp.substring(0, temp.indexOf(" "));
-        if (DateString.substring(0, DateString.indexOf(" ")).equals(temp))
-            DateString = "Today " + DateString.substring(DateString.indexOf(" "));
-
-
-        ois.close();
-        dateinput.close();
-
-
-        return returnlist;
-    }
-
-    @SuppressWarnings("UnusedAssignment")
-    public void write(Context context, ArrayList<AttendenceData> nameOfClass, ArrayList<ArrayList<AttendenceDetails>> details) {
-        File directoryFile = new File(getActivity().getFilesDir().getAbsolutePath()
-                + File.separator + "serlization" + File.separator + "MessgeScreenList.srl");
-        boolean deleted;
-        if (directoryFile.exists()) {
-            deleted = directoryFile.delete();
-
-        }
-        File directory = new File(context.getFilesDir().getAbsolutePath()
-                + File.separator + "serlization");
-        boolean make;
-        if (!directory.exists()) {
-            make = directory.mkdirs();
-        }
-        Date dateobj = new Date();
-        SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
-
-        String filename = "MessgeScreenList.srl";
-        String date = "date.srl";
-        String detailsfile = "detailsattendence.srl";
-        ObjectOutput out = null;
-        ObjectOutput dateout = null;
-        ObjectOutput detailsout = null;
-        DateString = formattor.format(dateobj);
-        FabString = "Synced Today " + DateString.substring(DateString.indexOf(" "));
-        try {
-            out = new ObjectOutputStream(new FileOutputStream(directory
-                    + File.separator + filename));
-            out.flush();
-            dateout = new ObjectOutputStream(new FileOutputStream(directory
-                    + File.separator + date));
-            detailsout = new ObjectOutputStream(new FileOutputStream(directory
-                    + File.separator + detailsfile));
-            out.writeObject(nameOfClass);
-            dateout.flush();
-            dateout.writeObject(DateString);
-            detailsout.flush();
-            detailsout.writeObject(details);
-            out.close();
-            dateout.close();
-            detailsout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -196,13 +109,15 @@ public class AttendenceFragment extends Fragment {
 
     }
 
-    void handleStatusCode(Constants.Status status){
+    private void handleStatusCode(Constants.Status status){
+        if (status != Constants.Status.LOADING){
+            swipeRefreshLayout.setRefreshing(false);
+        }
         switch (status){
-
             case LOADING:
                 break;
             case SUCCESS:
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                viewModel.setFabVisible(true);
                 image.setVisibility(View.GONE);
                 swipeRefreshLayout.setKeepScreenOn(false);
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
@@ -218,7 +133,7 @@ public class AttendenceFragment extends Fragment {
 
                 break;
             case WEBKIOSK_DOWN:
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                viewModel.setFabVisible(true);
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "No Internet";
@@ -226,7 +141,7 @@ public class AttendenceFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
                 break;
             case WRONG_PASSWORD:
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                viewModel.setFabVisible(true);
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "Wrong Credentials";
@@ -252,7 +167,7 @@ public class AttendenceFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
                 break;
             case NO_INTERNET:
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                viewModel.setFabVisible(true);
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "No Internet";
@@ -260,7 +175,7 @@ public class AttendenceFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
                 break;
             case FAILED:
-                ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+                viewModel.setFabVisible(true);
                 ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude40)));
                 ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
                 FabString = "Webkiosk Down/Timed Out(3s)";
@@ -273,9 +188,9 @@ public class AttendenceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            mAttendenceDataDao = AppDatabase.newInstance(getActivity()).AttendenceDao();
+        AttendenceDataDao attendenceDataDao = AppDatabase.newInstance(getActivity()).AttendenceDao();
          mAttendenceViewModel = ViewModelProviders.of(this).get(AttendenceViewModel.class);
-
+        viewModel = ViewModelProviders.of(this).get(DrawerViewModel.class);
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         setHasOptionsMenu(true);
 
@@ -299,7 +214,7 @@ public class AttendenceFragment extends Fragment {
             ((DrawerActivity) getActivity()).fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.magnitude80)));
             ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_info_outline_black_24dp);
         }
-        ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
+        viewModel.setFabVisible(true);
         infoListner = view -> Snackbar.make(view, FabString, Snackbar.LENGTH_LONG).setAction(Action, view1 -> {
             if (!isMyServiceRunning()) {
                 Intent refresh = new Intent(getActivity(), RefreshService.class);
@@ -345,7 +260,7 @@ public class AttendenceFragment extends Fragment {
         list.setLayoutManager(layoutManager);
         adapter = new AttendenceAdapter(getActivity(), listdata);
         list.setAdapter(adapter);
-        mAttendenceDataDao.AttendanceDataObserver().observe(this, attendenceData -> {
+        attendenceDataDao.AttendanceDataObserver().observe(this, attendenceData -> {
             if (attendenceData != null) {
                 DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                     @Override
@@ -405,12 +320,12 @@ public class AttendenceFragment extends Fragment {
     }
 
     @SuppressLint("RestrictedApi")
-    public void refreshData() {
+    private void refreshData() {
         image.setVisibility(View.GONE);
         swipeRefreshLayout.setKeepScreenOn(true);
         FabString = DateString;
         Action = "Refresh";
-        Error = -1;
+        int error = -1;
         swipeRefreshLayout.setRefreshing(true);
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -445,7 +360,7 @@ public class AttendenceFragment extends Fragment {
                     handleStatusCode(status);
                 }
             });
-            ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
+            viewModel.setFabVisible(false);
 
         } else if (isMyServiceRunning()) {
             if (adapter.getItemCount() == 0)
@@ -457,7 +372,7 @@ public class AttendenceFragment extends Fragment {
             ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             FabString = "Sync Already In Progress In Background";
             ((DrawerActivity) getActivity()).fab.performClick();
-            Error = NO_INTERNET;
+            error = NO_INTERNET;
             swipeRefreshLayout.setKeepScreenOn(false);
         } else {
             if (adapter.getItemCount() == 0)
@@ -469,7 +384,7 @@ public class AttendenceFragment extends Fragment {
             ((DrawerActivity) getActivity()).fab.setImageResource(R.drawable.ic_sync_problem_black_24dp);
             FabString = "No Internet Connections";
             ((DrawerActivity) getActivity()).fab.performClick();
-            Error = NO_INTERNET;
+            error = NO_INTERNET;
             swipeRefreshLayout.setKeepScreenOn(false);
 
         }

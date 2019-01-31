@@ -56,18 +56,18 @@
                 android:id="@+id/spinner_9_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_9_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -87,18 +87,18 @@
                 android:id="@+id/spinner_10_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_10_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -118,18 +118,18 @@
                 android:id="@+id/spinner_11_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_11_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -149,18 +149,18 @@
                 android:id="@+id/spinner_12_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_12_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -180,18 +180,18 @@
                 android:id="@+id/spinner_2_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_2_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -211,18 +211,18 @@
                 android:id="@+id/spinner_3_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_3_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -242,18 +242,18 @@
                 android:id="@+id/spinner_4_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_4_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <View style="@style/dividerline" />
@@ -273,18 +273,18 @@
                 android:id="@+id/spinner_5_type"
                 style="@style/spinnertype" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/hint_tt_setting">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/spinner_5_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:cursorVisible="true" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

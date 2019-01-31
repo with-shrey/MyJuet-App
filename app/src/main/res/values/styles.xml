@@ -110,6 +110,6 @@
     </style>
 
     <style name="SplashScreen" parent="android:style/Theme.Light.NoTitleBar">
-        <item name="android:background">@mipmap/ic_launcher</item>
-    </style>
+    <!--<item name="android:windowBackground">@drawable/splash_background</item>-->
+</style>
 </resources>

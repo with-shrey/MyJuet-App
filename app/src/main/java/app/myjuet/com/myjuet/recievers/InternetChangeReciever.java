@@ -1,12 +1,11 @@
 package app.myjuet.com.myjuet.recievers;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
+import androidx.core.app.ActivityCompat;
+import androidx.legacy.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import app.myjuet.com.myjuet.services.RefreshService;
