@@ -174,7 +174,7 @@ public class WebviewFragment extends Fragment {
                 if (progress == 100) {
                     try {
                         if (link.equals(Url + "?" + PostParam) && ((DrawerActivity) getActivity()).activeFragment == 3)
-                        optionsDialog();
+                            optionsDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -226,12 +226,17 @@ public class WebviewFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    AlertDialog dialog;
     private void optionsDialog() {
+        if (dialog != null){
+            if (dialog.isShowing()){
+                dialog.cancel();
+            }
+            dialog = null;
+        }
         if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
         ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "CGPA/SGPA", "Open In Browser", "Change Password"};
-        if (builder == null) {
             builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("WEBKIOSK-JUET");
             builder.setItems(colors, new DialogInterface.OnClickListener() {
@@ -343,8 +348,7 @@ public class WebviewFragment extends Fragment {
 
             });
 
-            builder.show();
-        }
+            dialog = builder.show();
 
     }
 

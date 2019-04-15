@@ -109,14 +109,15 @@ public class RefreshService extends LifecycleService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        mAttendenceViewModel = new AttendenceViewModel(getApplication());
-        boolean isConnected = isConnected(this);
-        DateString = new String();
-        Boolean today = false;
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        if (intent != null) {
+            mAttendenceViewModel = new AttendenceViewModel(getApplication());
+            boolean isConnected = isConnected(this);
+            DateString = new String();
+            Boolean today = false;
+            SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
 
-        if (!intent.getBooleanExtra("manual", false)) {
-                DateString = prefs.getString(Constants.DATE,null);
+            if (!intent.getBooleanExtra("manual", false)) {
+                DateString = prefs.getString(Constants.DATE, null);
                 Date dateobj = new Date();
                 SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
                 String temp = formattor.format(dateobj);
@@ -124,59 +125,60 @@ public class RefreshService extends LifecycleService {
                 if (DateString != null && DateString.substring(0, DateString.indexOf(" ")).equals(temp)) {
                     today = true;
                 }
-        }
+            }
 
-        String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
-        String pass = prefs.getString(getString(R.string.key_password), "");
-        boolean temp = prefs.getBoolean("autosync", true) || intent.getBooleanExtra("manual", false);
-        if ((!user.equals("") || !pass.equals(""))  && !today && isConnected && temp) {
-            sendNotification("Logging In...", 1, false);
-            mAttendenceViewModel.loginUser().observe(this,status -> {
-                if (status == Constants.Status.SUCCESS){
-                    sendNotification("Sync in Progress...", 1, false);
-                    mAttendenceViewModel.startLoading().observe(this, status1 -> {
-                        if (status1 == Constants.Status.SUCCESS){
-                            Date dateobj = new Date();
-                            SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
-                            String DateString = formattor.format(dateobj);
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putString(Constants.DATE,DateString);
-                            editor.commit();
-                            sendNotification("Syncing Details In Progress...", 1, false);
-                            AppDatabase.newInstance(this).AttendenceDao().AttendanceLoadingPendingCountObserver().observe(this,number -> {
-                                if (number != null && number <= 0){
-                                    sendNotification("Attendence Synced successfully " , 1, false);
-                                    stopSelf();
-                                }
-                            });
-                            mAttendenceViewModel.loadDetails().observe(this,status2 -> {
-                                if (status2 == Constants.Status.SUCCESS){
-                                    sendNotification("Attendence Synced successfully " + DateString, 1, false);
-                                    stopSelf();
-                                }else{
-                                    handleStatusCode(status2);
-                                }
-                            });
-                        }else{
-                            handleStatusCode(status1);
-                        }
-                    });
-                }else{
-                    handleStatusCode(status);
-                }
-            });
-        } else if (user.equals("") || pass.equals("")) {
-            sendNotification("Please Enter Login Details", 0, false);
-            stopSelf();
-        }else if (today || !isConnected) {
-            stopSelf();
+            String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
+            String pass = prefs.getString(getString(R.string.key_password), "");
+            boolean temp = prefs.getBoolean("autosync", true) || intent.getBooleanExtra("manual", false);
+            if ((!user.equals("") || !pass.equals("")) && !today && isConnected && temp) {
+                sendNotification("Logging In...", 1, false);
+                mAttendenceViewModel.loginUser().observe(this, status -> {
+                    if (status == Constants.Status.SUCCESS) {
+                        sendNotification("Sync in Progress...", 1, false);
+                        mAttendenceViewModel.startLoading().observe(this, status1 -> {
+                            if (status1 == Constants.Status.SUCCESS) {
+                                Date dateobj = new Date();
+                                SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
+                                String DateString = formattor.format(dateobj);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString(Constants.DATE, DateString);
+                                editor.commit();
+                                sendNotification("Syncing Details In Progress...", 1, false);
+                                AppDatabase.newInstance(this).AttendenceDao().AttendanceLoadingPendingCountObserver().observe(this, number -> {
+                                    if (number != null && number <= 0) {
+                                        sendNotification("Attendence Synced successfully ", 1, false);
+                                        stopSelf();
+                                    }
+                                });
+                                mAttendenceViewModel.loadDetails().observe(this, status2 -> {
+                                    if (status2 == Constants.Status.SUCCESS) {
+                                        sendNotification("Attendence Synced successfully " + DateString, 1, false);
+                                        stopSelf();
+                                    } else {
+                                        handleStatusCode(status2);
+                                    }
+                                });
+                            } else {
+                                handleStatusCode(status1);
+                            }
+                        });
+                    } else {
+                        handleStatusCode(status);
+                    }
+                });
+            } else if (user.equals("") || pass.equals("")) {
+                sendNotification("Please Enter Login Details", 0, false);
+                stopSelf();
+            } else if (today || !isConnected) {
+                stopSelf();
+            } else {
+                sendNotification("Wrong Credentials", 0, false);
+                stopSelf();
+            }
+            return START_STICKY;
         }
-        else {
-            sendNotification("Wrong Credentials", 0, false);
-            stopSelf();
-        }
+        return START_NOT_STICKY;
 
-        return  START_STICKY;
     }
 
     private void sendNotification(String msg, int i, boolean onGoing) {

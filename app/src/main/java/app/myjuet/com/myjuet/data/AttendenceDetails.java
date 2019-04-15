@@ -1,6 +1,7 @@
 package app.myjuet.com.myjuet.data;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
@@ -20,7 +21,7 @@ public class AttendenceDetails implements java.io.Serializable {
     @PrimaryKey
     private String id;
 
-
+    @Ignore
     public AttendenceDetails(String mDate, String mStatus, String mType) {
         if (mDate.contains("N/A")) {
             this.mStatus = "Present";

@@ -2,13 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 7
-        versionName '3.2'
+        versionCode 8
+        versionName '3.2.1'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,18 +43,17 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.google.firebase:firebase-storage:16.0.5'
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
-    implementation 'com.google.firebase:firebase-core:16.0.5'
-    implementation 'com.google.firebase:firebase-ads:17.1.1'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
+    implementation 'com.google.firebase:firebase-auth:16.2.1'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-ads:17.2.0'
     implementation 'com.jjoe64:graphview:4.2.1'
     def work_version = "1.0.0-alpha11"
 
@@ -64,11 +62,11 @@ dependencies {
         transitive = true;
     }
     // ViewModel and LiveData
-    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '16.1.0'
+    implementation group: 'com.google.android.gms', name: 'play-services-basement', version: '16.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
-    implementation "androidx.room:room-runtime:2.1.0-alpha02"
-    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha02" // use kapt for Kotlin
+    implementation "androidx.room:room-runtime:2.1.0-alpha04"
+    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04" // use kapt for Kotlin
     implementation 'org.jsoup:jsoup:1.10.3'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'

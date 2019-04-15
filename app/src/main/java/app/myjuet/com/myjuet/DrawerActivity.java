@@ -60,7 +60,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import androidx.lifecycle.ViewModelProviders;
 import app.myjuet.com.myjuet.database.AppDatabase;
-import app.myjuet.com.myjuet.timetable.TimeTableFragment;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import io.fabric.sdk.android.Fabric;
 
@@ -122,26 +121,6 @@ public class DrawerActivity extends AppCompatActivity
                 super.onAdLoaded();
             }
         });
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            final int REQUEST_WRITE_STORAGE = 112;
-            boolean hasPermission = (ContextCompat.checkSelfPermission(this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        REQUEST_WRITE_STORAGE);
-            }
-            hasPermission = (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        2);
-            }
-        }
-
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         String user = prefs.getString(getString(R.string.key_enrollment), "");
         navigationView = findViewById(R.id.nav_view);
@@ -274,37 +253,7 @@ public class DrawerActivity extends AppCompatActivity
         activeFragment = 0;
 
 
-    } else if (id == R.id.timetable_drawer) {
-                tabLayout.setVisibility(View.VISIBLE);
-                viewModel.setFabVisible(true);
-
-                activeFragment = 1;
-                Fragment fragment = new TimeTableFragment();
-                transition.replace(R.id.content_drawer, fragment).commitNow();
-        fab.setImageResource(R.drawable.ic_settings);
-                fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.colorAccent)));
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
-        if (getSupportActionBar() != null)
-        getSupportActionBar().setTitle("");
-        collapsingToolbarLayout.setTitle("");
-                appBarLayout.setExpanded(false);
-
-                activeFragment = 1;
-
-
-    } else if (id == R.id.annapurna_drawer) {
-                viewModel.setFabVisible(false);
-        tabLayout.setVisibility(View.GONE);
-        activeFragment = 2;
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setContentScrimColor(Color.BLACK);
-        collapsingToolbarLayout.setTitle("ANNAPURNA");
-        appBarLayout.setExpanded(false);
-        Fragment fragment = new MessFragment();
-                transition.replace(R.id.content_drawer, fragment).commitNow();
-
-            } else if (id == R.id.web_view_drawer) {
+    } else if (id == R.id.web_view_drawer) {
                 new Handler().postDelayed(() -> {
                 }, 2500);
                 fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(DrawerActivity.this, R.color.magnitude40)));
@@ -349,18 +298,7 @@ public class DrawerActivity extends AppCompatActivity
         activeFragment = 5;
 
 
-    } else if (id == R.id.request_notification) {
-
-                tabLayout.setVisibility(View.GONE);
-                viewModel.setFabVisible(false);
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
-        collapsingToolbarLayout.setTitle("Request Notification");           // setSupportActionBar(tool);
-        appBarLayout.setExpanded(false);
-        Fragment fragment = new NotificationApplicationFragment();
-                transition.replace(R.id.content_drawer, fragment).commitNow();
-        activeFragment = 6;
-    } else if (id == R.id.feedback_drawer) {
+    }  else if (id == R.id.feedback_drawer) {
 
                 tabLayout.setVisibility(View.GONE);
                 viewModel.setFabVisible(false);

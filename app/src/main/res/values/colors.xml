@@ -15,8 +15,6 @@
     <color name="magnitude70">#ffbf00</color>
 
     <!-- Magnitude circle color for an earthquake with magnitude between 5 and 6 -->
-    <color name="magnitude60">#ff8000</color>
-    <color name="magnitude6070">#ffae00</color>
 
     <!-- Magnitude circle color for an earthquake with magnitude between 6 and 7 -->
     <color name="magnitude40">#D93218</color>

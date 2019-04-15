@@ -21,7 +21,7 @@ import app.myjuet.com.myjuet.services.RefreshService;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     EditText mEnrollment;
-    EditText mPassword,mPrefferredPercentage,mSemester,mBatch;
+    EditText mPassword,mPrefferredPercentage;
     Button mLogin;
     LoginViewModel mLoginViewModel;
     @Override
@@ -36,8 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEnrollment = findViewById(R.id.input_enrollment);
         mPassword = findViewById(R.id.input_password);
         mPrefferredPercentage = findViewById(R.id.input_attendence);
-        mSemester = findViewById(R.id.input_semester);
-        mBatch = findViewById(R.id.input_batch);
+
         mLogin = findViewById(R.id.btn_login);
         mLogin.setOnClickListener(this);
     }
@@ -52,15 +51,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mPrefferredPercentage.getText().toString().isEmpty()) {
             Toast.makeText(this, "Preferred Percentage is Required", Toast.LENGTH_SHORT).show();
 
-            return false;
-
-        } else if (mSemester.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Semester is Required", Toast.LENGTH_SHORT).show();
-
-            return false;
-
-        } else if (mBatch.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Batch is Required", Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -102,8 +92,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         case SUCCESS:
                             SharedPreferences.Editor editor = this.getSharedPreferences(this.getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
                             editor.putString(getString(R.string.key_preferred_attendence), mPrefferredPercentage.getText().toString());
-                            editor.putString(getString(R.string.key_semester), mSemester.getText().toString());
-                            editor.putString(getString(R.string.key_batch), mBatch.getText().toString());
                             editor.putBoolean("autosync", true);
                             editor.apply();
                             createShortcuts();

@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fillViewport="true"
     android:background="@color/browser_actions_bg_grey"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:orientation="vertical"
+        android:background="@drawable/gradient_back"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -26,10 +28,9 @@
     android:layout_height="wrap_content"
     android:text="MY JUET"
     android:elevation="15dp"
+    android:padding="18dp"
     android:textAlignment="center"
-    android:fontFamily="casual"
-    android:textStyle="bold"
-    android:textColor="@color/black"
+    android:textColor="#413636"
     android:textSize="18sp"/>
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
@@ -56,30 +57,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_semester"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="1"
-                android:inputType="textCapCharacters"
-                android:hint="Semester" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_batch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="3"
-                android:inputType="textCapCharacters"
-                android:hint="Batch" />
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

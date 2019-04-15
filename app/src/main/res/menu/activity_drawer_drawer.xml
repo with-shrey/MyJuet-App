@@ -8,13 +8,17 @@
             android:icon="@drawable/ic_import_contacts_black_24dp"
             android:title="Attendence" />
         <item
-            android:id="@+id/timetable_drawer"
-            android:icon="@drawable/ic_event_black_24dp"
-            android:title="TimeTable" />
+            android:icon="@drawable/ic_import_contacts_black_24dp"
+            android:enabled="false"
+            android:title="Exam Marks" />
         <item
-            android:id="@+id/annapurna_drawer"
-            android:icon="@drawable/ic_restaurant_black_24dp"
-            android:title="Annapurna menu" />
+            android:icon="@drawable/ic_import_contacts_black_24dp"
+            android:enabled="false"
+            android:title="Seating Plan" />
+        <item
+            android:icon="@drawable/ic_import_contacts_black_24dp"
+            android:enabled="false"
+            android:title="Date Sheet" />
         <item
             android:id="@+id/cgpa_drawer"
             android:icon="@drawable/ic_cgpa_sgpa"
@@ -50,10 +54,6 @@
         <menu xmlns:android="http://schemas.android.com/apk/res/android">
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/request_notification"
-                    android:icon="@drawable/ic_notification"
-                    android:title="Request Notification" />
-                <item
                     android:id="@+id/findyourway"
                     android:checkable="false"
                     android:icon="@drawable/ic_shortcut"
@@ -71,7 +71,7 @@
                 <item
                     android:id="@+id/contact_drawer"
                     android:icon="@drawable/ic_info_about"
-                    android:title="About the Developer" />
+                    android:title="About" />
 
             </group>
         </menu>

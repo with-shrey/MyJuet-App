@@ -1,25 +1,17 @@
 package app.myjuet.com.myjuet.utilities;
 
-import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import com.google.android.material.textfield.TextInputEditText;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,9 +22,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -46,7 +36,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import app.myjuet.com.myjuet.DrawerActivity;
-import app.myjuet.com.myjuet.recievers.AlarmReciever;
 import app.myjuet.com.myjuet.R;
 
 
@@ -54,22 +43,12 @@ public class SettingsActivity extends AppCompatActivity {
     TextInputEditText enrollment;
     TextInputEditText password;
     TextInputEditText preferred;
-    TextView ttmin;
-    TextView messmin;
     SharedPreferences.Editor editor;
-    TextInputEditText sem;
-    TextInputEditText batch;
+
     int status = -1;
-    LinearLayout ttmin_layout;
-    LinearLayout messmin_layout;
-    String ringtonett;
-    String ringtonemess;
-    EditText admin;
 
 
-    Switch morningtt;
-    Switch beforeclass;
-    Switch beforemeal;
+
     Switch autosync;
     boolean doubleBackToExitPressedOnce = false;
 
@@ -88,97 +67,17 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
+        Toolbar toolbar = findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle("Settings");
         }
-        enrollment = (TextInputEditText) findViewById(R.id.preference_enrollment);
-        password = (TextInputEditText) findViewById(R.id.preference_password);
-        preferred = (TextInputEditText) findViewById(R.id.preference_percent);
-        ttmin = (TextView) findViewById(R.id.preference_minutes_timetable);
-        messmin = (TextView) findViewById(R.id.preference_minutes_mess);
-        sem = (TextInputEditText) findViewById(R.id.preference_semester);
-        batch = (TextInputEditText) findViewById(R.id.preference_batch);
+        enrollment = findViewById(R.id.preference_enrollment);
+        password = findViewById(R.id.preference_password);
+        preferred = findViewById(R.id.preference_percent);
 
-        admin = (EditText) findViewById(R.id.admin_text);
-        View view = (View) findViewById(R.id.adminview);
-
-        Button ringmess = (Button) findViewById(R.id.mess_ring);
-        Button ringtt = (Button) findViewById(R.id.tt_ring);
-
-        ttmin_layout = (LinearLayout) findViewById(R.id.before_class_layout);
-        messmin_layout = (LinearLayout) findViewById(R.id.before_meal_layout);
-
-        autosync = (Switch) findViewById(R.id.autosync);
-        morningtt = (Switch) findViewById(R.id.preference_tt_morning);
-        beforemeal = (Switch) findViewById(R.id.preference_mess_before);
-        beforeclass = (Switch) findViewById(R.id.preference_tt_before);
-        view.setOnClickListener(view15 -> admin.setVisibility(View.VISIBLE));
-        ringmess.setOnClickListener(view14 -> {
-            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For Mess");
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonemess));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-            startActivityForResult(intent, 1);
-        });
-        ringtt.setOnClickListener(view13 -> {
-            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone For TimeTable");
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(ringtonett));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-            startActivityForResult(intent, 2);
-        });
-        beforemeal.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                messmin_layout.setVisibility(View.VISIBLE);
-                messmin.setText("10");
-
-            } else
-                messmin_layout.setVisibility(View.GONE);
-        });
-        messmin_layout.setOnClickListener(view12 -> {
-            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-
-            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 15)));
-            String temp = messmin.getText().toString();
-            show(Integer.valueOf(temp), messmin);
-        });
-        beforeclass.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                ttmin_layout.setVisibility(View.VISIBLE);
-                ttmin.setText("10");
-            } else
-                ttmin_layout.setVisibility(View.GONE);
-        });
-        ttmin_layout.setOnClickListener(view1 -> {
-            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-            messmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 15)));
-            String temp = ttmin.getText().toString();
-            show(Integer.valueOf(temp), ttmin);
-        });
+        autosync = findViewById(R.id.autosync);
         initialize();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            final int REQUEST_WRITE_STORAGE = 112;
-            boolean hasPermission = (ContextCompat.checkSelfPermission(this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        REQUEST_WRITE_STORAGE);
-            }
-            hasPermission = (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        2);
-            }
-        }
 
     }
 
@@ -216,28 +115,9 @@ public class SettingsActivity extends AppCompatActivity {
         enrollment.setText(sharedPref.getString(getString(R.string.key_enrollment), ""));
         password.setText(sharedPref.getString(getString(R.string.key_password), ""));
         preferred.setText(sharedPref.getString(getString(R.string.key_preferred_attendence), "90"));
-        sem.setText(sharedPref.getString(getString(R.string.key_semester), ""));
-        batch.setText(sharedPref.getString(getString(R.string.key_batch), ""));
-        ringtonemess = sharedPref.getString("notificationmess", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
-        ringtonett = sharedPref.getString("notificationtt", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
-
         if (sharedPref.getBoolean("autosync", true)) {
             autosync.setChecked(true);
         }
-        if (sharedPref.getBoolean(getString(R.string.key_alarm_morming), true)) {
-            morningtt.setChecked(true);
-
-        }
-        if (sharedPref.getBoolean(getString(R.string.key_alarm_meal), true)) {
-            beforemeal.setChecked(true);
-            messmin.setText(String.valueOf(sharedPref.getInt("beforemealminute", 5)));
-        }
-        if (sharedPref.getBoolean(getString(R.string.key_alarm_class), true)) {
-            beforeclass.setChecked(true);
-            ttmin.setText(String.valueOf(sharedPref.getInt("beforeclassminute", 10)));
-        }
-
-
     }
 
     private void save() {
@@ -251,37 +131,14 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString(getString(R.string.key_enrollment), temp.toUpperCase().trim());
         editor.putString(getString(R.string.key_password), password.getText().toString());
         editor.putString(getString(R.string.key_preferred_attendence), preferred.getText().toString());
-        editor.putString(getString(R.string.key_semester), sem.getText().toString());
-        editor.putString(getString(R.string.key_batch), batch.getText().toString());
-        editor.putString(getString(R.string.key_notification_mess), ringtonemess);
-        editor.putString(getString(R.string.key_notification_tt), ringtonett);
-        if (admin.getVisibility() == View.VISIBLE)
-            editor.putString("admin", admin.getText().toString());
+
         if (autosync.isChecked()) {
             editor.putBoolean("autosync", true);
         } else {
             editor.putBoolean("autosync", false);
 
         }
-        if (morningtt.isChecked()) {
-            editor.putBoolean(getString(R.string.key_alarm_morming), true);
-        } else {
-            editor.putBoolean(getString(R.string.key_alarm_morming), false);
 
-        }
-        if (beforemeal.isChecked()) {
-            editor.putBoolean(getString(R.string.key_alarm_meal), true);
-            editor.putInt(getString(R.string.key_minutes_before_meal), Integer.valueOf(messmin.getText().toString()));
-        } else {
-            editor.putBoolean(getString(R.string.key_alarm_meal), false);
-
-        }
-        if (beforeclass.isChecked()) {
-            editor.putBoolean(getString(R.string.key_alarm_class), true);
-            editor.putInt(getString(R.string.key_minutes_before_class), Integer.valueOf(ttmin.getText().toString()));
-        } else {
-            editor.putBoolean(getString(R.string.key_alarm_class), false);
-        }
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         if (!prefs.getBoolean("firstTime", false)) {
@@ -308,11 +165,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         } else {
             boolean reason = editor.commit();
-            cancelMessAlarms();
-            cancelttAlarms();
-            cancelmorningalarm();
-            Intent intent = new Intent("SetAlarms");
-            sendBroadcast(intent);
             finish();
         }
 
@@ -339,15 +191,6 @@ public class SettingsActivity extends AppCompatActivity {
         } else if (preferred.getText().toString().isEmpty()) {
             Toast.makeText(this, "Preferred Percentage is Required", Toast.LENGTH_SHORT).show();
 
-            return false;
-
-        } else if (sem.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Semester is Required", Toast.LENGTH_SHORT).show();
-
-            return false;
-
-        } else if (batch.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Batch is Required", Toast.LENGTH_SHORT).show();
             return false;
 
         } else if (Integer.valueOf(preferred.getText().toString()) >= 100) {
@@ -385,56 +228,7 @@ public class SettingsActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    private void cancelMessAlarms() {
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 48, new Intent(this, AlarmReciever.class).putExtra("title", "BreakFast Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingIntent1 = PendingIntent.getBroadcast(this, 49, new Intent(this, AlarmReciever.class).putExtra("title", "Dinner Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 50, new Intent(this, AlarmReciever.class).putExtra("title", "Lunch Time").putExtra("fragmentno", 2), PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.cancel(pendingIntent);
-        am.cancel(pendingIntent1);
-        am.cancel(pendingIntent2);
-    }
 
-    private void cancelttAlarms() {
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        for (int i = 0; i < 6; i++) {
-            am.cancel(PendingIntent.getBroadcast(this, 0 + (i), new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 10:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 6 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 11:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 13 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 12:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 20 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 02:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 27 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 03:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 34 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 04:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-            am.cancel(PendingIntent.getBroadcast(this, 41 + i, new Intent(this, AlarmReciever.class).putExtra("title", "Class @ 05:00").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-        }
-    }
-
-    void cancelmorningalarm() {
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.cancel(PendingIntent.getBroadcast(this, 51, new Intent(this, AlarmReciever.class).putExtra("title", "TimeTable Of Today").putExtra("fragmentno", 1), PendingIntent.FLAG_UPDATE_CURRENT));
-
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-        if (resultCode == RESULT_OK && requestCode == 1) {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-
-            if (uri != null) {
-                this.ringtonemess = uri.toString();
-            } else {
-                this.ringtonemess = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString();
-            }
-        }
-        if (resultCode == RESULT_OK && requestCode == 2) {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-
-            if (uri != null) {
-                this.ringtonett = uri.toString();
-            } else {
-                this.ringtonett = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString();
-            }
-        }
-    }
 
     private class login extends AsyncTask<String, Integer, Integer> {
         ProgressDialog dialog;
@@ -529,9 +323,6 @@ public class SettingsActivity extends AppCompatActivity {
                     sendBroadcast(shortcutintent1);
                 }).start();
                 Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
-                cancelMessAlarms();
-                cancelttAlarms();
-                cancelmorningalarm();
                 Intent intent = new Intent("SetAlarms");
                 sendBroadcast(intent);
 
