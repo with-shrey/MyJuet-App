@@ -164,7 +164,6 @@ public class webUtilities extends AppCompatActivity {
                             data.setmCgpa(Float.valueOf(temp1.substring(temp1.indexOf(">") + 1, temp1.indexOf("</td>"))));
                             p2 = p2.substring(p2.indexOf("</td>") + 5);
                             datasg.add(data);
-                            Log.v("data", String.valueOf(data.getmSgpa()));
                             data = new SgpaData();
                             break;
 
@@ -237,7 +236,6 @@ public class webUtilities extends AppCompatActivity {
                                 break;
                         }
                     }
-                    Log.v("JSOUP", attendenceData.getId());
                     mAppDatabase.AttendenceDao().insert(attendenceData);
                 }
 
@@ -264,7 +262,6 @@ public class webUtilities extends AppCompatActivity {
                 mAppDatabase.AttendenceDao().updatePresentAbsent(datum.getId(), CountPresent, CountAbsent, mOnNext, mOnLeaving);
                 Elements classes = tbody.children();
                 for (Element lecture : classes) {
-                    Log.v("JSOUPDET", lecture.html());
                     AttendenceDetails details = new AttendenceDetails();
                     Elements columns = lecture.children();
                     details.setSubjectId(datum.getId());

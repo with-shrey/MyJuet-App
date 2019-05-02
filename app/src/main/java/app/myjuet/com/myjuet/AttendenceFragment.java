@@ -231,29 +231,16 @@ public class AttendenceFragment extends Fragment {
         list = rootView.findViewById(R.id.list_view);
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setPositiveButton("Background", (dialogInterface, i) -> {
-                if (!isMyServiceRunning()) {
-                    Intent refresh = new Intent(getActivity(),RefreshService.class);
-                    refresh.putExtra("manual", true);
-                    ActivityCompat.startForegroundService(getActivity(),refresh);
-                    Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), "Background Sync Already Running\nHave Patience...", Toast.LENGTH_LONG).show();
+            if (!isMyServiceRunning()) {
+                Intent refresh = new Intent(getActivity(),RefreshService.class);
+                refresh.putExtra("manual", true);
+                ActivityCompat.startForegroundService(getActivity(),refresh);
+                Toast.makeText(getActivity(), "Background Sync Started\nCheck Progress In Notifications", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "Background Sync Already Running\nHave Patience...", Toast.LENGTH_LONG).show();
 
-                }
-                swipeRefreshLayout.setRefreshing(false);
-            });
-            builder.setNegativeButton("Normal Way", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    refreshData();
-                }
-            });
-            builder.setMessage("Choose Desired Method Of Attendence Refresh\nBackground Method Is Recommeded");
-            builder.show();
-
-
+            }
+            swipeRefreshLayout.setRefreshing(false);
         });
         listdata = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -286,7 +273,6 @@ public class AttendenceFragment extends Fragment {
                 listdata.clear();
                 listdata.addAll(attendenceData);
                 result.dispatchUpdatesTo(adapter);
-                list.scrollToPosition(0);
             }
             if (adapter.getItemCount() == 0) {
                 image.setVisibility(View.VISIBLE);

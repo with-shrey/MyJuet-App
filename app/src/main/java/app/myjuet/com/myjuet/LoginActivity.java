@@ -18,8 +18,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import app.myjuet.com.myjuet.services.RefreshService;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+
     EditText mEnrollment;
     EditText mPassword,mPrefferredPercentage;
     Button mLogin;
@@ -28,6 +30,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+            setTheme(R.style.DarkTheme);
         init();
     }
 

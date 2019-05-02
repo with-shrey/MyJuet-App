@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
@@ -49,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
-    Switch autosync;
+    Switch autosync,dark;
     boolean doubleBackToExitPressedOnce = false;
 
     private static boolean pingHost(String host, int port, int timeout) {
@@ -67,6 +68,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+            setTheme(R.style.DarkTheme);
         Toolbar toolbar = findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -77,6 +80,17 @@ public class SettingsActivity extends AppCompatActivity {
         preferred = findViewById(R.id.preference_percent);
 
         autosync = findViewById(R.id.autosync);
+        dark = findViewById(R.id.dark);
+        dark.setChecked(SharedPreferencesUtil.getPreferences(this,"dark",false));
+        dark.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferencesUtil.savePreferences(this,"dark",isChecked);
+            if(isChecked)
+                setTheme(R.style.DarkTheme);
+            else{
+                setTheme(R.style.AppTheme);
+            }
+            this.recreate();
+        });
         initialize();
 
     }
@@ -165,6 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         } else {
             boolean reason = editor.commit();
+            SharedPreferencesUtil.savePreferences(this,"dark",dark.isChecked());
             finish();
         }
 
@@ -299,6 +314,7 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
                 boolean reason = editor.commit();
+                SharedPreferencesUtil.savePreferences(getApplicationContext(),"dark",dark.isChecked());
                 new Thread(() -> {
                     Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
                     shortcutintent.putExtra("duplicate", false);

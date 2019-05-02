@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="holder"
+            type="app.myjuet.com.myjuet.AttendenceDetailsActivity.CalculatorHolder"/>
+    </data>
+<LinearLayout
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:padding="8dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:text="CURRENT"/>
+    <TextView
+        android:id="@+id/current_present"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@{`Present: `+String.valueOf(holder.present)}"/>
+    <TextView
+        android:id="@+id/current_absent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@{`Absent: `+String.valueOf(holder.absent)}"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:padding="8dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:text="Result"/>
+    <TextView
+        android:id="@+id/percentage"
+        android:padding="8dp"
+        android:text="@{`Percentage : `+holder.percentage + ` % `}"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/result_text"
+        android:gravity="center"
+        android:text="@{holder.leaveText}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:padding="8dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:text="I am planning to: "/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Attend"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/attend_minus"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:onClick="@{holder::decrementAttend}"
+            android:clickable="@{safeUnbox(holder.willAttend) > 0}"
+            android:layout_height="wrap_content"
+            android:text=" - "/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@{String.valueOf(safeUnbox(holder.willAttend))}"
+            android:id="@+id/attend"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/attend_plus"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:onClick="@{holder::incrementAttend}"
+            android:layout_height="wrap_content"
+            android:text="+"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Leave"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/leave_minus"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:onClick="@{holder::decrementLeave}"
+            android:clickable="@{safeUnbox(holder.willLeave) > 0}"
+            android:layout_height="wrap_content"
+            android:text=" - "/>
+        <TextView
+            android:id="@+id/leave"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@{String.valueOf(safeUnbox(holder.willLeave))}"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/leave_plus"
+            android:layout_width="0dp"
+            android:onClick="@{holder::incrementLeave}"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="+"/>
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:hint="Preferred Attendence %"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/threshold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="2"
+        android:maxEms="2"
+        android:text="@={holder.preference}"/>
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>
+</layout>

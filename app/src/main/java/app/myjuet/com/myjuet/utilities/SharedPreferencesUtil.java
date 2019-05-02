@@ -11,7 +11,7 @@ import android.preference.PreferenceManager;
 public class SharedPreferencesUtil {
     public static final int MODE_PRIVATE = 0;
     // file name
-    private static final String PREF_NAME = "app_myjuet_com_myjuet_preferences-demo";
+    private static final String PREF_NAME = "app_myjuet_com_myjuet_preferences";
     private static SharedPreferencesUtil mInstance;
     SharedPreferences pref;
     SharedPreferences.Editor editor;

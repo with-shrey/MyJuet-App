@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#000"
     tools:context=".AttendenceDetailsActivity">
 
     <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,13 +33,13 @@
 
         <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/datalayout"
+            app:cardBackgroundColor="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@id/adViewDetails"
             android:layout_margin="10dp"
-            app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="8dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/details_perc"
-                android:textColor="@android:color/black" />
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -147,8 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/details_perc"
-                android:textColor="@android:color/black" />
+                android:text="@string/details_perc" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,9 +171,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/details_perc"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
+                />
 
+        </LinearLayout>
+        <Button
+            android:id="@+id/calculate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Additional Calculate"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -189,11 +194,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
+                android:textColor="#000"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@android:color/black" />
+                android:gravity="center" />
 
 
         </RelativeLayout>

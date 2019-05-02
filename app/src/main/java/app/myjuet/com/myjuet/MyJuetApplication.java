@@ -13,5 +13,6 @@ public class MyJuetApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         SharedPreferencesUtil.getInstance(getApplicationContext());
+
     }
 }

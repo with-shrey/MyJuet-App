@@ -16,8 +16,8 @@
             android:enabled="false"
             android:title="Seating Plan" />
         <item
+            android:id="@+id/date_sheet"
             android:icon="@drawable/ic_import_contacts_black_24dp"
-            android:enabled="false"
             android:title="Date Sheet" />
         <item
             android:id="@+id/cgpa_drawer"

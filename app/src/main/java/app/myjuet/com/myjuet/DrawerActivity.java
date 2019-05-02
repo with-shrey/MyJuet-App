@@ -38,6 +38,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -61,6 +63,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import androidx.lifecycle.ViewModelProviders;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import io.fabric.sdk.android.Fabric;
 
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
@@ -97,6 +100,8 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+            setTheme(R.style.DarkTheme);
 //        Activity binding = DataBindingUtil.
                 setContentView(R.layout.activity_drawer);
         viewModel = ViewModelProviders.of(this).get(DrawerViewModel.class);
@@ -107,6 +112,20 @@ public class DrawerActivity extends AppCompatActivity
                 fab.setVisibility(View.GONE);
             }
         });
+        if (SharedPreferencesUtil.getPreferences(this
+                ,"firsttime_"+BuildConfig.VERSION_CODE,true)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("New In This Release");
+            builder.setMessage(Html.fromHtml("1.<b>Date Sheet( <- Drawer)</b><br/><br/>2.<b>Dark Theme</b>( In Settings)<br/><br/>3.Smooth Scroll While Refresh<br/><br/>4.<b>Calculator</b> on Attendence Detail Page"));
+            builder.setPositiveButton("Ok", (dialog, which) -> {
+                SharedPreferencesUtil.savePreferences(this
+                        ,"firsttime_"+BuildConfig.VERSION_CODE,false);
+                dialog.dismiss();
+            });
+            builder.setCancelable(false);
+            builder.show();
+
+        }
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         PublisherAdView mAdView;
@@ -150,18 +169,6 @@ public class DrawerActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         in = getIntent().getIntExtra("fragment", 0);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                String packageName = this.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                intent.setData(Uri.parse("package:" + packageName));
-                startActivity(intent);
-
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         int latest = sharedPref.getInt("latest_version_number", 0);
         String latestCode = sharedPref.getString("latest_version_code", "0.0");
@@ -269,6 +276,20 @@ public class DrawerActivity extends AppCompatActivity
                 transition.replace(R.id.content_drawer, fragment).commitNow();
 
         activeFragment = 3;
+        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    } else if (id == R.id.date_sheet) {
+                viewModel.setFabVisible(false);
+        tabLayout.setVisibility(View.GONE);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
+        collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
+        collapsingToolbarLayout.setTitle("Date Sheet");           // setSupportActionBar(tool);
+        appBarLayout.setExpanded(false);
+        Fragment fragment = new DateSheetFragment();
+                transition.replace(R.id.content_drawer, fragment).commitNow();
+
+        activeFragment = 10;
         // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     } else if (id == R.id.findyourway) {
