@@ -67,9 +67,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
         if(SharedPreferencesUtil.getPreferences(this,"dark",false))
             setTheme(R.style.DarkTheme);
+        setContentView(R.layout.activity_settings);
         Toolbar toolbar = findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -89,7 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
             else{
                 setTheme(R.style.AppTheme);
             }
-            this.recreate();
+            Toast.makeText(this, "Restart App For Changes To Take Place", Toast.LENGTH_SHORT).show();
         });
         initialize();
 

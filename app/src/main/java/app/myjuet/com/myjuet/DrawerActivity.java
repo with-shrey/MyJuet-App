@@ -100,10 +100,14 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false)) {
             setTheme(R.style.DarkTheme);
+        }
 //        Activity binding = DataBindingUtil.
                 setContentView(R.layout.activity_drawer);
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false)) {
+            findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        }
         viewModel = ViewModelProviders.of(this).get(DrawerViewModel.class);
         viewModel.getFabVisible().observe(this,(value) -> {
             if (value){
@@ -192,12 +196,19 @@ public class DrawerActivity extends AppCompatActivity
             CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
             tabLayout.setVisibility(View.GONE);
             viewModel.setFabVisible(true);
+            color = "#4A7BA7";
+            // Handle navigation view item clicks here.
+            if(SharedPreferencesUtil.getPreferences(this,"dark",false)){
+                color = "#000000";
+            }
             ImageView appbarimage = findViewById(R.id.image_appbar);
             Fragment fragment = new AttendenceFragment();
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.content_drawer, fragment).commitNow();
             appbarimage.setImageDrawable(ContextCompat.getDrawable(DrawerActivity.this, R.drawable.attendence));
             collapsingToolbarLayout.setTitle("ATTENDENCE");
-            collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
+                            collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
+
             appBarLayout.setExpanded(true);
             activeFragment = 0;
 
@@ -231,13 +242,16 @@ public class DrawerActivity extends AppCompatActivity
 
         }
     }
-
+String color;
     @SuppressLint("RestrictedApi")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+        color = "#4A7BA7";
         // Handle navigation view item clicks here.
-
+        if(SharedPreferencesUtil.getPreferences(this,"dark",false)){
+            color = "#000000";
+        }
         final int id = item.getItemId();
         if (id == R.id.exit) {
             requestNewInterstitial();
@@ -255,7 +269,8 @@ public class DrawerActivity extends AppCompatActivity
                 Fragment fragment = new AttendenceFragment();
                 transition.replace(R.id.content_drawer, fragment).commitNow();
                 collapsingToolbarLayout.setTitle("ATTENDENCE");
-                collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
+                collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
                 new Handler().postDelayed(() -> appBarLayout.setExpanded(true), 1000);
         activeFragment = 0;
 
@@ -269,7 +284,8 @@ public class DrawerActivity extends AppCompatActivity
         tabLayout.setVisibility(View.GONE);
 
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
+                collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
         collapsingToolbarLayout.setTitle("WEBVIEW");           // setSupportActionBar(tool);
         appBarLayout.setExpanded(false);
         Fragment fragment = new WebviewFragment();
@@ -283,7 +299,9 @@ public class DrawerActivity extends AppCompatActivity
         tabLayout.setVisibility(View.GONE);
 
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setContentScrimColor(Color.DKGRAY);
+                        collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
+
         collapsingToolbarLayout.setTitle("Date Sheet");           // setSupportActionBar(tool);
         appBarLayout.setExpanded(false);
         Fragment fragment = new DateSheetFragment();
@@ -311,7 +329,7 @@ public class DrawerActivity extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 viewModel.setFabVisible(false);
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
+                collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color));
         collapsingToolbarLayout.setTitle("Contact Us");           // setSupportActionBar(tool);
         appBarLayout.setExpanded(false);
         Fragment fragment = new ContactFragment();
@@ -324,7 +342,9 @@ public class DrawerActivity extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 viewModel.setFabVisible(false);
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(DrawerActivity.this, R.color.Attendence));
+                                collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
+
         collapsingToolbarLayout.setTitle("FeedBack");           // setSupportActionBar(tool);
         appBarLayout.setExpanded(false);
         Fragment fragment = new ReportFragment();
@@ -343,7 +363,8 @@ public class DrawerActivity extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 activeFragment = 8;
                 CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setContentScrimColor(Color.parseColor("#78909c"));
+                collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
                 collapsingToolbarLayout.setTitle("CGPA/SGPA");
                 appBarLayout.setExpanded(false);
                 Fragment fragment = new SgpaCgpa();

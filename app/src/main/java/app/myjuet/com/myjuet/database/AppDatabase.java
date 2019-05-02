@@ -21,18 +21,21 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase newInstance(Context context) {
         if (mAppDatabase == null)
-        mAppDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "myjuet.db").addMigrations(new Migration[]{AppDatabase.MIGRATION_1_2}).allowMainThreadQueries().build();
+        mAppDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "myjuet.db")
+                .addMigrations(AppDatabase.MIGRATION_1_2)
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries().build();
     return mAppDatabase;
     }
 
     public abstract AttendenceDataDao AttendenceDao();
     public abstract AttendenceDetailsDao AttendenceDetailsDao();
     public abstract DateSheetDao DateSheetDao();
-    static final Migration MIGRATION_1_2 =
+    private static final Migration MIGRATION_1_2 =
             new Migration(1, 2) {
                 @Override
                 public void migrate(@NonNull final SupportSQLiteDatabase database) {
-                    database.execSQL("CREATE TABLE IF NOT EXISTS `DateSheet` (`id` TEXT NOT NULL, `subjectCode` TEXT NOT NULL, `subjectName` TEXT, `date` TEXT, `time` TEXT, PRIMARY KEY(`subjectCode`))");
+                    database.execSQL("CREATE TABLE IF NOT EXISTS `DateSheet` (`id` TEXT, `subjectCode` TEXT NOT NULL, `subjectName` TEXT, `date` TEXT, `time` TEXT, PRIMARY KEY(`subjectCode`))");
                 }
             };
 }

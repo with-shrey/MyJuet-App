@@ -7,6 +7,7 @@
 
     <!-- Magnitude circle color for an earthquake with magnitude between 2 and 3 -->
     <color name="Attendence">#00997f</color>
+    <color name="dkgrey">#000000</color>
 
     <color name="magnitude90">#009900</color>
 

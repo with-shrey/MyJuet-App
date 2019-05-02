@@ -73,7 +73,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
              String ClassText;
              double classes;
              if (!mAttendenceData.getmLecTut().contains("--")) {
-                 ClassText = getResultText(p,pa,Attendence);
+                 ClassText = getResultText(Integer.parseInt(mAttendenceData.getLecTut()),p,pa,Attendence);
              } else
                  ClassText = "No Classes Updated Yet!!";
 
@@ -136,15 +136,15 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
         return (int)Math.floor((p*100.0)/(p+a));
     }
 
-    public String getResultText(int p,int pa,double Attendence){
+    public String getResultText(int currentp,int p,int pa,double Attendence){
         String ClassText ="";
         double classes,t = Attendence/100.0;
         int res;
-        if (Integer.parseInt(mAttendenceData.getmLecTut()) < Attendence) {
+        if (currentp < Attendence) {
                 classes = Math.ceil(((t * pa) - p) / (1 - t));
                 res = (int) classes;
                 ClassText = "You Need To Attend " + String.valueOf(res) + " Classes To Reach Threshold " + String.valueOf(Attendence) + " %";
-            } else if (Integer.parseInt(mAttendenceData.getmLecTut()) == Attendence) {
+            } else if (currentp == Attendence) {
                 ClassText = "Don't Leave Class";
             } else {
                 classes = Math.floor((p - (t * pa)) / (t)) - 1;
@@ -206,10 +206,11 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
 
             void calculate(){
                 int pa = present+willAttend.getValue() + absent + willLeave.getValue();
-                String text = getResultText(present+willAttend.getValue(),pa,Double.parseDouble(preference.getValue()));
+                int percent = totalPercent(present+willAttend.getValue(),absent + willLeave.getValue());
+                String text = getResultText(percent,present+willAttend.getValue(),pa,Double.parseDouble(preference.getValue()));
                 leaveText.setValue(text);
 
-                percentage.setValue(totalPercent(present+willAttend.getValue(),absent + willLeave.getValue()));
+                percentage.setValue(percent);
             }
 
             public void incrementAttend(View view){
