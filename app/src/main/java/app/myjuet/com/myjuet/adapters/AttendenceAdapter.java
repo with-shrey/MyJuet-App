@@ -2,6 +2,7 @@ package app.myjuet.com.myjuet.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +24,15 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
     private ArrayList<AttendenceData> list;
     // Store the context for easy access
     private Context mContext;
+    private int preferred = 90;
+    SharedPreferences prefs;
 
     public AttendenceAdapter(Context context, ArrayList<AttendenceData> contacts) {
         list = contacts;
         mContext = context;
+        prefs = mContext.getSharedPreferences(mContext.getString(R.string.preferencefile), Context.MODE_PRIVATE);
+        preferred = Integer.parseInt(prefs.getString(mContext.getString(R.string.key_preferred_attendence), "90"));
+
     }
 
     @Override
@@ -79,7 +85,25 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
     }
 
     private int getmColor(int mLecTut) {
-        if ((mLecTut) >= 0 && (mLecTut) <= 40) {
+        preferred = Integer.parseInt(prefs.getString(mContext.getString(R.string.key_preferred_attendence), "90"));
+        if (mLecTut >= preferred){
+            return R.color.magnitude90;
+        }else {
+            if ((mLecTut) >= preferred - 50 && (mLecTut) < preferred - 40) {
+                return R.color.magnitude40;
+            } else if ((mLecTut) >= preferred - 40 && (mLecTut) < preferred - 30) {
+                return R.color.magnitude40;
+            } else if ((mLecTut) >= preferred - 30 && (mLecTut) < preferred - 20) {
+                return R.color.magnitude50;
+            } else if ((mLecTut) >= preferred - 20 && (mLecTut) < preferred - 10) {
+                return R.color.magnitude50;
+            } else if ((mLecTut) >= preferred - 10 && (mLecTut) < preferred) {
+                return R.color.magnitude70;
+            }else{
+                return R.color.magnitude1;
+            }
+        }
+       /* if ((mLecTut) >= 0 && (mLecTut) <= 40) {
             return R.color.magnitude40;
         } else if ((mLecTut) > 40 && (mLecTut) < 50) {
             return R.color.magnitude40;
@@ -93,7 +117,7 @@ public class AttendenceAdapter extends RecyclerView.Adapter<AttendenceAdapter.Vi
             return R.color.magnitude80;
         } else {
             return R.color.magnitude90;
-        }
+        }*/
     }
 
     @SuppressWarnings("WeakerAccess")

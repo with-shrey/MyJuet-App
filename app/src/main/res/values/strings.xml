@@ -21,4 +21,7 @@
     <string name="details_tutorial">Tutorial :</string>
     <string name="details_perc">%</string>
     <string name="attendence">ATTENDENCE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -3,6 +3,13 @@ package app.myjuet.com.myjuet;
 
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,21 +19,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import java.util.ArrayList;
+
 import app.myjuet.com.myjuet.data.DateSheet;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.DateSheetDao;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
 import app.myjuet.com.myjuet.vm.DateSheetViewModel;
-
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 
 /**
@@ -107,7 +107,11 @@ public class DateSheetFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             DateSheet ds = mDateSheets.get(position);
             String[] dates = TextUtils.split(ds.getDate(),"-");
+            if (dates.length >= 2)
             holder.date.setText(dates[0] + "/" + dates[1]);
+            else{
+                holder.date.setText(ds.getDate());
+            }
             holder.dateFull.setText(ds.getDate());
             holder.time.setText(ds.getTime());
             holder.name.setText(ds.getSubjectName());

@@ -6,8 +6,8 @@ android {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 9
-        versionName '3.2.2'
+        versionCode 13
+        versionName '3.2.3'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.6.0'
     implementation 'com.google.firebase:firebase-auth:16.2.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.google.firebase:firebase-ads:17.2.0'
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
     implementation 'com.jjoe64:graphview:4.2.1'
     def work_version = "1.0.0-alpha11"
 

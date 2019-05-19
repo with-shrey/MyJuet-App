@@ -8,8 +8,8 @@
             android:icon="@drawable/ic_import_contacts_black_24dp"
             android:title="Attendence" />
         <item
+            android:id="@+id/exam_marks"
             android:icon="@drawable/ic_import_contacts_black_24dp"
-            android:enabled="false"
             android:title="Exam Marks" />
         <item
             android:icon="@drawable/ic_import_contacts_black_24dp"

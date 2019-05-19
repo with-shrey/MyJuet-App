@@ -11,18 +11,19 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.DateSheet;
+import app.myjuet.com.myjuet.data.ExamMarks;
+import app.myjuet.com.myjuet.data.SeatingPlan;
 
 /**
  * Upgrade version in case of schema change
  */
-@Database(entities = {AttendenceData.class,AttendenceDetails.class, DateSheet.class}, version = 2, exportSchema = false)
+@Database(entities = {AttendenceData.class,AttendenceDetails.class, DateSheet.class, SeatingPlan.class, ExamMarks.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private  static  AppDatabase mAppDatabase;
 
     public static AppDatabase newInstance(Context context) {
         if (mAppDatabase == null)
         mAppDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "myjuet.db")
-                .addMigrations(AppDatabase.MIGRATION_1_2)
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries().build();
     return mAppDatabase;
@@ -31,11 +32,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract AttendenceDataDao AttendenceDao();
     public abstract AttendenceDetailsDao AttendenceDetailsDao();
     public abstract DateSheetDao DateSheetDao();
-    private static final Migration MIGRATION_1_2 =
-            new Migration(1, 2) {
-                @Override
-                public void migrate(@NonNull final SupportSQLiteDatabase database) {
-                    database.execSQL("CREATE TABLE IF NOT EXISTS `DateSheet` (`id` TEXT, `subjectCode` TEXT NOT NULL, `subjectName` TEXT, `date` TEXT, `time` TEXT, PRIMARY KEY(`subjectCode`))");
-                }
-            };
+    public abstract SeatingPlanDao SeatingPlanDao();
+    public abstract ExamMarksDao ExamMarksDao();
 }

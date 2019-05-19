@@ -67,6 +67,7 @@ public class DateSheetViewModel extends AndroidViewModel{
             Document doc =null;
             try {
                 doc = Jsoup.connect("https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp")
+                        .timeout(Constants.JSOUP_TIMEOUT)
                         .cookies(mMasterRepo.getLoginCookies())
                         .get();
                 parseDateSheet(doc);

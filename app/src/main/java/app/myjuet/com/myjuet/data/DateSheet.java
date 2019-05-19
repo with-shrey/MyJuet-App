@@ -92,4 +92,15 @@ public class DateSheet{
     public void setTime(String time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "DateSheet{" +
+                "id='" + id + '\'' +
+                ", subjectCode='" + subjectCode + '\'' +
+                ", subjectName='" + subjectName + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

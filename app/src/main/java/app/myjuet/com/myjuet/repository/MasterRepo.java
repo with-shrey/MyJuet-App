@@ -52,7 +52,10 @@ public class MasterRepo {
                     Connection.Response res = null;
                     res = Jsoup
                             .connect("https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp")
+                            .timeout(Constants.JSOUP_TIMEOUT)
                             .data("txtInst", "Institute"
+                                    , "x", ""
+                                    , "DOB", "DOB"
                                     , "InstCode", "JUET"
                                     , "txtuType", "Member+Type"
                                     , "UserType", "S"
@@ -61,6 +64,7 @@ public class MasterRepo {
                                     , "txtPin", "Password%2FPin"
                                     , "Password", pass
                                     , "BTNSubmit", "Submit"
+                                    , "BTNReset", "Reset"
                             )
                             .method(Connection.Method.POST)
                             .execute();

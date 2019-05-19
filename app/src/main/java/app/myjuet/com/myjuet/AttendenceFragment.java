@@ -386,4 +386,11 @@ public class AttendenceFragment extends Fragment {
         }
         return false;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter!=null)
+            adapter.notifyDataSetChanged();
+    }
 }

@@ -56,6 +56,7 @@ public class AttendenceViewModel extends AndroidViewModel {
             Document doc = null;
             try {
                 doc = Jsoup.connect("https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp")
+                        .timeout(Constants.JSOUP_TIMEOUT)
                         .cookies(mMasterRepo.getLoginCookies())
                         .get();
                 webUtilities.parseAttendencePage(mAppDatabase,doc);
@@ -86,6 +87,7 @@ public class AttendenceViewModel extends AndroidViewModel {
                     if (URLUtil.isValidUrl(datum.getSubjectUrl())) {
 
                         doc = Jsoup.connect(datum.getSubjectUrl())
+                                .timeout(Constants.JSOUP_TIMEOUT)
                                 .cookies(mMasterRepo.getLoginCookies())
                                 .get();
 
