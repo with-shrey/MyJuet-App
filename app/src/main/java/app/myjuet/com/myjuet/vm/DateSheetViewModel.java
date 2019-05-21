@@ -86,6 +86,7 @@ public class DateSheetViewModel extends AndroidViewModel{
         mAppExecutors.diskIO().execute(() -> {
             Element table = doc.getElementById("table-1");
             if (table == null) {
+                mDateSheetDao.deleteAll();
                 dataStatus.postValue(Constants.Status.SUCCESS);
             }else {
                 Elements tbodies = table.getElementsByTag("tbody");
@@ -93,9 +94,18 @@ public class DateSheetViewModel extends AndroidViewModel{
                     Element tbody = tbodies.get(0);
                     Elements subjects = tbody.children();
                     subjects.remove(0);
+                    String date = "";
+                    if (subjects.size() == 0){
+                        mDateSheetDao.deleteAll();
+                    }
                     for (Element subject : subjects) {
                         Elements columns = subject.children();
                         DateSheet dateSheet =new  DateSheet(columns);
+                        if (columns.get(1).text().contains("-"))
+                            date=columns.get(1).text();
+                        else{
+                            dateSheet.setDate(date);
+                        }
                         mDateSheetDao.insert(dateSheet);
                     }
                 }

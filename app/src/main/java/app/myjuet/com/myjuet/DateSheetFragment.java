@@ -27,6 +27,7 @@ import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.DateSheetDao;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
 import app.myjuet.com.myjuet.vm.DateSheetViewModel;
+import app.myjuet.com.myjuet.vm.SeatingPlanViewModel;
 
 
 /**

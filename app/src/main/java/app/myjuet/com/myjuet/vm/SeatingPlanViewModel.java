@@ -49,7 +49,7 @@ public class SeatingPlanViewModel extends AndroidViewModel{
                     break;
                 case SUCCESS:
                     mAppExecutors.networkIO().execute(() -> {
-                        callRequest(true, null);
+                        callRequest();
                     });
                     break;
                 case WRONG_PASSWORD:
@@ -64,42 +64,20 @@ public class SeatingPlanViewModel extends AndroidViewModel{
         return dataStatus;
     }
 
-    private void callRequest(boolean getSemesterCode,String semCode) {
-        dataStatus.setValue(Constants.Status.LOADING);
+    private void callRequest() {
+        dataStatus.postValue(Constants.Status.LOADING);
             Document doc =null;
             try {
-                String url = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatingPlan.jsp";
-                if (!getSemesterCode){
-                    url = url+"?x=&Inst=JUET&DScode="+semCode;
-                }
+                String url = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
                 doc = Jsoup.connect(url)
                         .timeout(Constants.JSOUP_TIMEOUT)
                         .cookies(mMasterRepo.getLoginCookies())
                         .get();
-                if (getSemesterCode){
-                    callRequest(false,extractSemCode(doc));
-                }else {
                     parseSeatingPlan(doc);
-                }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 dataStatus.postValue(Constants.Status.FAILED);
             }
-    }
-    private String extractSemCode(Document doc){
-            Element select = doc.getElementById("DScode");
-            if (select == null){
-                dataStatus.postValue(Constants.Status.SUCCESS);
-                return "";
-            }else {
-                Elements options = select.getElementsByTag("option");
-                if (options != null && options.size() >0) {
-                    Log.v("SEM CODE",options.get(0).attr("value"));
-                    return options.get(0).attr("value");
-                }
-            }
-        return "";
     }
 
     private void parseSeatingPlan(Document doc) {
@@ -112,11 +90,12 @@ public class SeatingPlanViewModel extends AndroidViewModel{
                 if (tbodies != null && tbodies.size() > 0) {
                     Element tbody = tbodies.get(0);
                     Elements subjects = tbody.children();
-                    subjects.remove(0);
-                    for (Element subject : subjects) {
-                        Elements columns = subject.children();
-                        SeatingPlan seatingPlan =new  SeatingPlan(columns);
+                    for (int i = 0; i < subjects.size(); i++) {
+                        Elements dateColumns = subjects.get(i).children();
+                        Elements seatColumns = subjects.get(i+2).children();
+                        SeatingPlan seatingPlan =new  SeatingPlan(dateColumns,seatColumns);
                         mSeatingPlanDao.insert(seatingPlan);
+                        i=i+2;
                     }
                 }
                 dataStatus.postValue(Constants.Status.SUCCESS);

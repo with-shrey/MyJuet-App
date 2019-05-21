@@ -111,6 +111,7 @@ public class ExamMarksViewModel extends AndroidViewModel{
         mAppExecutors.diskIO().execute(() -> {
             Element table = doc.getElementById("table-1");
             if (table == null) {
+                mExamMarksDao.deleteAll();
                 dataStatus.postValue(Constants.Status.SUCCESS);
             }else {
                 Elements tbodies = table.getElementsByTag("tbody");

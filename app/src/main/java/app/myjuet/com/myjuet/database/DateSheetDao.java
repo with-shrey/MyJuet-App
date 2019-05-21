@@ -18,4 +18,6 @@ public interface DateSheetDao {
     @Query("SELECT * from datesheet")
     LiveData<List<DateSheet>> dateSheet();
 
+    @Query("DELETE FROM datesheet")
+    void deleteAll();
 }

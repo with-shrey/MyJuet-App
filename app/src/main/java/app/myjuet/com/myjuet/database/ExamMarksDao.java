@@ -19,4 +19,7 @@ public interface ExamMarksDao {
 
     @Query("SELECT * from exammarks")
     LiveData<List<ExamMarks>> examMarks();
+
+    @Query("DELETE FROM exammarks")
+    void deleteAll();
 }
