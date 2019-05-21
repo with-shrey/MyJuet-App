@@ -1,6 +1,5 @@
 package app.myjuet.com.myjuet;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -19,6 +18,7 @@ import android.widget.Toast;
 
 import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
+import app.myjuet.com.myjuet.vm.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             SharedPreferences.Editor editor = this.getSharedPreferences(this.getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
                             editor.putString(getString(R.string.key_preferred_attendence), mPrefferredPercentage.getText().toString());
                             editor.putBoolean("autosync", true);
+                            SharedPreferencesUtil.savePreferences(this,"dark",true);
                             editor.apply();
                             createShortcuts();
                             Toast.makeText(this, "Login Successfull", Toast.LENGTH_SHORT).show();

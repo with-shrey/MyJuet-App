@@ -3,7 +3,6 @@ package app.myjuet.com.myjuet;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import androidx.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import android.content.Context;
@@ -17,7 +16,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +42,7 @@ import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.vm.AttendenceViewModel;
+import app.myjuet.com.myjuet.vm.DrawerViewModel;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 

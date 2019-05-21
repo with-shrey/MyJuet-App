@@ -51,6 +51,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.utilities.SettingsActivity;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
+import app.myjuet.com.myjuet.vm.DrawerViewModel;
 
 import static app.myjuet.com.myjuet.WebviewFragment.myWebView;
 
@@ -106,7 +107,7 @@ public class DrawerActivity extends AppCompatActivity
                 ,"firsttime_"+BuildConfig.VERSION_CODE,true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("New In This Release");
-            builder.setMessage(Html.fromHtml("1.<b>Date Sheet( <- Drawer)</b><br/><br/>2.<b>Dark Theme</b>( In Settings)<br/><br/>3.Smooth Scroll While Refresh<br/><br/>4.<b>Calculator</b> on Attendence Detail Page"));
+            builder.setMessage(Html.fromHtml("1.Seating Plan\n2.Dark Theme (Settings)"));
             builder.setPositiveButton("Ok", (dialog, which) -> {
                 SharedPreferencesUtil.savePreferences(this
                         ,"firsttime_"+BuildConfig.VERSION_CODE,false);
@@ -293,6 +294,22 @@ String color;
                 transition.replace(R.id.content_drawer, fragment).commitNow();
 
         activeFragment = 10;
+        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    } else if (id == R.id.seating_plan) {
+                viewModel.setFabVisible(false);
+        tabLayout.setVisibility(View.GONE);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
+                        collapsingToolbarLayout.setContentScrimColor(Color.parseColor(color)
+);
+
+        collapsingToolbarLayout.setTitle("Seating Plan");           // setSupportActionBar(tool);
+        appBarLayout.setExpanded(false);
+        Fragment fragment = new SeatingPlanFragment();
+                transition.replace(R.id.content_drawer, fragment).commitNow();
+
+        activeFragment = 15;
         // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }else if (id == R.id.exam_marks) {

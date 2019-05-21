@@ -6,7 +6,7 @@ android {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 14
+        versionCode 16
         versionName '3.2.3'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
