@@ -3,15 +3,15 @@ My First Android Project That I Made Just After Learning Android To Dig Deeper I
 Learned Alot From It
 Worked On 3 More Apps After It
 
-Download Apk At http://with-shrey.github.io/myjuet  
+Download Apk At https://play.google.com/store/apps/details?id=app.myjuet.com.myjuet&hl=en_IN  
 
 ## Features
 
 - This App Fetches Attendence From College Kiosk Using Html Parsing  
-- Time Table With Auto Share Feature 
+- Exam Marks
 - Graphical Analysis Of CGPA
-- Mess Menu Image from firebase Storage
-- Background Attendence Auto-Sync 
+- Date Sheet / Seating Plan
+- Find Your Way 
 - WebView To Login Instantly And Access Other Information Using Easy To Navigate Dialog  
 
 ## Tech Used
