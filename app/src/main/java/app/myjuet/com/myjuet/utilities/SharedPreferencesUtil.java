@@ -4,22 +4,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by .
  */
-
+@Singleton
 public class SharedPreferencesUtil {
-    public static final int MODE_PRIVATE = 0;
     // file name
-    private static final String PREF_NAME = "app_myjuet_com_myjuet_preferences";
-    private static SharedPreferencesUtil mInstance;
+    private  final String PREF_NAME = "app_myjuet_com_myjuet_preferences";
+    private static   SharedPreferencesUtil mInstance;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
 
+    @Inject
     public SharedPreferencesUtil(Context context) {
         this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        pref = _context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
 
@@ -30,75 +33,65 @@ public class SharedPreferencesUtil {
         return mInstance;
     }
 
-    public static void savePreferences(Context context, String key,
+    public  void savePreferences(String key,
                                        Float value) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sPrefs.edit();
+       
+        editor = pref.edit();
         editor.putFloat(key, value);
         editor.apply();
     }
 
-    public static void savePreferences(Context context, String key,
+    public  void savePreferences(String key,
                                        String value) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sPrefs.edit();
+        editor = pref.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-    public static void savePreferences(Context context, String key,
+    public  void savePreferences(String key,
                                        Integer value) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sPrefs.edit();
+       
+        editor = pref.edit();
         editor.putInt(key, value);
         editor.apply();
     }
 
-    public static void savePreferences(Context context, String key,
+    public  void savePreferences(String key,
                                        Boolean value) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sPrefs.edit();
+       
+        editor = pref.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
 
-    public static void deletePreferences(Context context, String key) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sPrefs.edit();
+    public  void deletePreferences(String key) {
+       
+        editor = pref.edit();
         editor.remove(key);
         editor.apply();
     }
 
-    public static Boolean getPreferences(Context context, String key, boolean defValue) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        Boolean savedPref = sharedPreferences.getBoolean(key, defValue);
+    public  Boolean getPreferences(String key, boolean defValue) {
+        
+        Boolean savedPref = pref.getBoolean(key, defValue);
         return savedPref;
     }
 
-    public static String getPreferences(Context context, String key, String defValue) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        String savedPref = sharedPreferences.getString(key, defValue);
+    public  String getPreferences(String key, String defValue) {
+        
+        String savedPref = pref.getString(key, defValue);
         return savedPref;
     }
 
-    public static Integer getPreferences(Context context, String key, int defValue) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        Integer savedPref = sharedPreferences.getInt(key, defValue);
+    public  Integer getPreferences(String key, int defValue) {
+        
+        Integer savedPref = pref.getInt(key, defValue);
         return savedPref;
     }
 
-    public static void clearAllSharedPreferencesList(Context context) {
-        SharedPreferences sPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor sEdit = sPrefs.edit();
+    public  void clearAllSharedPreferencesList(Context context) {
+       
+        SharedPreferences.Editor sEdit = pref.edit();
         sEdit.clear();
         sEdit.apply();
     }

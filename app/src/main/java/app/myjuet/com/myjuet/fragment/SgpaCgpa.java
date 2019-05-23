@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.fragment;
 
 
 import android.content.Context;
@@ -37,6 +37,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.adapters.CgpaAdapter;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.utilities.webUtilities;

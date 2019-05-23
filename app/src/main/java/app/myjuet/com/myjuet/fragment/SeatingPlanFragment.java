@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.fragment;
 
 
 import android.graphics.drawable.GradientDrawable;
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.text.TextUtils;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,19 +22,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import app.myjuet.com.myjuet.data.SeatingPlan;
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.SeatingPlan;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.SeatingPlanDao;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
-import app.myjuet.com.myjuet.vm.SeatingPlanViewModel;
 import app.myjuet.com.myjuet.vm.SeatingPlanViewModel;
 
 
@@ -137,7 +136,8 @@ public class SeatingPlanFragment extends Fragment {
                 Date todayDate = new Date();
                 if (date.compareTo(todayDate) < 0){
                     color = R.color.grey;
-                    holder.doneImage.setVisibility(View.VISIBLE);
+                        holder.doneImage.setVisibility(View.VISIBLE);
+                        Picasso.get().load(R.drawable.mission_accomplished).fit().into(holder.doneImage);
                 }else{
                     holder.doneImage.setVisibility(View.GONE);
                 }

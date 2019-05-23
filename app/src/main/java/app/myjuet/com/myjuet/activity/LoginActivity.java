@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.activity;
 
 import android.app.ProgressDialog;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.vm.LoginViewModel;
@@ -30,7 +31,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+        if(SharedPreferencesUtil.getInstance(this).getPreferences("dark",false))
             setTheme(R.style.DarkTheme);
         init();
     }
@@ -97,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             SharedPreferences.Editor editor = this.getSharedPreferences(this.getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
                             editor.putString(getString(R.string.key_preferred_attendence), mPrefferredPercentage.getText().toString());
                             editor.putBoolean("autosync", true);
-                            SharedPreferencesUtil.savePreferences(this,"dark",true);
+                            SharedPreferencesUtil.getInstance(this).savePreferences("dark",true);
                             editor.apply();
                             createShortcuts();
                             Toast.makeText(this, "Login Successfull", Toast.LENGTH_SHORT).show();

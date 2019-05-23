@@ -54,7 +54,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-messaging:17.6.0'
-    implementation 'com.google.firebase:firebase-auth:16.2.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.android.gms:play-services-ads:17.2.0'
     implementation 'com.jjoe64:graphview:4.2.1'
@@ -71,6 +70,15 @@ dependencies {
     implementation "androidx.room:room-runtime:2.1.0-alpha04"
     annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04" // use kapt for Kotlin
     implementation 'org.jsoup:jsoup:1.10.3'
+    implementation "androidx.navigation:navigation-fragment:2.1.0-alpha04"
+    // For Kotlin use navigation-fragment-ktx
+    implementation "androidx.navigation:navigation-ui:2.1.0-alpha04"
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.google.dagger:dagger-android:2.17'
+    implementation 'com.google.dagger:dagger-android-support:2.17'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.17'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'
 }

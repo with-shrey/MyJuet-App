@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import app.myjuet.com.myjuet.AttendenceDetailsActivity;
+import app.myjuet.com.myjuet.activity.AttendenceDetailsActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.data.AttendenceData;
 

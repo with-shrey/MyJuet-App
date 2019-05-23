@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.fragment;
 
 
 import android.annotation.SuppressLint;
@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import app.myjuet.com.myjuet.R;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 
@@ -75,7 +77,6 @@ public class WebviewFragment extends Fragment {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,17 +87,6 @@ public class WebviewFragment extends Fragment {
             notlink = getActivity().getIntent().getStringExtra("url");
         View RootView = inflater.inflate(R.layout.fragment_webview, container, false);
         setHasOptionsMenu(true);
-        ((DrawerActivity) getActivity()).fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, SnackString, Snackbar.LENGTH_LONG).setAction("Refresh", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        myWebView.loadUrl(link);
-                    }
-                }).show();
-            }
-        });
         myWebView = (WebView) RootView.findViewById(R.id.web_view_layout);
         final ProgressBar progressBar = (ProgressBar) RootView.findViewById(R.id.progress_webview);
         WebSettings webSettings = myWebView.getSettings();
@@ -142,38 +132,17 @@ public class WebviewFragment extends Fragment {
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, FileName);
                 DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
                 dm.enqueue(request);
-                BroadcastReceiver onComplete = new BroadcastReceiver() {
-                    public void onReceive(Context ctxt, Intent intent) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                OpenNewVersion(Environment.getExternalStorageDirectory() + "/Download/", FileName);
-                            }
-                        }, 10000);
-                        getActivity().unregisterReceiver(this);
-                    }
-                };
-                getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
             }
         });
         myWebView.setWebChromeClient(new WebChromeClient() {
 
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                try {
-                if (progressBar.getVisibility() == View.GONE) {
-                    if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
-                    ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
-
-                }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
                 if (progress == 100) {
                     try {
-                        if (link.equals(Url + "?" + PostParam) && ((DrawerActivity) getActivity()).activeFragment == 3)
+                        if (link.equals(Url + "?" + PostParam) )
                             optionsDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -198,14 +167,11 @@ public class WebviewFragment extends Fragment {
 
             }
         } else if (!isConnected) {
-            ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
             SnackString = "NoInternet";
-            ((DrawerActivity) getActivity()).fab.performClick();
         } else {
-            ((DrawerActivity) getActivity()).fab.setVisibility(View.VISIBLE);
             SnackString = "Webkiosk Down/Timed Out";
-            ((DrawerActivity) getActivity()).fab.performClick();
         }
+        Toast.makeText(mContext, SnackString, Toast.LENGTH_SHORT).show();
 
         return RootView;
     }
@@ -221,11 +187,11 @@ public class WebviewFragment extends Fragment {
         if (item.getItemId() == R.id.optionsdialog_webview) {
             optionsDialog();
         } else {
-            ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
             myWebView.loadUrl(link);
         }
         return super.onOptionsItemSelected(item);
     }
+
     AlertDialog dialog;
     private void optionsDialog() {
         if (dialog != null){
@@ -234,8 +200,6 @@ public class WebviewFragment extends Fragment {
             }
             dialog = null;
         }
-        if (((DrawerActivity) getActivity()).fab.getVisibility() == View.VISIBLE)
-        ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
         CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "CGPA/SGPA", "Open In Browser", "Change Password"};
             builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("WEBKIOSK-JUET");
@@ -245,15 +209,13 @@ public class WebviewFragment extends Fragment {
                     switch (which) {
                         case 0:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
-                                myWebView.loadUrl(link);
+                            myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
                             break;
                         case 1:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -263,7 +225,6 @@ public class WebviewFragment extends Fragment {
                         case 2:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -272,7 +233,7 @@ public class WebviewFragment extends Fragment {
                         case 3:
 
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -280,7 +241,7 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 4:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -288,7 +249,7 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 5:
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
+                            
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -296,10 +257,8 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 6:
 
-                            ((DrawerActivity) getActivity()).fab.setVisibility(View.GONE);
                             link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
-                            if (((DrawerActivity) getActivity()).activeFragment == 3)
-                                myWebView.loadUrl(link);
+                            myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
 
@@ -329,7 +288,7 @@ public class WebviewFragment extends Fragment {
                             change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
-                                    if (((DrawerActivity) getActivity()).activeFragment == 3)
+                                    
                                         myWebView.loadUrl(link);
                                 }
 
@@ -367,11 +326,10 @@ public class WebviewFragment extends Fragment {
         }
     }
 
-    void OpenNewVersion(String location, String FileName) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(location + FileName)),
-                "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (dialog !=null && dialog.isShowing())
+            dialog.dismiss();
     }
 }

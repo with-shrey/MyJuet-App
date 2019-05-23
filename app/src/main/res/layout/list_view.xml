@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<layout>
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="vm"
+            type="app.myjuet.com.myjuet.fragment.attendence.AttendenceViewModel" />
+    </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,16 +15,18 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <ImageView
-        android:id="@+id/attendence_emptyview"
+        android:src="@{safeUnbox(vm.emptyImage)}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="@{vm.emptyImage == null? View.GONE: View.VISIBLE }" />
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            app:refreshing="@{vm.isLoading}"
+            app:onRefreshListener="@{() -> vm.setLoading()}"
             android:layout_alignParentTop="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -26,6 +34,7 @@
                 android:id="@+id/list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:fillViewport="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:listitem="@layout/list_layout" />
@@ -34,7 +43,4 @@
 
 
 </RelativeLayout>
-
-
-
-
+</layout>

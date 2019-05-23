@@ -5,7 +5,7 @@
     android:layout_marginBottom="60dp"
     android:layout_marginRight="5dp"
     android:orientation="vertical"
-    tools:context="app.myjuet.com.myjuet.SgpaCgpa">
+    tools:context="app.myjuet.com.myjuet.fragment.SgpaCgpa">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshsgpa"

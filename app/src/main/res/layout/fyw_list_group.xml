@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardElevation="5dp">
+<LinearLayout
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textSize="20.0sp"
+        android:id="@+id/lbl_list_header"
+        android:paddingLeft="?android:expandableListPreferredItemPaddingLeft"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/ic_arrow_down"
+        android:paddingStart="?android:expandableListPreferredItemPaddingLeft" />
+</LinearLayout>
+</androidx.cardview.widget.CardView>

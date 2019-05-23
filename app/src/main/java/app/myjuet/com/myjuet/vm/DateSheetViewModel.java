@@ -6,8 +6,6 @@ import android.content.Context;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -15,7 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import app.myjuet.com.myjuet.data.DateSheet;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.DateSheetDao;
-import app.myjuet.com.myjuet.repository.MasterRepo;
+import app.myjuet.com.myjuet.repository.AuthRepository;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
 import app.myjuet.com.myjuet.utilities.Constants;
 import org.jsoup.nodes.Element;
@@ -23,7 +21,7 @@ import org.jsoup.select.Elements;
 
 
 public class DateSheetViewModel extends AndroidViewModel{
-    private MasterRepo mMasterRepo;
+    private AuthRepository mAuthRepository;
     private AppExecutors mAppExecutors;
     private DateSheetDao mDateSheetDao;
     private Context context;
@@ -32,14 +30,14 @@ public class DateSheetViewModel extends AndroidViewModel{
 
     public DateSheetViewModel(@NonNull Application application) {
         super(application);
-        mMasterRepo = MasterRepo.getInstance();
+        mAuthRepository = AuthRepository.getInstance();
         mAppExecutors = AppExecutors.newInstance();
         mDateSheetDao = AppDatabase.newInstance(application).DateSheetDao();
         context = application;
     }
 
     public LiveData<Constants.Status> loadDateSheet() {
-            mMasterRepo.loginUser(context).observeForever((status) -> {
+            mAuthRepository.loginUser(context).observeForever((status) -> {
                 switch (status) {
 
 
@@ -53,7 +51,7 @@ public class DateSheetViewModel extends AndroidViewModel{
                     case NO_INTERNET:
                     case WEBKIOSK_DOWN:
                     case FAILED:
-                        mMasterRepo.setLoginCookies(null);
+                        mAuthRepository.setLoginCookies(null);
                         dataStatus.postValue(Constants.Status.FAILED);
                         break;
                 }
@@ -68,7 +66,7 @@ public class DateSheetViewModel extends AndroidViewModel{
             try {
                 doc = Jsoup.connect("https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp")
                         .timeout(Constants.JSOUP_TIMEOUT)
-                        .cookies(mMasterRepo.getLoginCookies())
+                        .cookies(mAuthRepository.getLoginCookies())
                         .get();
                 parseDateSheet(doc);
 

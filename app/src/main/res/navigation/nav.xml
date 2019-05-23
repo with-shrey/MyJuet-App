@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav.xml"
+    app:startDestination="@id/attendence">
+
+    <fragment
+        android:id="@+id/attendence"
+        android:name="app.myjuet.com.myjuet.fragment.attendence.AttendenceFragment"
+        android:label="Attendence"
+        tools:layout="@layout/list_view" />
+    <fragment
+        android:id="@+id/exam_marks"
+        android:name="app.myjuet.com.myjuet.fragment.ExamMarksFragment"
+        android:label="Exam Marks"
+        tools:layout="@layout/fragment_exam_marks" />
+    <fragment
+        android:id="@+id/seating_plan"
+        android:name="app.myjuet.com.myjuet.fragment.SeatingPlanFragment"
+        android:label="Seating Plan"
+        tools:layout="@layout/fragment_seating_plan" />
+    <fragment
+        android:id="@+id/date_sheet"
+        android:name="app.myjuet.com.myjuet.fragment.DateSheetFragment"
+        android:label="Date Sheet"
+        tools:layout="@layout/fragment_date_sheet" />
+    <fragment
+        android:id="@+id/cgpa_drawer"
+        android:name="app.myjuet.com.myjuet.fragment.SgpaCgpa"
+        android:label="SGPA / CGPA"
+        tools:layout="@layout/fragment_sgpa_cgpa" >
+        <argument
+            android:name="collapsed"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/web_view_drawer"
+        android:name="app.myjuet.com.myjuet.fragment.WebviewFragment"
+        android:label="Webkiosk"
+        tools:layout="@layout/fragment_webview">
+        <argument
+            android:name="collapsed"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+    <activity
+        android:id="@+id/settings_master"
+        android:name="app.myjuet.com.myjuet.activity.SettingsActivity"
+        android:label="Settings"
+        tools:layout="@layout/activity_settings" />
+    <fragment
+        android:id="@+id/contact_drawer"
+        android:name="app.myjuet.com.myjuet.fragment.ContactFragment"
+        android:label="Contact US"
+        tools:layout="@layout/fragment_contact">
+        <argument
+            android:name="collapsed"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/feedback_drawer"
+        android:name="app.myjuet.com.myjuet.fragment.ReportFragment"
+        android:label="Feedback / Suggestion"
+        tools:layout="@layout/fragment_report" >
+        <argument
+            android:name="collapsed"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/findYourWayFragment"
+        android:name="app.myjuet.com.myjuet.fragment.FindYourWayFragment"
+        android:label="Find Your Way"
+        tools:layout="@layout/fragment_find_your_way" >
+        <argument
+            android:name="collapsed"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+</navigation>

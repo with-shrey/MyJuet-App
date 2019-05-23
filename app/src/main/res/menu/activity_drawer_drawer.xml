@@ -4,7 +4,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/attendence_drawer"
+            android:id="@+id/attendence"
             android:icon="@drawable/ic_import_contacts_black_24dp"
             android:title="Attendence" />
         <item
@@ -23,6 +23,10 @@
             android:id="@+id/cgpa_drawer"
             android:icon="@drawable/ic_cgpa_sgpa"
             android:title="CGPA/SGPA" />
+        <item
+            android:id="@+id/findYourWayFragment"
+            android:icon="@drawable/ic_shortcut"
+            android:title="Find Class Location" />
         <item
             android:id="@+id/web_view_drawer"
             android:icon="@drawable/web_menu_icon"
@@ -50,17 +54,6 @@
             android:icon="@drawable/ic_alert"
             android:title="Reset Data"/>
     </group>
-    <item android:title="SERVICES">
-        <menu xmlns:android="http://schemas.android.com/apk/res/android">
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/findyourway"
-                    android:checkable="false"
-                    android:icon="@drawable/ic_shortcut"
-                    android:title="Open- Find Your Way" />
-            </group>
-        </menu>
-    </item>
     <item android:title="COMMUNICATE">
         <menu xmlns:android="http://schemas.android.com/apk/res/android">
             <group android:checkableBehavior="single">

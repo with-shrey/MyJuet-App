@@ -1,10 +1,12 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import app.myjuet.com.myjuet.R;
 
 public class SplashActivity extends AppCompatActivity {
 

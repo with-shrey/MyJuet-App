@@ -36,12 +36,12 @@
             android:value="ca-app-pub-5004802474664731~4072895207"/>
 
         <activity
-            android:name=".AttendenceDetailsActivity"
+            android:name=".activity.AttendenceDetailsActivity"
             android:label="Attendence Details"
             android:theme="@style/DarkTheme"
-            android:parentActivityName=".DrawerActivity" />
+            android:parentActivityName=".activity.DrawerActivity" />
         <activity
-            android:name=".DrawerActivity"
+            android:name=".activity.DrawerActivity"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
             android:launchMode="standard"
@@ -56,11 +56,11 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name=".utilities.SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="Login"
             />
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:theme="@style/SplashScreen">
@@ -70,7 +70,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
+        <activity android:name=".activity.LoginActivity"
             />
     </application>
 

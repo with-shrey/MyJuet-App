@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet;
+package app.myjuet.com.myjuet.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,15 +9,12 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -26,6 +23,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
+import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.adapters.DetailsAdapter;
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
@@ -42,7 +40,7 @@ public class AttendenceDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+        if(SharedPreferencesUtil.getInstance(this).getPreferences("dark",false))
             setTheme(R.style.DarkTheme);
         mAppDatabase = AppDatabase.newInstance(this);
         setContentView(R.layout.activity_attendence_details);

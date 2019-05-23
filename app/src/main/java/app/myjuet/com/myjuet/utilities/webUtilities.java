@@ -26,6 +26,8 @@ import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.SgpaData;
 import app.myjuet.com.myjuet.database.AppDatabase;
+import app.myjuet.com.myjuet.database.AttendenceDataDao;
+import app.myjuet.com.myjuet.database.AttendenceDetailsDao;
 
 
 @SuppressWarnings("StringBufferMayBeStringBuilder")
@@ -174,7 +176,7 @@ public class webUtilities extends AppCompatActivity {
         return datasg;
     }
 
-    public static void parseAttendencePage(AppDatabase mAppDatabase, Document doc){
+    public static void parseAttendencePage(AttendenceDataDao attendenceDataDao, Document doc){
         Element table = doc.getElementById("table-1");
         if (table != null) {
             Elements tbodies = table.getElementsByTag("tbody");
@@ -236,14 +238,14 @@ public class webUtilities extends AppCompatActivity {
                                 break;
                         }
                     }
-                    mAppDatabase.AttendenceDao().insert(attendenceData);
+                    attendenceDataDao.insert(attendenceData);
                 }
 
             }
         }
     }
 
-    public static void parseAttendenceDetails(AttendenceData datum,AppDatabase mAppDatabase, Document doc){
+    public static void parseAttendenceDetails(AttendenceData datum, AttendenceDataDao dataDao,AttendenceDetailsDao detailsDao, Document doc){
         Element table = doc.getElementById("table-1");
         if (table != null) {
             Elements tbodies = table.getElementsByTag("tbody");
@@ -259,7 +261,7 @@ public class webUtilities extends AppCompatActivity {
                     mOnNext = (int) ((float) ((CountPresent + 1) * 100) / (float) (CountPresent + CountAbsent + 1));
                     mOnLeaving = (int) ((float) (CountPresent * 100) / (float) (CountPresent + CountAbsent + 1));
                 }
-                mAppDatabase.AttendenceDao().updatePresentAbsent(datum.getId(), CountPresent, CountAbsent, mOnNext, mOnLeaving);
+                dataDao.updatePresentAbsent(datum.getId(), CountPresent, CountAbsent, mOnNext, mOnLeaving);
                 Elements classes = tbody.children();
                 for (Element lecture : classes) {
                     AttendenceDetails details = new AttendenceDetails();
@@ -295,7 +297,7 @@ public class webUtilities extends AppCompatActivity {
                                 break;
                         }
                     }
-                    mAppDatabase.AttendenceDetailsDao().insert(details);
+                    detailsDao.insert(details);
 
                 }
 

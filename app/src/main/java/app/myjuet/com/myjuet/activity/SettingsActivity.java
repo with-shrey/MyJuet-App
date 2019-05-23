@@ -1,4 +1,4 @@
-package app.myjuet.com.myjuet.utilities;
+package app.myjuet.com.myjuet.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
@@ -36,8 +35,9 @@ import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import app.myjuet.com.myjuet.DrawerActivity;
 import app.myjuet.com.myjuet.R;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
+import app.myjuet.com.myjuet.utilities.webUtilities;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(SharedPreferencesUtil.getPreferences(this,"dark",false))
+        if(SharedPreferencesUtil.getInstance(this).getPreferences("dark",false))
             setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = findViewById(R.id.toolbar_settings);
@@ -81,9 +81,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         autosync = findViewById(R.id.autosync);
         dark = findViewById(R.id.dark);
-        dark.setChecked(SharedPreferencesUtil.getPreferences(this,"dark",false));
+        dark.setChecked(SharedPreferencesUtil.getInstance(this).getPreferences("dark",false));
         dark.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferencesUtil.savePreferences(this,"dark",isChecked);
+            SharedPreferencesUtil.getInstance(this).savePreferences("dark",isChecked);
             if(isChecked)
                 setTheme(R.style.DarkTheme);
             else{
@@ -179,7 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         } else {
             boolean reason = editor.commit();
-            SharedPreferencesUtil.savePreferences(this,"dark",dark.isChecked());
+            SharedPreferencesUtil.getInstance(this).savePreferences("dark",dark.isChecked());
             finish();
         }
 
@@ -314,7 +314,7 @@ public class SettingsActivity extends AppCompatActivity {
             Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
                 boolean reason = editor.commit();
-                SharedPreferencesUtil.savePreferences(getApplicationContext(),"dark",dark.isChecked());
+                SharedPreferencesUtil.getInstance(getApplicationContext()).savePreferences("dark",dark.isChecked());
                 new Thread(() -> {
                     Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
                     shortcutintent.putExtra("duplicate", false);

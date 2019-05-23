@@ -91,11 +91,10 @@
     </LinearLayout>
         <ImageView
             android:id="@+id/done_image"
-            android:visibility="gone"
+            android:alpha="0.6"
             android:layout_width="match_parent"
-            android:scaleType="fitCenter"
-            android:tint="@color/magnitude70"
+            android:tint="@color/magnitude80"
             android:layout_height="match_parent"
-            android:src="@drawable/mission_accomplished"/>
+           />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

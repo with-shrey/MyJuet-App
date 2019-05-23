@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DEVELOPED BY-:"
+        android:text="MAINTAINED BY-:"
         android:textColor="@color/colorAccent" />
 
     <View style="@style/dividerline" />
@@ -20,19 +20,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SHREY GUPTA"
-        android:textColor="@color/black" />
+         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="B.TECH (161B222)"
-        android:textColor="@color/black" />
+         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="JUET\nGUNA\n8726212000"
-        android:textColor="@color/black" />
+         />
 
     <TextView
         android:layout_width="match_parent"
@@ -52,13 +52,13 @@
             android:layout_height="match_parent"
             android:layout_weight="0.33" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/shrey_fb"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:foreground="?android:attr/selectableItemBackground"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/fblogo" />
 
         <View
@@ -66,13 +66,13 @@
             android:layout_height="match_parent"
             android:layout_weight="0.33" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/shrey_gmail"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:foreground="?android:attr/selectableItemBackground"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/gmaillogo" />
 
         <View
@@ -80,10 +80,18 @@
             android:layout_height="match_parent"
             android:layout_weight="0.33" />
     </LinearLayout>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CONTRIBUTERS :- "
+        android:textColor="@color/colorAccent" />
     <View
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/cardview_light_background" />
+        android:layout_height="1dp"
+        android:background="@color/colorAccent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contributers_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
 </ScrollView>

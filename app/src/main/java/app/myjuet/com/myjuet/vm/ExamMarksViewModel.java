@@ -8,10 +8,6 @@ import android.util.SparseArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -21,7 +17,7 @@ import app.myjuet.com.myjuet.data.Exam;
 import app.myjuet.com.myjuet.data.ExamMarks;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.ExamMarksDao;
-import app.myjuet.com.myjuet.repository.MasterRepo;
+import app.myjuet.com.myjuet.repository.AuthRepository;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
 import app.myjuet.com.myjuet.utilities.Constants;
 import org.jsoup.nodes.Element;
@@ -29,7 +25,7 @@ import org.jsoup.select.Elements;
 
 
 public class ExamMarksViewModel extends AndroidViewModel{
-    private MasterRepo mMasterRepo;
+    private AuthRepository mAuthRepository;
     private AppExecutors mAppExecutors;
     private ExamMarksDao mExamMarksDao;
     private Context context;
@@ -38,14 +34,14 @@ public class ExamMarksViewModel extends AndroidViewModel{
 
     public ExamMarksViewModel(@NonNull Application application) {
         super(application);
-        mMasterRepo = MasterRepo.getInstance();
+        mAuthRepository = AuthRepository.getInstance();
         mAppExecutors = AppExecutors.newInstance();
         mExamMarksDao = AppDatabase.newInstance(application).ExamMarksDao();
         context = application;
     }
 
     public LiveData<Constants.Status> loadExamMarks() {
-        mMasterRepo.loginUser(context).observeForever((status) -> {
+        mAuthRepository.loginUser(context).observeForever((status) -> {
             switch (status) {
 
 
@@ -62,7 +58,7 @@ public class ExamMarksViewModel extends AndroidViewModel{
                 case NO_INTERNET:
                 case WEBKIOSK_DOWN:
                 case FAILED:
-                    mMasterRepo.setLoginCookies(null);
+                    mAuthRepository.setLoginCookies(null);
                     dataStatus.postValue(Constants.Status.FAILED);
                     break;
             }
@@ -80,7 +76,7 @@ public class ExamMarksViewModel extends AndroidViewModel{
                 }
                 doc = Jsoup.connect(url)
                         .timeout(Constants.JSOUP_TIMEOUT)
-                        .cookies(mMasterRepo.getLoginCookies())
+                        .cookies(mAuthRepository.getLoginCookies())
                         .get();
                 if (getExamCode){
                     callRequest(false,extractSemCode(doc));

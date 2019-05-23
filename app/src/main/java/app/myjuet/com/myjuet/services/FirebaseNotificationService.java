@@ -16,7 +16,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.File;
 
-import app.myjuet.com.myjuet.DrawerActivity;
+import app.myjuet.com.myjuet.activity.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 
 

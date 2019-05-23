@@ -3,7 +3,7 @@
     <data>
         <variable
             name="holder"
-            type="app.myjuet.com.myjuet.AttendenceDetailsActivity.CalculatorHolder"/>
+            type="app.myjuet.com.myjuet.activity.AttendenceDetailsActivity.CalculatorHolder"/>
     </data>
 <LinearLayout
     android:padding="16dp"

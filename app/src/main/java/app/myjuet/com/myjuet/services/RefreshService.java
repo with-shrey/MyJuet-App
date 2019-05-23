@@ -20,12 +20,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import app.myjuet.com.myjuet.DrawerActivity;
+import javax.inject.Inject;
+
+import app.myjuet.com.myjuet.MyJuetApplication;
+import app.myjuet.com.myjuet.activity.DrawerActivity;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.database.AppDatabase;
+import app.myjuet.com.myjuet.repository.AttendenceRepository;
 import app.myjuet.com.myjuet.utilities.Constants;
-import app.myjuet.com.myjuet.utilities.SettingsActivity;
-import app.myjuet.com.myjuet.vm.AttendenceViewModel;
+import app.myjuet.com.myjuet.activity.SettingsActivity;
+import app.myjuet.com.myjuet.fragment.attendence.AttendenceViewModel;
+import dagger.android.AndroidInjection;
+import timber.log.Timber;
 
 import static app.myjuet.com.myjuet.utilities.webUtilities.isConnected;
 
@@ -33,6 +39,8 @@ import static app.myjuet.com.myjuet.utilities.webUtilities.isConnected;
 @SuppressWarnings({"RedundantStringConstructorCall", "UnusedAssignment", "TryWithIdenticalCatches"})
 public class RefreshService extends LifecycleService {
     AttendenceViewModel mAttendenceViewModel;
+    @Inject
+    AttendenceRepository mAttendenceRepository;
     @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel() {
         String channelId = "my_service";
@@ -68,6 +76,7 @@ public class RefreshService extends LifecycleService {
     @Override
     public void onCreate() {
         super.onCreate();
+        AndroidInjection.inject(this);
         startForeground();
     }
 
@@ -82,10 +91,13 @@ public class RefreshService extends LifecycleService {
         }
     }
     void handleStatusCode(Constants.Status status){
+        Timber.v("%s", status);
             switch (status){
                 case LOADING:
                     break;
                 case SUCCESS:
+                    sendNotification("Attendence Synced successfully " + DateString, 1, false);
+                    stopSelf();
                     break;
                 case WRONG_PASSWORD:
                     sendNotification("Incorrect Credentials", 0, false);
@@ -103,6 +115,9 @@ public class RefreshService extends LifecycleService {
                     sendNotification("Failed To Load", 1, false);
                     stopSelf();
                     break;
+                case LOGGED_IN:
+                    sendNotification("Sync in Progress...", 1, false);
+                    break;
             }
     }
     String DateString;
@@ -110,7 +125,6 @@ public class RefreshService extends LifecycleService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if (intent != null) {
-            mAttendenceViewModel = new AttendenceViewModel(getApplication());
             boolean isConnected = isConnected(this);
             DateString = new String();
             Boolean today = false;
@@ -131,41 +145,8 @@ public class RefreshService extends LifecycleService {
             String pass = prefs.getString(getString(R.string.key_password), "");
             boolean temp = prefs.getBoolean("autosync", true) || intent.getBooleanExtra("manual", false);
             if ((!user.equals("") || !pass.equals("")) && !today && isConnected && temp) {
-                sendNotification("Logging In...", 1, false);
-                mAttendenceViewModel.loginUser().observe(this, status -> {
-                    if (status == Constants.Status.SUCCESS) {
-                        sendNotification("Sync in Progress...", 1, false);
-                        mAttendenceViewModel.startLoading().observe(this, status1 -> {
-                            if (status1 == Constants.Status.SUCCESS) {
-                                Date dateobj = new Date();
-                                SimpleDateFormat formattor = new SimpleDateFormat("dd/MMM HH:mm", Locale.getDefault());
-                                String DateString = formattor.format(dateobj);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString(Constants.DATE, DateString);
-                                editor.commit();
-                                sendNotification("Syncing Details In Progress...", 1, false);
-                                AppDatabase.newInstance(this).AttendenceDao().AttendanceLoadingPendingCountObserver().observe(this, number -> {
-                                    if (number != null && number <= 0) {
-                                        sendNotification("Attendence Synced successfully ", 1, false);
-                                        stopSelf();
-                                    }
-                                });
-                                mAttendenceViewModel.loadDetails().observe(this, status2 -> {
-                                    if (status2 == Constants.Status.SUCCESS) {
-                                        sendNotification("Attendence Synced successfully " + DateString, 1, false);
-                                        stopSelf();
-                                    } else {
-                                        handleStatusCode(status2);
-                                    }
-                                });
-                            } else {
-                                handleStatusCode(status1);
-                            }
-                        });
-                    } else {
-                        handleStatusCode(status);
-                    }
-                });
+                sendNotification("Logging In", 1, false);
+                mAttendenceRepository.loadData().observe(this, this::handleStatusCode);
             } else if (user.equals("") || pass.equals("")) {
                 sendNotification("Please Enter Login Details", 0, false);
                 stopSelf();
