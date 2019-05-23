@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -135,12 +136,14 @@ public class SeatingPlanFragment extends Fragment {
                 Date date =format.parse(ds.getDate()+" "+ds.getTime());
                 Date todayDate = new Date();
                 if (date.compareTo(todayDate) < 0){
-                    color = R.color.magnitude50;
-                }else {
-                    color = R.color.magnitude90;
+                    color = R.color.grey;
+                    holder.doneImage.setVisibility(View.VISIBLE);
+                }else{
+                    holder.doneImage.setVisibility(View.GONE);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
+                holder.doneImage.setVisibility(View.GONE);
             }
 
             GradientDrawable magnitudeCircle = (GradientDrawable) holder.seat.getBackground();
@@ -167,6 +170,7 @@ public class SeatingPlanFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder{
             TextView seatDesc,seat,name,dateFull,time,room;
+            ImageView doneImage;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 name = itemView.findViewById(R.id.name);
@@ -175,6 +179,7 @@ public class SeatingPlanFragment extends Fragment {
                 seatDesc = itemView.findViewById(R.id.room_desc);
                 seat = itemView.findViewById(R.id.seat);
                 room = itemView.findViewById(R.id.room);
+                doneImage = itemView.findViewById(R.id.done_image);
             }
         }
     }

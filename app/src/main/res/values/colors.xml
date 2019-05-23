@@ -26,6 +26,7 @@
 
     <color name="present">#ccffcc</color>
     <color name="black">#000000</color>
+    <color name="grey">#474646</color>
 
 
 </resources>
