@@ -4,21 +4,28 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -303,6 +310,38 @@ public class webUtilities extends AppCompatActivity {
 
             }
         }
+    }
+
+    public static Pair<Connection.Response,Connection.Response> login(String user, String dob, String pass) throws IOException {
+        Connection.Response res1 = null;
+        Connection.Response res = null;
+        res1 = Jsoup
+                .connect("https://webkiosk.juet.ac.in/")
+                .method(Connection.Method.GET)
+                .execute();
+        Document doc = res1.parse();
+        String captcha = doc.select(".noselect").first().text();
+        res = Jsoup
+                .connect("https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp")
+                .cookies(res1.cookies())
+                .data("txtInst", "Institute"
+                        , "InstCode", "JUET"
+                        , "x", ""
+                        , "txtuType", "Member+Type"
+                        , "UserType", "S"
+                        , "txtCode", "Enrollment+No"
+                        , "MemberCode", user
+                        , "DOB", "DOB"
+                        , "DATE1", dob
+                        , "txtPin", "Password%2FPin"
+                        , "Password", pass
+                        , "txtCodecaptcha", "Enter Captcha"
+                        , "txtcap", captcha
+                        , "BTNSubmit", "Submit"
+                )
+                .method(Connection.Method.POST)
+                .execute();
+        return new Pair<>(res1, res);
     }
 
 }

@@ -79,19 +79,42 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.33" />
+        <ImageView
+            android:id="@+id/shrey_ig"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/instagram" />
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CONTRIBUTERS :- "
+        android:text="Wanna send Me a coffee :- "
+        android:textSize="20sp"
         android:textColor="@color/colorAccent" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorAccent" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contributers_recycler"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:textSize="20sp"
+        android:textColor="#ff0000"
+        android:layout_height="wrap_content"
+        android:text="Loved the app ?"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:textSize="20sp"
+        android:textColor="#ff0000"
+        android:layout_height="wrap_content"
+        android:text="Paytm Or Google Pay On: 8726212000 "/>
+    <TextView
+        android:layout_width="match_parent"
+        android:textSize="20sp"
+        android:textColor="#ff0000"
+        android:layout_height="wrap_content"
+        android:text="UPI ID: shreygupta@paytm"/>
 </LinearLayout>
 </ScrollView>

@@ -13,6 +13,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,9 @@ import android.widget.Toast;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +45,8 @@ import java.util.ArrayList;
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.adapters.CgpaAdapter;
 import app.myjuet.com.myjuet.data.SgpaData;
+import app.myjuet.com.myjuet.utilities.Constants;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
 
@@ -147,7 +154,9 @@ public class SgpaCgpa extends Fragment {
         String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
         String pass = prefs.getString(getString(R.string.key_password), "");
-        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        String dob = prefs.getString(Constants.DOB, "");
+
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&DOB=DOB&DATE1="+dob+"txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         String cont = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
         CookieHandler.setDefault(new CookieManager());
         new download().execute(Url, PostParam, cont);
@@ -227,18 +236,17 @@ public class SgpaCgpa extends Fragment {
                 if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
                     return list;
                 }
-                String temp = webUtilities.sendPost(strings[0], strings[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                SharedPreferencesUtil mSharedPreferencesUtil = SharedPreferencesUtil.getInstance(SgpaCgpa.this.getActivity());
+                String user = mSharedPreferencesUtil.getPreferences(Constants.ENROLLMENT, "").toUpperCase().trim();
+                String pass = mSharedPreferencesUtil.getPreferences(Constants.PASSWORD, "");
+                String dob = mSharedPreferencesUtil.getPreferences(Constants.DOB, "");
+                Pair<Connection.Response, Connection.Response> res = webUtilities.login(user, dob, pass);
 
-            String Content = null;
-            try {
-                Content = webUtilities.GetPageContent(strings[2]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
+                 String Content =    Jsoup
+                        .connect("https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp")
+                        .cookies(res.first.cookies())
+                         .method(Connection.Method.GET)
+                        .execute().body();
                 list.addAll(webUtilities.crawlCGPA(Content));
             } catch (Exception e) {
                 e.printStackTrace();

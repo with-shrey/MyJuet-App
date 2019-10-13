@@ -83,6 +83,7 @@ public class DateSheetViewModel extends AndroidViewModel{
     private void parseDateSheet(Document doc) {
         mAppExecutors.diskIO().execute(() -> {
             Element table = doc.getElementById("table-1");
+            mDateSheetDao.deleteAll();
             if (table == null) {
                 mDateSheetDao.deleteAll();
                 dataStatus.postValue(Constants.Status.SUCCESS);

@@ -2,6 +2,7 @@ package app.myjuet.com.myjuet.fragment.attendence;
 
 import android.app.ActivityManager;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -50,9 +51,7 @@ import static android.content.Context.ACTIVITY_SERVICE;
 
 @SuppressWarnings({"UnusedAssignment", "unused"})
 public class AttendenceFragment extends Fragment implements Injectable {
-
-    @Inject
-            AppDatabase mAppDatabase;
+    NavController mNavController;
     //ERROR CONSTANTS
     public static final int WRONG_CREDENTIALS = 1;
     public static final int HOST_DOWN = 2;
@@ -92,7 +91,7 @@ public class AttendenceFragment extends Fragment implements Injectable {
                 startRefresh();
                 return true;
             case R.id.loginAttendence:
-                Navigation.findNavController(item.getActionView()).navigate(R.id.settings_master);
+                mNavController.navigate(R.id.settings_master);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -102,27 +101,29 @@ public class AttendenceFragment extends Fragment implements Injectable {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        AttendenceDataDao attendenceDataDao = mAppDatabase.AttendenceDao();
          mAttendenceViewModel = ViewModelProviders.of(this,mFactory).get(AttendenceViewModel.class);
         ListViewBinding binding = DataBindingUtil.inflate(inflater,R.layout.list_view, container, false);
         binding.setVm(mAttendenceViewModel);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         View rootView = binding.getRoot();
         setHasOptionsMenu(true);
 
-        mAttendenceViewModel.getIsLoading().observe(this,(b) -> {
-            if (b) {
-                startRefresh();
-                mAttendenceViewModel.setLoading(false);
-            }
-        });
-
+        try {
+            mAttendenceViewModel.getIsLoading().observe(this, (b) -> {
+                if (b) {
+                    startRefresh();
+                    mAttendenceViewModel.setLoading(false);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         list = binding.listView;
         listdata = new ArrayList<>();
         adapter = new AttendenceAdapter(getActivity(), listdata);
         list.setAdapter(adapter);
-        attendenceDataDao.AttendanceDataObserver().observe(this, attendenceData -> {
+        mAttendenceViewModel.getAttendenceData().observe(this, attendenceData -> {
             if (attendenceData != null) {
                 DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                     @Override
@@ -153,6 +154,11 @@ public class AttendenceFragment extends Fragment implements Injectable {
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mNavController = Navigation.findNavController(view);
+    }
 
     private boolean isMyServiceNotRunning() {
         ActivityManager manager = (ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE);

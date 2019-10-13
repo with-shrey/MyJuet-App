@@ -6,10 +6,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.util.Pair;
+
 import androidx.annotation.NonNull;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,6 +25,7 @@ import app.myjuet.com.myjuet.utilities.Constants;
 
 import static app.myjuet.com.myjuet.services.RefreshService.pingHost;
 import static app.myjuet.com.myjuet.utilities.webUtilities.isConnected;
+import static app.myjuet.com.myjuet.utilities.webUtilities.login;
 
 public class LoginViewModel extends AndroidViewModel {
     AppExecutors mAppExecutors;
@@ -34,7 +39,7 @@ public class LoginViewModel extends AndroidViewModel {
         mAppDatabase = AppDatabase.newInstance(application);
     }
 
-    public LiveData<Constants.Status> loginUser(String user,String pass){
+    public LiveData<Constants.Status> loginUser(String user,String pass, String dob){
         MutableLiveData<Constants.Status> mLoginStatus = new MutableLiveData<>();
         mLoginStatus.setValue(Constants.Status.LOADING);
         SharedPreferences.Editor prefs = context.getSharedPreferences(context.getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
@@ -52,28 +57,15 @@ public class LoginViewModel extends AndroidViewModel {
                 });
             }else
                 try {
-                    Connection.Response res = null;
-                    res = Jsoup
-                            .connect("https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp")
-                            .data("txtInst", "Institute"
-                                    , "InstCode", "JUET"
-                                    , "txtuType", "Member+Type"
-                                    , "UserType", "S"
-                                    , "txtCode", "Enrollment+No"
-                                    , "MemberCode", user
-                                    , "txtPin", "Password%2FPin"
-                                    , "Password", pass
-                                    , "BTNSubmit", "Submit"
-                            )
-                            .method(Connection.Method.POST)
-                            .execute();
 
+                    Pair<Connection.Response,Connection.Response> res = login(user, dob, pass);
 
-                    if(!res.body().contains("Invalid Password")){
-                        loginCookies = res.cookies();
+                    if(!res.second.body().contains("Invalid Password") && !res.second.body().contains("Invalid Login Credentials")&& !res.second.body().contains("NullPointerException") ){
+                        loginCookies = res.second.cookies();
                         mAppExecutors.mainThread().execute(()->{
                             prefs.putString(context.getString(R.string.key_enrollment), user);
                             prefs.putString(context.getString(R.string.key_password), pass);
+                            prefs.putString(Constants.DOB, dob);
                             prefs.putBoolean("autosync", true);
                             prefs.apply();
                             mLoginStatus.setValue(Constants.Status.SUCCESS);

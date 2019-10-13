@@ -19,4 +19,7 @@ public interface SeatingPlanDao {
 
     @Query("SELECT * from seatingplan")
     LiveData<List<SeatingPlan>> seatingPlan();
+
+    @Query("DELETE FROM seatingplan")
+    void deleteAll();
 }

@@ -59,6 +59,7 @@ public class DateSheetFragment extends Fragment {
         mDateSheetDao = AppDatabase.newInstance(getActivity()).DateSheetDao();
         mDateSheets = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
+        TextView emptyView = view.findViewById(R.id.empty_text);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new DateSheetAdapter();
         recyclerView.setAdapter(mAdapter);
@@ -68,18 +69,17 @@ public class DateSheetFragment extends Fragment {
                     mDateSheets.clear();
                     mDateSheets.addAll(list);
                     mAppExecutors.mainThread().execute(() -> {
+                        emptyView.setVisibility(mDateSheets.size() > 0 ? View.GONE : View.VISIBLE);
                         mAdapter.notifyDataSetChanged();
                     });
                 });
 
             }else{
-                Log.v("DateSheet", "Null");
             }
         });
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(()->{
             mDateSheetViewModel.loadDateSheet().observe(this,status -> {
-                Log.v("DateSheet", "" + status);
                 switch (status){
                     case LOADING:
                         swipeRefreshLayout.setRefreshing(true);

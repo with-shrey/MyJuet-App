@@ -137,19 +137,24 @@ public class ExamMarks {
         int total=0;
         if (!(T1 == null || T1.trim().equals(""))){
             total+=15;
-            sum+=Double.parseDouble(T1);
+            if (!T1.contains("Absent") && !T1.contains("Detained"))
+                sum+=Double.parseDouble(T1);
         }if (!(T2 == null || T2.trim().equals(""))){
             total+=25;
-            sum+=Double.parseDouble(T2);
+            if (!T2.contains("Absent") && !T2.contains("Detained"))
+                sum+=Double.parseDouble(T2);
         }if (!(T3 == null || T3.trim().equals(""))){
             total+=35;
-            sum+=Double.parseDouble(T3);
+            if (!T3.contains("Absent") && !T3.contains("Detained"))
+                sum+=Double.parseDouble(T3);
         }if (!(P1 == null || P1.trim().equals(""))){
             total+=15;
-            sum+=Double.parseDouble(P1);
+            if (!P1.contains("Absent") && !P1.contains("Detained"))
+                sum+=Double.parseDouble(P1);
         }if (!(P2 == null || P2.trim().equals(""))){
             total+=15;
-            sum+=Double.parseDouble(P2);
+            if (!P2.contains("Absent") && !P2.contains("Detained"))
+                sum+=Double.parseDouble(P2);
         }
         return String.format(Locale.ENGLISH,"%.1f",sum) + "/"+total;
     }

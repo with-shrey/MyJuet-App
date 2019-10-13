@@ -145,7 +145,6 @@ public class ExamMarksViewModel extends AndroidViewModel{
                 map.put(i,Exam.TEST3);
             }
         }
-        Log.v("Header",map.toString());
         return  map;
     }
 }

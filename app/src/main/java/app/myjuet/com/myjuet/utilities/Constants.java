@@ -8,8 +8,11 @@ public class Constants {
     public static final String LOGIN_URL = BASE_URL+"CommonFiles/UserAction.jsp";
     public static final String ATTENDENCE_LIST = BASE_URL+"StudentFiles/Academic/StudentAttendanceList.jsp";
 
-
     public static enum Status{LOADING,SUCCESS ,WRONG_PASSWORD, NO_INTERNET,WEBKIOSK_DOWN ,FAILED,LOGGED_IN;}
+
     public static final String ENROLLMENT = "enrollment";
     public static final String PASSWORD = "password";
+    public static final String DOB = "DOB";
+    public static final String CURRENT_SEMESTER = "CURRENT_SEMESTER";
+    public static final String CURRENT_EXAM = "CURRENT_EXAM";
 }

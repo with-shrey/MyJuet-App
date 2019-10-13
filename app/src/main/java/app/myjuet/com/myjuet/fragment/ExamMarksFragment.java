@@ -59,6 +59,7 @@ public class ExamMarksFragment extends Fragment {
         mExamMarksViewModel = ViewModelProviders.of(getActivity()).get(ExamMarksViewModel.class);
         mExamMarks = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
+        TextView emptyView = view.findViewById(R.id.empty_text);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ExamMarksAdapter();
         recyclerView.setAdapter(mAdapter);
@@ -88,12 +89,12 @@ public class ExamMarksFragment extends Fragment {
                     mExamMarks.clear();
                     mExamMarks.addAll(list);
                     mAppExecutors.mainThread().execute(() -> {
+                        emptyView.setVisibility(mExamMarks.size() > 0 ? View.GONE : View.VISIBLE);
                         mAdapter.notifyDataSetChanged();
                     });
                 });
 
             } else {
-                Log.v("DateSheet", "Null");
             }
         });
     }

@@ -178,7 +178,8 @@
             android:id="@+id/calculate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Additional Calculate"/>
+            android:background="@color/Attendence"
+            android:text="Chick Here For Additional Calculator"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -26,6 +26,9 @@ import javax.inject.Singleton;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.AttendenceDataDao;
 import app.myjuet.com.myjuet.database.AttendenceDetailsDao;
+import app.myjuet.com.myjuet.database.DateSheetDao;
+import app.myjuet.com.myjuet.database.ExamMarksDao;
+import app.myjuet.com.myjuet.database.SeatingPlanDao;
 import dagger.Module;
 import dagger.Provides;
 
@@ -48,6 +51,18 @@ class AppModule {
     @Singleton @Provides
     AttendenceDetailsDao provideAttendenceDetailsDao(AppDatabase db) {
         return db.AttendenceDetailsDao();
+    }
+    @Singleton @Provides
+    DateSheetDao provideDateSheetDao(AppDatabase db) {
+        return db.DateSheetDao();
+    }
+    @Singleton @Provides
+    SeatingPlanDao provideSeatingPlanDao(AppDatabase db) {
+        return db.SeatingPlanDao();
+    }
+    @Singleton @Provides
+    ExamMarksDao provideExamMarksDao(AppDatabase db) {
+        return db.ExamMarksDao();
     }
 
     @Singleton @Provides

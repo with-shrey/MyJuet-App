@@ -25,12 +25,16 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
@@ -40,12 +44,18 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.jsoup.Connection;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Map;
 
 import app.myjuet.com.myjuet.R;
+import app.myjuet.com.myjuet.utilities.Constants;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
+import app.myjuet.com.myjuet.utilities.webUtilities;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
@@ -59,7 +69,7 @@ public class WebviewFragment extends Fragment {
     public static String prev;
     boolean isConnected;
     String SnackString;
-    String link = new String();
+    String link = "https://webkiosk.juet.ac.in";
     AlertDialog.Builder builder = null;
 
     public WebviewFragment() {
@@ -97,10 +107,29 @@ public class WebviewFragment extends Fragment {
         myWebView.setScrollbarFadingEnabled(false);
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        final String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
         String user = prefs.getString(getString(R.string.key_enrollment), "").toUpperCase().trim();
         String pass = prefs.getString(getString(R.string.key_password), "");
-        final String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        String dob = prefs.getString(Constants.DOB, "");
+            new Thread(() -> {
+                try {
+
+                            Pair<Connection.Response, Connection.Response> res = webUtilities.login(user, dob, pass);
+                        String cookieString = "";
+                        Map<String, String> cookies = res.first.cookies();
+                        for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                            cookieString = cookieString + entry.getKey() + "="+ entry.getValue() + "; ";
+                        }
+                        CookieManager.getInstance().setCookie("https://webkiosk.juet.ac.in",cookieString );
+                        link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
+                        WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    link = "https://webkiosk.juet.ac.in";
+                    WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
+                }
+            }).start();
+
+
         Context mContext = getActivity();
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -115,23 +144,11 @@ public class WebviewFragment extends Fragment {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         myWebView.setWebViewClient(new WebViewClient());
-        myWebView.setDownloadListener(new DownloadListener() {
-            public void onDownloadStart(String url, String userAgent,
-                                        String contentDisposition, String mimetype,
-                                        long contentLength) {
-                final int REQUEST_WRITE_STORAGE = 112;
-                boolean hasPermission = (ContextCompat.checkSelfPermission(getActivity(),
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-                Toast.makeText(getContext(), "Starting Download ...\nPlease Wait..", Toast.LENGTH_LONG).show();
-
-                DownloadManager.Request request = new DownloadManager.Request(
-                        Uri.parse(url));
-                request.allowScanningByMediaScanner();
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                final String FileName = URLUtil.guessFileName(url, contentDisposition, mimetype);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, FileName);
-                DownloadManager dm = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
-                dm.enqueue(request);
+        myWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Uri webpage = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
             }
         });
         myWebView.setWebChromeClient(new WebChromeClient() {
@@ -142,8 +159,10 @@ public class WebviewFragment extends Fragment {
                 progressBar.setProgress(progress);
                 if (progress == 100) {
                     try {
-                        if (link.equals(Url + "?" + PostParam) )
+
+                        if (link.equals("https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp")) {
                             optionsDialog();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -153,23 +172,8 @@ public class WebviewFragment extends Fragment {
 
             }
         });
-        link = Url + "?" + PostParam;
-        if (isConnected) {
-            if (!getActivity().getIntent().getBooleanExtra("containsurl", false)) {
-                link = Url + "?" + PostParam;
-            myWebView.loadUrl(link);
-                prev = link;
-            } else {
-                Toast.makeText(getContext(), notlink, Toast.LENGTH_LONG).show();
-                link = notlink;
-                myWebView.loadUrl(link);
-                prev = link;
-
-            }
-        } else if (!isConnected) {
+       if (!isConnected) {
             SnackString = "NoInternet";
-        } else {
-            SnackString = "Webkiosk Down/Timed Out";
         }
         Toast.makeText(mContext, SnackString, Toast.LENGTH_SHORT).show();
 

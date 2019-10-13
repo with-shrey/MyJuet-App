@@ -73,7 +73,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:onClick="@{holder::decrementAttend}"
-            android:clickable="@{safeUnbox(holder.willAttend) > 0}"
             android:layout_height="wrap_content"
             android:text=" - "/>
         <TextView
@@ -105,7 +104,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:onClick="@{holder::decrementLeave}"
-            android:clickable="@{safeUnbox(holder.willLeave) > 0}"
             android:layout_height="wrap_content"
             android:text=" - "/>
         <TextView

@@ -66,6 +66,7 @@ public class SeatingPlanFragment extends Fragment {
         mSeatingPlanDao = AppDatabase.newInstance(getActivity()).SeatingPlanDao();
         mSeatingPlans = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
+        TextView emptyView = view.findViewById(R.id.empty_text);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new SeatingPlanFragment.SeatingPlanAdapter();
         recyclerView.setAdapter(mAdapter);
@@ -75,18 +76,17 @@ public class SeatingPlanFragment extends Fragment {
                     mSeatingPlans.clear();
                     mSeatingPlans.addAll(list);
                     mAppExecutors.mainThread().execute(() -> {
+                        emptyView.setVisibility(mSeatingPlans.size() > 0 ? View.GONE : View.VISIBLE);
                         mAdapter.notifyDataSetChanged();
                     });
                 });
 
             }else{
-                Log.v("SeatingPlan", "Null");
             }
         });
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(()->{
             mSeatingPlanViewModel.loadSeatingPlan().observe(this,status -> {
-                Log.v("SeatingPlan", "" + status);
                 switch (status){
                     case LOADING:
                         swipeRefreshLayout.setRefreshing(true);
@@ -125,6 +125,7 @@ public class SeatingPlanFragment extends Fragment {
         public void onBindViewHolder(@NonNull SeatingPlanFragment.SeatingPlanAdapter.ViewHolder holder, int position) {
             SeatingPlan ds = mSeatingPlans.get(position);
             holder.seat.setText(printFirst(ds.getRoomName())+"\n"+ds.getSeatNo());
+            holder.seatFull.setText(printFirst(ds.getRoomName())+" "+ds.getSeatNo());
             holder.seatDesc.setText("Row: "+ds.getRow()+" Col: "+ds.getColumn()+" Seat: "+ds.getSeatNo());
             holder.room.setText(ds.getRoomName());
             holder.dateFull.setText(ds.getDate());
@@ -169,7 +170,7 @@ public class SeatingPlanFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder{
-            TextView seatDesc,seat,name,dateFull,time,room;
+            TextView seatDesc,seat,name,dateFull,time,room, seatFull;
             ImageView doneImage;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -178,6 +179,7 @@ public class SeatingPlanFragment extends Fragment {
                 time = itemView.findViewById(R.id.time);
                 seatDesc = itemView.findViewById(R.id.room_desc);
                 seat = itemView.findViewById(R.id.seat);
+                seatFull = itemView.findViewById(R.id.seat_full);
                 room = itemView.findViewById(R.id.room);
                 doneImage = itemView.findViewById(R.id.done_image);
             }

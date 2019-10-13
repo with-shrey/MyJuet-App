@@ -2,6 +2,8 @@ package app.myjuet.com.myjuet.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.util.Pair;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -23,6 +25,8 @@ import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
+import static app.myjuet.com.myjuet.utilities.webUtilities.login;
+
 @Singleton
 public class AuthRepository {
     private static AuthRepository mInstance;
@@ -43,9 +47,12 @@ public class AuthRepository {
     public LiveData<Constants.Status>  loginUser(Context context){
         MutableLiveData<Constants.Status> mLoginStatus = new MutableLiveData<>();
         mLoginStatus.setValue(Constants.Status.LOADING);
-
+        if (mSharedPreferencesUtil == null){
+            mSharedPreferencesUtil = SharedPreferencesUtil.getInstance(context.getApplicationContext());
+        }
         String user = mSharedPreferencesUtil.getPreferences(Constants.ENROLLMENT, "").toUpperCase().trim();
         String pass = mSharedPreferencesUtil.getPreferences(Constants.PASSWORD, "");
+        String dob = mSharedPreferencesUtil.getPreferences(Constants.DOB, "");
 
         mAppExecutors.networkIO().execute(() -> {
             if (!webUtilities.isConnected(context)){
@@ -59,48 +66,23 @@ public class AuthRepository {
                 });
             }else
                 try {
-                    Connection.Response res = null;
-                    res = Jsoup
-                            .connect(Constants.LOGIN_URL)
-                            .timeout(Constants.JSOUP_TIMEOUT)
-                            .data("txtInst", "Institute"
-                                    , "x", ""
-                                    , "DOB", "DOB"
-                                    , "InstCode", "JUET"
-                                    , "txtuType", "Member+Type"
-                                    , "UserType", "S"
-                                    , "txtCode", "Enrollment+No"
-                                    , "MemberCode", user
-                                    , "txtPin", "Password%2FPin"
-                                    , "Password", pass
-                                    , "BTNSubmit", "Submit"
-                                    , "BTNReset", "Reset"
-                            )
-                            .method(Connection.Method.POST)
-                            .execute();
+                    Pair<Connection.Response,Connection.Response> res = login(user, dob, pass);
 
-
-                    if(res.body().contains("Invalid Password")){
+                    Runnable wrongPasswordRunnable = () -> {
+                        mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
+                    };
+                    if(res.second.body().contains("Invalid Password")){
                         loginCookies = null;
-                        mAppExecutors.mainThread().execute(() -> {
-                            mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
-                        });
-                    }else  if(res.body().contains("Wrong Member")){
+                        mAppExecutors.mainThread().execute(wrongPasswordRunnable);
+                    }else  if(res.second.body().contains("Invalid Login Credentials")){
                         loginCookies = null;
-                        mAppExecutors.mainThread().execute(() -> {
-                            mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
-                        });
-                    }else if(res.body().contains("Login</a>")){
-                        loginCookies = null;
-                        mAppExecutors.mainThread().execute(() -> {
-                            mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
-                        });
-                    }else{
-                        loginCookies = res.cookies();
-                        mAppExecutors.mainThread().execute(()->{
+                        mAppExecutors.mainThread().execute(wrongPasswordRunnable);
+                    }else {
+                        Runnable runnable = () -> {
                             mLoginStatus.setValue(Constants.Status.SUCCESS);
-                        });
-
+                        };
+                            loginCookies = res.first.cookies();
+                            mAppExecutors.mainThread().execute(runnable);
                     }
 
                 } catch (IOException e) {

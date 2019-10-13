@@ -30,9 +30,11 @@ import app.myjuet.com.myjuet.repository.AttendenceRepository;
 import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.activity.SettingsActivity;
 import app.myjuet.com.myjuet.fragment.attendence.AttendenceViewModel;
+import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
+import static app.myjuet.com.myjuet.utilities.Constants.CURRENT_SEMESTER;
 import static app.myjuet.com.myjuet.utilities.webUtilities.isConnected;
 
 
@@ -94,6 +96,7 @@ public class RefreshService extends LifecycleService {
         Timber.v("%s", status);
             switch (status){
                 case LOADING:
+                    sendNotification("Sync In Progress...", 1, false);
                     break;
                 case SUCCESS:
                     sendNotification("Attendence Synced successfully " + DateString, 1, false);
@@ -116,7 +119,7 @@ public class RefreshService extends LifecycleService {
                     stopSelf();
                     break;
                 case LOGGED_IN:
-                    sendNotification("Sync in Progress...", 1, false);
+                    sendNotification("Logged In...", 1, false);
                     break;
             }
     }

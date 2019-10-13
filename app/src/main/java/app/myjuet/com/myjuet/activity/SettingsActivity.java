@@ -36,13 +36,14 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import app.myjuet.com.myjuet.R;
+import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.utilities.webUtilities;
 
 
 public class SettingsActivity extends AppCompatActivity {
     TextInputEditText enrollment;
-    TextInputEditText password;
+    TextInputEditText password,dob;
     TextInputEditText preferred;
     SharedPreferences.Editor editor;
 
@@ -77,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         enrollment = findViewById(R.id.preference_enrollment);
         password = findViewById(R.id.preference_password);
+        dob = findViewById(R.id.dob);
         preferred = findViewById(R.id.preference_percent);
 
         autosync = findViewById(R.id.autosync);
@@ -128,6 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         enrollment.setText(sharedPref.getString(getString(R.string.key_enrollment), ""));
         password.setText(sharedPref.getString(getString(R.string.key_password), ""));
+        dob.setText(sharedPref.getString(Constants.DOB, ""));
         preferred.setText(sharedPref.getString(getString(R.string.key_preferred_attendence), "90"));
         if (sharedPref.getBoolean("autosync", true)) {
             autosync.setChecked(true);
@@ -138,12 +141,16 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
         editor = sharedPref.edit();
         boolean changed = true;
-        if (enrollment.getText().toString().equals(sharedPref.getString(getString(R.string.key_enrollment), "")) && password.getText().toString().equals(sharedPref.getString("password", "")))
+        if (enrollment.getText().toString().equals(sharedPref.getString(getString(R.string.key_enrollment), ""))
+                && password.getText().toString().equals(sharedPref.getString("password", ""))
+                && dob.getText().toString().equals(sharedPref.getString(Constants.DOB, ""))
+        )
             changed = false;
 
         String temp = enrollment.getText().toString().replaceAll(" ", "");
         editor.putString(getString(R.string.key_enrollment), temp.toUpperCase().trim());
         editor.putString(getString(R.string.key_password), password.getText().toString());
+        editor.putString(Constants.DOB, dob.getText().toString());
         editor.putString(getString(R.string.key_preferred_attendence), preferred.getText().toString());
 
         if (autosync.isChecked()) {
@@ -163,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
         String user = enrollment.getText().toString().toUpperCase();
         user = user.replaceAll(" ", "").trim();
         String pass = password.getText().toString().trim();
-        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&DOB=DOB&DATE1="+dob.getText().toString()+"&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -200,6 +207,11 @@ public class SettingsActivity extends AppCompatActivity {
             return false;
         } else if (password.getText().toString().isEmpty()) {
             Toast.makeText(this, "Password is Required", Toast.LENGTH_SHORT).show();
+
+            return false;
+
+        }else if (dob.getText().toString().isEmpty()) {
+            Toast.makeText(this, "DOB is Required", Toast.LENGTH_SHORT).show();
 
             return false;
 
@@ -270,13 +282,12 @@ public class SettingsActivity extends AppCompatActivity {
                 publishProgress(1);
                 Content = webUtilities.sendPost(strings[0], strings[1]);
                 publishProgress(2);
-                Log.v("Login", Content);
                 if (Content.contains("Login</a>"))
                     return 0;
                 else if (Content.contains("Invalid Password"))
                     return 3;
-                else if (Content.contains("Wrong Member"))
-                    return 4;
+                else if (Content.contains("Invalid Login Credentials"))
+                    return 0;
                 else
                     return 2;
             } catch (Exception e) {
@@ -311,7 +322,6 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer aBoolean) {
             status = aBoolean;
-            Log.v("Response", String.valueOf(aBoolean));
             if (aBoolean == 2) {
                 boolean reason = editor.commit();
                 SharedPreferencesUtil.getInstance(getApplicationContext()).savePreferences("dark",dark.isChecked());

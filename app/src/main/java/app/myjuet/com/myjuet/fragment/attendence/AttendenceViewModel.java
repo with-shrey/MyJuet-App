@@ -22,11 +22,14 @@ import app.myjuet.com.myjuet.utilities.Constants;
 
 public class AttendenceViewModel extends ViewModel {
     private AttendenceRepository mAttendenceRepository;
-    MutableLiveData<Boolean> mIsLoading = new MutableLiveData<>();
-    MutableLiveData<Integer> mEmptyImage = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsLoading;
+    private MutableLiveData<Integer> mEmptyImage;
     @Inject
     public AttendenceViewModel(AttendenceRepository repository) {
         mAttendenceRepository = repository;
+        mIsLoading = new MutableLiveData<>();
+        mEmptyImage = new MutableLiveData<>();
+
 //        context = application;
     }
 
@@ -34,6 +37,9 @@ public class AttendenceViewModel extends ViewModel {
 
 
         return Transformations.map(mAttendenceRepository.getAttendenceData(),(list) -> {
+            if (mEmptyImage == null){
+                mEmptyImage = new MutableLiveData<>();
+            }
             if (list.size() == 0){
                 mEmptyImage.setValue(R.drawable.attendence_nodata);
             }else{
@@ -44,6 +50,9 @@ public class AttendenceViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> getIsLoading() {
+        if (mIsLoading == null){
+            mIsLoading = new MutableLiveData<>();
+        }
         return mIsLoading;
     }
 

@@ -3,10 +3,13 @@ package app.myjuet.com.myjuet.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.SyncStateContract;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,9 +34,16 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -45,6 +55,7 @@ import app.myjuet.com.myjuet.data.util.HeaderDataHolder;
 import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.databinding.ActivityDrawerBinding;
 import app.myjuet.com.myjuet.databinding.NavHeaderDrawerBinding;
+import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
@@ -80,10 +91,21 @@ public class DrawerActivity extends AppCompatActivity implements
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
+    private void _unmuteSound(){
+        AudioManager aManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+    }
+    private void _muteSound(){
+        AudioManager aManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+    }
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobileAds.setAppVolume(0f);
+        MobileAds.setAppMuted(true);
         if (mPreferencesUtil.getPreferences("dark", false)) {
             setTheme(R.style.DarkTheme);
             mBinding = DataBindingUtil.setContentView(this,R.layout.activity_drawer);
@@ -91,10 +113,15 @@ public class DrawerActivity extends AppCompatActivity implements
         }else{
             mBinding = DataBindingUtil.setContentView(this,R.layout.activity_drawer);
         }
+        String dob = mPreferencesUtil.getPreferences(Constants.DOB, "");
+        if (dob.equals("")){
+            logout();
+        }
         setupNavigationComponents();
         setupAndLoadAds();
         checkAndShowUpdatesDialog();
         instantiateFirebase();
+        checkUpdate();
     }
     void instantiateFirebase(){
         FirebaseMessaging.getInstance().subscribeToTopic("juet");
@@ -123,6 +150,36 @@ public class DrawerActivity extends AppCompatActivity implements
 
     }
 
+    void checkUpdate(){
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(this);
+
+// Returns an intent object that you use to check for an update.
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+// Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                            appUpdateInfo,
+                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                            AppUpdateType.IMMEDIATE,
+                            // The current activity making the update request.
+                            this,
+                            // Include a request code to later monitor this update request.
+                            5);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+                // Request the update.
+            }
+        });
+
+    }
+
     void setupAndLoadAds() {
         AdView mAdView = findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
@@ -132,8 +189,16 @@ public class DrawerActivity extends AppCompatActivity implements
             @Override
             public void onAdLoaded() {
 
-                new Handler().postDelayed(() -> mInterstitialAd.show(), 5000);
+                new Handler().postDelayed(() -> {
+                    _muteSound();
+                    mInterstitialAd.show();
+                }, 5000);
                 super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdClosed() {
+                _unmuteSound();
             }
         });
         requestNewInterstitial();
@@ -144,7 +209,7 @@ public class DrawerActivity extends AppCompatActivity implements
                 "firsttime_" + BuildConfig.VERSION_CODE, true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("New In This Release");
-            builder.setMessage(Html.fromHtml("1.Seating Plan\n2.Dark Theme (Settings)"));
+            builder.setMessage(Html.fromHtml("<br/>1.Login Issue Fix<br/>"));
             builder.setPositiveButton("Ok", (dialog, which) -> {
                 mPreferencesUtil.savePreferences("firsttime_" + BuildConfig.VERSION_CODE, false);
                 dialog.dismiss();
@@ -175,6 +240,16 @@ public class DrawerActivity extends AppCompatActivity implements
         }
     }
 
+    private void logout(){
+        SharedPreferences.Editor sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
+        sharedPref.clear();
+        sharedPref.apply();
+        AppDatabase.newInstance(DrawerActivity.this).clearAllTables();
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         boolean handled = NavigationUI.onNavDestinationSelected(item, mNavController);
@@ -188,13 +263,7 @@ public class DrawerActivity extends AppCompatActivity implements
                 AppDatabase.newInstance(DrawerActivity.this).clearAllTables();
                 break;
             case R.id.logout:
-                SharedPreferences.Editor sharedPref = getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE).edit();
-                sharedPref.clear();
-                sharedPref.apply();
-                AppDatabase.newInstance(DrawerActivity.this).clearAllTables();
-                Intent intent = new Intent(this,LoginActivity.class);
-                startActivity(intent);
-                finish();
+                logout();
                 break;
         }
         closeDrawer();

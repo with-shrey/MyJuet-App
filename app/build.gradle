@@ -6,8 +6,8 @@ android {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 17
-        versionName '3.2.3'
+        versionCode 23
+        versionName '3.3.3'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.android.gms:play-services-ads:17.2.0'
     implementation 'com.jjoe64:graphview:4.2.1'
+    implementation 'com.google.android.play:core:1.6.3'
     def work_version = "1.0.0-alpha11"
 
     implementation "android.arch.work:work-runtime:$work_version" // use -ktx for Kotlin

@@ -24,7 +24,7 @@ import app.myjuet.com.myjuet.vm.LoginViewModel;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText mEnrollment;
-    EditText mPassword,mPrefferredPercentage;
+    EditText mPassword,mPrefferredPercentage, mDob;
     Button mLogin;
     LoginViewModel mLoginViewModel;
     @Override
@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mLoginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mEnrollment = findViewById(R.id.input_enrollment);
         mPassword = findViewById(R.id.input_password);
+        mDob = findViewById(R.id.dob);
         mPrefferredPercentage = findViewById(R.id.input_attendence);
 
         mLogin = findViewById(R.id.btn_login);
@@ -55,6 +56,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         if (mPrefferredPercentage.getText().toString().isEmpty()) {
             Toast.makeText(this, "Preferred Percentage is Required", Toast.LENGTH_SHORT).show();
+
+            return false;
+
+        }
+        if (mPassword.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Password is Required", Toast.LENGTH_SHORT).show();
+
+            return false;
+
+        }
+        if (mDob.getText().toString().isEmpty()) {
+            Toast.makeText(this, "DOB Percentage is Required", Toast.LENGTH_SHORT).show();
 
             return false;
 
@@ -88,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view == mLogin && validate()){
 
-            mLoginViewModel.loginUser(mEnrollment.getText().toString(),mPassword.getText().toString()).observe(this,status -> {
+            mLoginViewModel.loginUser(mEnrollment.getText().toString(),mPassword.getText().toString(), mDob.getText().toString()).observe(this,status -> {
                 if (status != null) {
                     switch (status){
                         case LOADING:
@@ -100,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             editor.putBoolean("autosync", true);
                             SharedPreferencesUtil.getInstance(this).savePreferences("dark",true);
                             editor.apply();
-                            createShortcuts();
+//                            createShortcuts();
                             Toast.makeText(this, "Login Successfull", Toast.LENGTH_SHORT).show();
                             Intent refresh = new Intent(this,RefreshService.class);
                             refresh.putExtra("manual",true);
@@ -111,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             dismissProgress();
                             break;
                         case WRONG_PASSWORD:
-                            Toast.makeText(this, "Wrong Password", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                             dismissProgress();
                             break;
                         case NO_INTERNET:

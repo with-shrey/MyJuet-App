@@ -37,4 +37,7 @@ public interface AttendenceDataDao {
 
     @Query("UPDATE  attendencedata SET loading = :loading")
     void updateLoading(boolean loading);
+
+    @Query("DELETE FROM  attendencedata")
+    void clearData();
 }

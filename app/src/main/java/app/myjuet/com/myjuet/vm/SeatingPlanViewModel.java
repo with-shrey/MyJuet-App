@@ -80,6 +80,7 @@ public class SeatingPlanViewModel extends AndroidViewModel{
     private void parseSeatingPlan(Document doc) {
         mAppExecutors.diskIO().execute(() -> {
             Element table = doc.getElementById("table-1");
+            mSeatingPlanDao.deleteAll();
             if (table == null) {
                 dataStatus.postValue(Constants.Status.SUCCESS);
             }else {

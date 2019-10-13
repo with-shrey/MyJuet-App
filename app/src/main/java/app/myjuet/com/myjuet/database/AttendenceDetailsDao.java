@@ -20,4 +20,7 @@ public interface AttendenceDetailsDao {
     @Query("SELECT * from attendencedetails WHERE mSubjectId = :id")
     LiveData<List<AttendenceDetails>> AttendenceDetails(String id);
 
+    @Query("DELETE FROM  attendencedetails")
+    void clearData();
+
 }
