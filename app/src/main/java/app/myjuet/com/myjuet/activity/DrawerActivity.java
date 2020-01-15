@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SyncStateContract;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +28,7 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -61,6 +60,9 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
+import static com.crashlytics.android.Crashlytics.log;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
+
 
 public class DrawerActivity extends AppCompatActivity implements
         NavController.OnDestinationChangedListener
@@ -76,6 +78,7 @@ public class DrawerActivity extends AppCompatActivity implements
     private AppBarLayout mAppBarLayout;
     private NavController mNavController;
     private ActivityDrawerBinding mBinding;
+    AppUpdateManager appUpdateManager;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -151,7 +154,7 @@ public class DrawerActivity extends AppCompatActivity implements
     }
 
     void checkUpdate(){
-        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(this);
+        appUpdateManager = AppUpdateManagerFactory.create(this);
 
 // Returns an intent object that you use to check for an update.
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
@@ -160,24 +163,79 @@ public class DrawerActivity extends AppCompatActivity implements
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                     // For a flexible update, use AppUpdateType.FLEXIBLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
                 try {
                     appUpdateManager.startUpdateFlowForResult(
                             // Pass the intent that is returned by 'getAppUpdateInfo()'.
                             appUpdateInfo,
                             // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
-                            AppUpdateType.IMMEDIATE,
+                            IMMEDIATE,
                             // The current activity making the update request.
                             this,
                             // Include a request code to later monitor this update request.
                             5);
                 } catch (IntentSender.SendIntentException e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
+                }
+                // Request the update.
+            } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                            appUpdateInfo,
+                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                            AppUpdateType.FLEXIBLE,
+                            // The current activity making the update request.
+                            this,
+                            // Include a request code to later monitor this update request.
+                            5);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
                 // Request the update.
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            IMMEDIATE,
+                                            this,
+                                            5);
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                    Crashlytics.logException(e);
+                                }
+                            }
+                        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 5) {
+            if (resultCode != RESULT_OK) {
+                log("Update flow failed! Result code: " + resultCode);
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+                checkUpdate();
+            }
+        }
     }
 
     void setupAndLoadAds() {
@@ -252,6 +310,12 @@ public class DrawerActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.findYourWayFragment){
+            if (!new Constants(this).INST_CODE.equals("JUET")){
+                Toast.makeText(this, "Feature Available only for JUET", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
         boolean handled = NavigationUI.onNavDestinationSelected(item, mNavController);
         if (!handled)
         switch (item.getItemId()){

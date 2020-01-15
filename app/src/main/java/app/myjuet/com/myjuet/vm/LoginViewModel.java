@@ -12,8 +12,6 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 
 import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.Map;
@@ -51,16 +49,24 @@ public class LoginViewModel extends AndroidViewModel {
                     mLoginStatus.setValue(Constants.Status.NO_INTERNET);
                 }) ;
             }
-            else if (!pingHost("webkiosk.juet.ac.in", 80, 5000)) {
+            else if (new Constants(context).INST_CODE.equals("JUET") && !pingHost(new Constants(getApplication()).HOST_URL, 80, 5000)) {
                 mAppExecutors.mainThread().execute(()-> {
                     mLoginStatus.setValue(Constants.Status.WEBKIOSK_DOWN);
                 });
             }else
                 try {
-
-                    Pair<Connection.Response,Connection.Response> res = login(user, dob, pass);
-
-                    if(!res.second.body().contains("Invalid Password") && !res.second.body().contains("Invalid Login Credentials")&& !res.second.body().contains("NullPointerException") ){
+                    Pair<Connection.Response,Connection.Response> res = login(context, user, dob, pass);
+                    if (res.second.body().contains("[ Signin Action ]")
+                            || res.second.body().contains("Please give the correct Institute name and Enrollment No")
+                            || res.second.body().contains("Invalid Password")
+                            || res.second.body().contains("Wrong Member Type or Code")
+                            || res.second.body().contains("Invalid Login Credentials")
+                            || res.second.body().contains("NullPointerException")) {
+                        loginCookies = null;
+                        mAppExecutors.mainThread().execute(()-> {
+                            mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
+                        });
+                    }else{
                         loginCookies = res.second.cookies();
                         mAppExecutors.mainThread().execute(()->{
                             prefs.putString(context.getString(R.string.key_enrollment), user);
@@ -70,15 +76,11 @@ public class LoginViewModel extends AndroidViewModel {
                             prefs.apply();
                             mLoginStatus.setValue(Constants.Status.SUCCESS);
                         });
-                    }else{
-                        loginCookies = null;
-                        mAppExecutors.mainThread().execute(()-> {
-                            mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
-                        });
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e("error", "Login Error",e);
                     mAppExecutors.mainThread().execute(()-> {
                         mLoginStatus.setValue(Constants.Status.FAILED);
                     });

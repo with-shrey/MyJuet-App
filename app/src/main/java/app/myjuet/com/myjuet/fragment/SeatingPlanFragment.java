@@ -159,6 +159,9 @@ public class SeatingPlanFragment extends Fragment {
                 letters.append(myName[i].charAt(0));
                 if (letters.toString().equals("LT") || letters.toString().equals("CR")){
                     letters.append("-");
+                    for(; i < myName.length; i++) {
+                        letters.append(myName[i]);
+                    }
                 }
             }
             return letters.toString();

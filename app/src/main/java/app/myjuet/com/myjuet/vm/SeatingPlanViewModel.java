@@ -20,6 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
+
 public class SeatingPlanViewModel extends AndroidViewModel{
     private AuthRepository mAuthRepository;
     private AppExecutors mAppExecutors;
@@ -65,8 +66,7 @@ public class SeatingPlanViewModel extends AndroidViewModel{
         dataStatus.postValue(Constants.Status.LOADING);
             Document doc =null;
             try {
-                String url = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
-                doc = Jsoup.connect(url)
+                doc = Jsoup.connect(new Constants(context).SEATING_PLAN)
                         .timeout(Constants.JSOUP_TIMEOUT)
                         .cookies(mAuthRepository.getLoginCookies())
                         .get();

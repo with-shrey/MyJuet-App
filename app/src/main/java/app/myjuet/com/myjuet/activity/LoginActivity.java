@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet.activity;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -13,20 +14,34 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.Date;
 
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.services.RefreshService;
+import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.vm.LoginViewModel;
+
+import static app.myjuet.com.myjuet.utilities.Constants.INSTITUTE_CODE;
+import static app.myjuet.com.myjuet.utilities.Constants.INSTITUTE_PROTOCOL;
+import static app.myjuet.com.myjuet.utilities.Constants.INSTITUTE_URL;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText mEnrollment;
     EditText mPassword,mPrefferredPercentage, mDob;
     Button mLogin;
+    TextView collegeName;
     LoginViewModel mLoginViewModel;
+    Spinner mInst;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,17 +54,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     void init(){
         mLoginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mEnrollment = findViewById(R.id.input_enrollment);
+        mInst = findViewById(R.id.institute);
+        collegeName = findViewById(R.id.college_name);
         mPassword = findViewById(R.id.input_password);
         mDob = findViewById(R.id.dob);
         mPrefferredPercentage = findViewById(R.id.input_attendence);
 
         mLogin = findViewById(R.id.btn_login);
         mLogin.setOnClickListener(this);
+
+        collegeName.setText("My Jaypee");
+
+        mDob.setOnClickListener(this);
     }
 
     boolean validate(){
         if (mEnrollment.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Enrollement is Required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Enrollment is Required", Toast.LENGTH_SHORT).show();
 
             return false;
 
@@ -75,31 +96,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    void createShortcuts(){
-        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        shortcutintent.putExtra("duplicate", false);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
-        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
-        sendBroadcast(shortcutintent);
-        Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        shortcutintent1.putExtra("duplicate", false);
-        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
-        icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
-        drawerIntent.putExtra("fragment", 4);
-        drawerIntent.putExtra("containsurl", false);
-        Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
-        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
-        shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
-        sendBroadcast(shortcutintent1);
+    String getHostOfInst(String code) {
+        switch (code){
+            case "JU-A":
+                SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "http://");
+                return "125.19.185.49:8080/JaypeeU";
+            case "JUET":
+                SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
+                return "webkiosk.juet.ac.in";
+            case "J128":
+            case "JIIT":
+            case "JPBS":
+                SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
+                return "webkiosk.jiit.ac.in";
+            case "JUIT":
+                SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
+                return "webkiosk.juit.ac.in";
+            default:
+                SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
+                return "webkiosk.juet.ac.in";
+        }
     }
 
     @Override
     public void onClick(View view) {
         if (view == mLogin && validate()){
+            String instCode = mInst.getSelectedItem().toString();
+            SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_CODE, instCode);
+            SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_URL, getHostOfInst(instCode));
 
             mLoginViewModel.loginUser(mEnrollment.getText().toString(),mPassword.getText().toString(), mDob.getText().toString()).observe(this,status -> {
                 if (status != null) {
@@ -142,6 +166,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
             });
+        }
+        else if(view== mDob){
+            DatePickerDialog dialog = new DatePickerDialog(this);
+            dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
+                mDob.setText(String.format("%02d", dayOfMonth)+"-"+String.format("%02d", month+1)+"-"+year);
+                dialog.dismiss();
+            });
+            dialog.show();
         }
     }
     ProgressDialog dialog;

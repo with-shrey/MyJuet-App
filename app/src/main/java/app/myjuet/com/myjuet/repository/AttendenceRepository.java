@@ -111,7 +111,7 @@ public class AttendenceRepository {
                 Document doc = null;
                 try {
                     Connection connection = Jsoup
-                            .connect(Constants.ATTENDENCE_LIST)
+                            .connect(new Constants(mContext).ATTENDENCE_LIST)
                             .timeout(Constants.JSOUP_TIMEOUT)
                             .cookies(mAuthRepository.getLoginCookies())
                             .method(Connection.Method.GET);
@@ -133,7 +133,7 @@ public class AttendenceRepository {
                             mSeatingPlanDao.deleteAll();
                             mDateSheetDao.deleteAll();
                         }
-                        webUtilities.parseAttendencePage(mAttendenceDataDao, doc);
+                        webUtilities.parseAttendencePage(mContext,mAttendenceDataDao, doc);
                         data.postValue(Constants.Status.SUCCESS);
                     }else {
                         data.postValue(Constants.Status.FAILED);

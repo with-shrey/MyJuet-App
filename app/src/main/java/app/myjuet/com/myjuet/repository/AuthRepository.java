@@ -1,12 +1,9 @@
 package app.myjuet.com.myjuet.repository;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.util.Pair;
 
 import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,7 +14,6 @@ import androidx.lifecycle.MutableLiveData;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.AppExecutors;
 import app.myjuet.com.myjuet.utilities.Constants;
@@ -60,13 +56,13 @@ public class AuthRepository {
                     mLoginStatus.setValue(Constants.Status.NO_INTERNET);
                 }) ;
             }
-            else if (!RefreshService.pingHost(Constants.PING_HOST, 80, 5000)) {
+            else if (new Constants(context).INST_CODE.equals("JUET") && !RefreshService.pingHost(new Constants(context).HOST_URL, 80, 5000)) {
                 mAppExecutors.mainThread().execute(()-> {
                     mLoginStatus.setValue(Constants.Status.WEBKIOSK_DOWN);
                 });
             }else
                 try {
-                    Pair<Connection.Response,Connection.Response> res = login(user, dob, pass);
+                    Pair<Connection.Response,Connection.Response> res = login(context, user, dob, pass);
 
                     Runnable wrongPasswordRunnable = () -> {
                         mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);

@@ -1,5 +1,6 @@
 package app.myjuet.com.myjuet.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,9 +40,11 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import app.myjuet.com.myjuet.R;
+import app.myjuet.com.myjuet.services.RefreshService;
 import app.myjuet.com.myjuet.utilities.Constants;
 import app.myjuet.com.myjuet.utilities.SharedPreferencesUtil;
 import app.myjuet.com.myjuet.utilities.webUtilities;
+import app.myjuet.com.myjuet.vm.LoginViewModel;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -46,6 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextInputEditText password,dob;
     TextInputEditText preferred;
     SharedPreferences.Editor editor;
+    LoginViewModel mLoginViewModel;
+    ProgressDialog dialog;
 
     int status = -1;
 
@@ -54,20 +62,10 @@ public class SettingsActivity extends AppCompatActivity {
     Switch autosync,dark;
     boolean doubleBackToExitPressedOnce = false;
 
-    private static boolean pingHost(String host, int port, int timeout) {
-        try {
-            Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port), timeout);
-            socket.close();
-            return true;
-        } catch (IOException e) {
-            return false; // Either timeout or unreachable or failed DNS lookup.
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLoginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         if(SharedPreferencesUtil.getInstance(this).getPreferences("dark",false))
             setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_settings);
@@ -166,25 +164,63 @@ public class SettingsActivity extends AppCompatActivity {
 
             editor.putBoolean("firstTime", true);
         }
-        String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
-        String user = enrollment.getText().toString().toUpperCase();
-        user = user.replaceAll(" ", "").trim();
-        String pass = password.getText().toString().trim();
-        String PostParam = "txtInst=Institute&InstCode=JUET&txtuType=Member+Type&UserType=S&txtCode=Enrollment+No&MemberCode=" + user + "&DOB=DOB&DATE1="+dob.getText().toString()+"&txtPin=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
-        ConnectivityManager cm =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
         if (changed) {
-            if (isConnected) {
-                CookieHandler.setDefault(new CookieManager());
-                new login().execute(Url, PostParam, "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp");
-            } else {
-                Toast.makeText(this, "No Internet", Toast.LENGTH_LONG).show();
-            }
-        } else {
+            String user = enrollment.getText().toString().toUpperCase();
+            String date = dob.getText().toString();
+            user = user.replaceAll(" ", "").trim();
+            String pass = password.getText().toString().trim();
+
+            mLoginViewModel.loginUser(user, pass, date).observe(this, status -> {
+                if (status != null) {
+                    switch (status) {
+                        case LOADING:
+                            dialog = new ProgressDialog(SettingsActivity.this);
+                            dialog.setMessage("Connecting...");
+                            dialog.setProgressPercentFormat(null);
+                            dialog.setProgressNumberFormat(null);
+                            dialog.setCancelable(false);
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
+                            break;
+                        case SUCCESS:
+                            boolean reason = editor.commit();
+                            SharedPreferencesUtil.getInstance(getApplicationContext()).savePreferences("dark",dark.isChecked());
+                            Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent("SetAlarms");
+                            sendBroadcast(intent);
+
+                            new Handler().postDelayed(() -> {
+                                Intent refresh = new Intent("refreshAttendence");
+                                refresh.putExtra("manual", true);
+                                sendBroadcast(refresh);
+                            }, 2000);
+                            Intent intent2 = new Intent(SettingsActivity.this, DrawerActivity.class);
+                            startActivity(intent2);
+                            Toast.makeText(SettingsActivity.this, "Background Sync Started", Toast.LENGTH_LONG).show();
+                            finish();
+                            dialog.dismiss();
+                            break;
+                        case WRONG_PASSWORD:
+                            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                        case NO_INTERNET:
+                            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                        case WEBKIOSK_DOWN:
+                            Toast.makeText(this, "Webkiosk Not Responding", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                        case FAILED:
+                            Toast.makeText(this, "Unknown Error Occured", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+        }else{
             boolean reason = editor.commit();
             SharedPreferencesUtil.getInstance(this).savePreferences("dark",dark.isChecked());
             finish();
@@ -253,128 +289,5 @@ public class SettingsActivity extends AppCompatActivity {
                 ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-
-
-    private class login extends AsyncTask<String, Integer, Integer> {
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(SettingsActivity.this);
-            dialog.setMessage("Connecting...");
-            dialog.setProgressPercentFormat(null);
-            dialog.setProgressNumberFormat(null);
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        }
-
-        @Override
-        protected Integer doInBackground(String... strings) {
-            String Content = null;
-
-            try {
-                if (!pingHost("webkiosk.juet.ac.in", 80, 6000)) {
-                    return 1;
-                }
-                publishProgress(1);
-                Content = webUtilities.sendPost(strings[0], strings[1]);
-                publishProgress(2);
-                if (Content.contains("Login</a>"))
-                    return 0;
-                else if (Content.contains("Invalid Password"))
-                    return 3;
-                else if (Content.contains("Invalid Login Credentials"))
-                    return 0;
-                else
-                    return 2;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-//            try {
-//                Content = webUtilities.GetPageContent(strings[2]);
-
-
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-            publishProgress(3);
-            return -1;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            if (values[0] == 1)
-                dialog.setMessage("Logging In...");
-            else if (values[0] == 2)
-                dialog.setMessage("Processing Data...");
-            else {
-                dialog.setMessage("Just A Minute...");
-
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(Integer aBoolean) {
-            status = aBoolean;
-            if (aBoolean == 2) {
-                boolean reason = editor.commit();
-                SharedPreferencesUtil.getInstance(getApplicationContext()).savePreferences("dark",dark.isChecked());
-                new Thread(() -> {
-                    Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                    shortcutintent.putExtra("duplicate", false);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "My Juet");
-                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                    shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), DrawerActivity.class));
-                    sendBroadcast(shortcutintent);
-                }).start();
-                new Thread(() -> {
-                    Intent shortcutintent1 = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-                    shortcutintent1.putExtra("duplicate", false);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Webkiosk");
-                    Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-                    Intent drawerIntent = new Intent(getApplicationContext(), DrawerActivity.class);
-                    drawerIntent.putExtra("fragment", 4);
-                    drawerIntent.putExtra("containsurl", false);
-                    Parcelable icon2 = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_webkiosk);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon2);
-                    shortcutintent1.putExtra(Intent.EXTRA_SHORTCUT_INTENT, drawerIntent);
-                    sendBroadcast(shortcutintent1);
-                }).start();
-                Toast.makeText(SettingsActivity.this, "Saved", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent("SetAlarms");
-                sendBroadcast(intent);
-
-                new Handler().postDelayed(() -> {
-                    Intent refresh = new Intent("refreshAttendence");
-                    refresh.putExtra("manual", true);
-                    sendBroadcast(refresh);
-                }, 2000);
-                Intent intent2 = new Intent(SettingsActivity.this, DrawerActivity.class);
-                startActivity(intent2);
-                Toast.makeText(SettingsActivity.this, "Background Sync Started", Toast.LENGTH_LONG).show();
-                finish();
-            } else if (aBoolean == 0) {
-                Toast.makeText(SettingsActivity.this, "Invalid Login", Toast.LENGTH_LONG).show();
-            } else if (aBoolean == 4) {
-                Toast.makeText(SettingsActivity.this, "Wrong Enrollment No", Toast.LENGTH_LONG).show();
-            } else if (aBoolean == 3) {
-                Toast.makeText(SettingsActivity.this, "Wrong Password", Toast.LENGTH_LONG).show();
-            } else if (aBoolean == 1) {
-                Toast.makeText(SettingsActivity.this, "Webkiosk Unreachable\nTry Again Later", Toast.LENGTH_LONG).show();
-
-            } else
-                Toast.makeText(SettingsActivity.this, "Unknown Error\nTryAgain Later", Toast.LENGTH_LONG).show();
-            dialog.dismiss();
-        }
-
-
     }
 }

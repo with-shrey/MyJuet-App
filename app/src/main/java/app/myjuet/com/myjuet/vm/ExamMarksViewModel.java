@@ -70,9 +70,9 @@ public class ExamMarksViewModel extends AndroidViewModel{
         dataStatus.postValue(Constants.Status.LOADING);
             Document doc =null;
             try {
-                String url = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
+                String url = new Constants(context).EXAM_MARKS;
                 if (!getExamCode){
-                    url = url+"?x=&Inst=JUET&exam="+semCode;
+                    url = url+"?x=&Inst="+new Constants(context).INST_CODE+"&exam="+semCode;
                 }
                 doc = Jsoup.connect(url)
                         .timeout(Constants.JSOUP_TIMEOUT)
@@ -139,8 +139,12 @@ public class ExamMarksViewModel extends AndroidViewModel{
                 map.put(i,Exam.P2);
             }else if(children.get(i).html().contains("TEST-1")){
                 map.put(i,Exam.TEST1);
+            }else if(children.get(i).html().contains("T-1")){
+                map.put(i,Exam.T1);
             }else if(children.get(i).html().contains("TEST-2")){
                 map.put(i,Exam.TEST2);
+            }else if(children.get(i).html().contains("T-2")){
+                map.put(i,Exam.T2);
             }else if(children.get(i).html().contains("TEST-3")){
                 map.put(i,Exam.TEST3);
             }

@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
+        android:paddingBottom="30px"
        >
 
         <ImageView android:src="@mipmap/ic_launcher"
@@ -30,15 +31,36 @@
             android:layout_marginTop="20dp"
 
             android:layout_gravity="center_horizontal" />
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="MY JUET"
-    android:elevation="15dp"
-    android:padding="18dp"
-    android:textAlignment="center"
-    android:textColor="#413636"
-    android:textSize="18sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/college_name"
+            android:elevation="15dp"
+            android:padding="18dp"
+            android:textAlignment="center"
+            android:textColor="#413636"
+            android:textSize="18sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passwords are stored in Shared Preferences \n( On Phone Itself)"
+            android:textAlignment="center"
+            android:textColor="#F06B6B"
+            android:textSize="12sp"/>
+        <!-- Email Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Institute"
+            />
+        <Spinner
+            android:layout_marginTop="8dp"
+            android:id="@+id/institute"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:entries="@array/Inst_codes"
+            />
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -58,6 +80,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/dob"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="10"
@@ -97,7 +120,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="50dp"
             android:padding="12dp"
             android:text="Login"/>
 

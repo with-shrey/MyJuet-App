@@ -20,6 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
+
 public class DateSheetViewModel extends AndroidViewModel{
     private AuthRepository mAuthRepository;
     private AppExecutors mAppExecutors;
@@ -64,7 +65,7 @@ public class DateSheetViewModel extends AndroidViewModel{
         mAppExecutors.networkIO().execute(() ->{
             Document doc =null;
             try {
-                doc = Jsoup.connect("https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp")
+                doc = Jsoup.connect(new Constants(context).DATE_SHEET)
                         .timeout(Constants.JSOUP_TIMEOUT)
                         .cookies(mAuthRepository.getLoginCookies())
                         .get();

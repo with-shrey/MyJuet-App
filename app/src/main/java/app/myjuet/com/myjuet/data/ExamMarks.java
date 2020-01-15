@@ -20,6 +20,8 @@ public class ExamMarks {
     @PrimaryKey
     String subjectCode;
     String subjectName;
+    Integer Test1;
+    Integer Test2;
     String T1;
     String T2;
     String T3;
@@ -39,9 +41,16 @@ public class ExamMarks {
                 this.subjectCode = strings[strings.length -1];
                 this.subjectName = columns.get(i).text();
             }else if (map.get(i) == Exam.TEST1){
+                this.Test1 = 15;
                 this.T1 = columns.get(i).text();
-
+            }else if (map.get(i) == Exam.T1){
+                this.Test1 = 25;
+                this.T1 = columns.get(i).text();
             }else if (map.get(i) == Exam.TEST2){
+                this.Test2 = 25;
+                this.T2 = columns.get(i).text();
+            }else if (map.get(i) == Exam.T2){
+                this.Test2 = 45;
                 this.T2 = columns.get(i).text();
             }else if (map.get(i) == Exam.TEST3){
                 this.T3 = columns.get(i).text();
@@ -51,6 +60,22 @@ public class ExamMarks {
                 this.P2 = columns.get(i).text();
             }
         }
+    }
+
+    public Integer getTest1() {
+        return Test1;
+    }
+
+    public void setTest1(Integer test1) {
+        Test1 = test1;
+    }
+
+    public Integer getTest2() {
+        return Test2;
+    }
+
+    public void setTest2(Integer test2) {
+        Test2 = test2;
     }
 
     public String getId() {
@@ -136,11 +161,11 @@ public class ExamMarks {
         double sum=0;
         int total=0;
         if (!(T1 == null || T1.trim().equals(""))){
-            total+=15;
+            total+= this.Test1;
             if (!T1.contains("Absent") && !T1.contains("Detained"))
                 sum+=Double.parseDouble(T1);
         }if (!(T2 == null || T2.trim().equals(""))){
-            total+=25;
+            total+= this.Test2;
             if (!T2.contains("Absent") && !T2.contains("Detained"))
                 sum+=Double.parseDouble(T2);
         }if (!(T3 == null || T3.trim().equals(""))){
@@ -162,9 +187,9 @@ public class ExamMarks {
     public String getMarksString() {
         String output="";
         if (!(T1 == null || T1.trim().equals(""))){
-            output+="T1 : "+T1+"/15";
+            output+="T1 : "+T1+"/" + this.Test1;
         }if (!(T2 == null || T2.trim().equals(""))){
-            output+="\nT2 : "+T2+"/25";
+            output+="\nT2 : "+T2+"/"+ + this.Test2;
         }if (!(T3 == null || T3.trim().equals(""))){
             output+="\nT3 : "+T3+"/35";
         }if (!(P1 == null || P1.trim().equals(""))){

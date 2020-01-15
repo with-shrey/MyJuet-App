@@ -37,6 +37,7 @@ import app.myjuet.com.myjuet.database.AttendenceDataDao;
 import app.myjuet.com.myjuet.database.AttendenceDetailsDao;
 
 
+
 @SuppressWarnings("StringBufferMayBeStringBuilder")
 public class webUtilities extends AppCompatActivity {
     private static final String USER_AGENT = "Mozilla/5.0";
@@ -65,62 +66,7 @@ public class webUtilities extends AppCompatActivity {
     }
 
     //sending Post to a link with paramaters
-    public static String sendPost(String url, String postParams) throws Exception {
-        URL obj = UrlCreator(url);
 
-        conn = (HttpsURLConnection) obj.openConnection();
-        conn.setUseCaches(false);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Host", "webkiosk.juet.ac.in");
-        conn.setRequestProperty("User-Agent", USER_AGENT);
-        conn.setRequestProperty("Accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        conn.setRequestProperty("Connection", "close");
-        conn.setRequestProperty("Referer", "webkiosk.juet.ac.in");
-        conn.setRequestProperty("Result-Type", "application/x-www-form-urlencoded");
-        conn.setRequestProperty("Result-Length", Integer.toString(postParams.length()));
-        conn.setDoOutput(true);
-        conn.setDoInput(true);
-        DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-        wr.writeBytes(postParams);
-        wr.flush();
-        wr.close();
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        return response.toString();
-    }
-
-
-
-
-    public static String GetPageContent(String url) throws Exception {
-        URL obj = UrlCreator(url);
-
-
-        String Result = null;
-        conn = (HttpsURLConnection) obj.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setUseCaches(false);
-        conn.setRequestProperty("User-Agent", USER_AGENT);
-        conn.setRequestProperty("Accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        return response.toString();
-
-    }
 
     public static ArrayList<SgpaData> crawlCGPA(String Result) {
         ArrayList<SgpaData> datasg = new ArrayList<>();
@@ -183,7 +129,7 @@ public class webUtilities extends AppCompatActivity {
         return datasg;
     }
 
-    public static void parseAttendencePage(AttendenceDataDao attendenceDataDao, Document doc){
+    public static void parseAttendencePage(Context mContext, AttendenceDataDao attendenceDataDao, Document doc){
         Element table = doc.getElementById("table-1");
         if (table != null) {
             Elements tbodies = table.getElementsByTag("tbody");
@@ -213,7 +159,7 @@ public class webUtilities extends AppCompatActivity {
                             case 2:
                                 if (!columns.get(i).text().equals("&nbsp"))
                                     if (columns.get(i).children().size() > 0) {
-                                        attendenceData.setSubjectUrl("https://webkiosk.juet.ac.in/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
+                                        attendenceData.setSubjectUrl(new Constants(mContext).BASE_URL + "/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
                                         attendenceData.setLecTut(columns.get(i).text().replace("&nbsp", "--"));
                                     } else {
                                         attendenceData.setLecTut("--");
@@ -239,7 +185,7 @@ public class webUtilities extends AppCompatActivity {
                             case 5:
                                 if (!columns.get(i).text().equals("&nbsp"))
                                     if (columns.get(i).children().size() > 0) {
-                                        attendenceData.setSubjectUrl("https://webkiosk.juet.ac.in/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
+                                        attendenceData.setSubjectUrl(new Constants(mContext).BASE_URL+"/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
                                         attendenceData.setLecTut(columns.get(i).text().replace("&nbsp", "--"));
                                     }
                                 break;
@@ -312,20 +258,25 @@ public class webUtilities extends AppCompatActivity {
         }
     }
 
-    public static Pair<Connection.Response,Connection.Response> login(String user, String dob, String pass) throws IOException {
+    public static Pair<Connection.Response,Connection.Response> login(Context mContext, String user, String dob, String pass) throws IOException {
         Connection.Response res1 = null;
         Connection.Response res = null;
         res1 = Jsoup
-                .connect("https://webkiosk.juet.ac.in/")
+                .connect(new Constants(mContext).BASE_URL)
                 .method(Connection.Method.GET)
                 .execute();
         Document doc = res1.parse();
-        String captcha = doc.select(".noselect").first().text();
+        String captcha = "";
+        try {
+            captcha = doc.select(".noselect").first().text();
+        }catch (Exception ignored){
+
+        }
         res = Jsoup
-                .connect("https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp")
+                .connect(new Constants(mContext).LOGIN_URL)
                 .cookies(res1.cookies())
                 .data("txtInst", "Institute"
-                        , "InstCode", "JUET"
+                        , "InstCode", new Constants(mContext).INST_CODE
                         , "x", ""
                         , "txtuType", "Member+Type"
                         , "UserType", "S"

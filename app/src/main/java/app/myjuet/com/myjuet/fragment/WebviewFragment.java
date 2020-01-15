@@ -69,22 +69,12 @@ public class WebviewFragment extends Fragment {
     public static String prev;
     boolean isConnected;
     String SnackString;
-    String link = "https://webkiosk.juet.ac.in";
+    String baseUrl;
+    String link;
     AlertDialog.Builder builder = null;
 
     public WebviewFragment() {
         // Required empty public constructor
-    }
-
-    private static boolean pingHost(String host, int port, int timeout) {
-        try {
-            Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port), timeout);
-            socket.close();
-            return true;
-        } catch (IOException e) {
-            return false; // Either timeout or unreachable or failed DNS lookup.
-        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -93,6 +83,8 @@ public class WebviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         @SuppressWarnings("RedundantStringConstructorCall") String notlink = new String();
+        baseUrl = new Constants(getContext()).BASE_URL;
+        link = baseUrl;
         if (getActivity().getIntent().getBooleanExtra("containsurl", false))
             notlink = getActivity().getIntent().getStringExtra("url");
         View RootView = inflater.inflate(R.layout.fragment_webview, container, false);
@@ -113,18 +105,18 @@ public class WebviewFragment extends Fragment {
             new Thread(() -> {
                 try {
 
-                            Pair<Connection.Response, Connection.Response> res = webUtilities.login(user, dob, pass);
-                        String cookieString = "";
+                            Pair<Connection.Response, Connection.Response> res = webUtilities.login(getContext(),user, dob, pass);
+                        StringBuilder cookieString = new StringBuilder();
                         Map<String, String> cookies = res.first.cookies();
                         for (Map.Entry<String, String> entry : cookies.entrySet()) {
-                            cookieString = cookieString + entry.getKey() + "="+ entry.getValue() + "; ";
+                            cookieString.append(entry.getKey()).append("=").append(entry.getValue()).append("; ");
                         }
-                        CookieManager.getInstance().setCookie("https://webkiosk.juet.ac.in",cookieString );
-                        link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
+                        CookieManager.getInstance().setCookie(baseUrl, cookieString.toString());
+                        link = baseUrl + "/StudentFiles/StudentPage.jsp";
                         WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    link = "https://webkiosk.juet.ac.in";
+                    link = baseUrl;
                     WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
                 }
             }).start();
@@ -160,7 +152,7 @@ public class WebviewFragment extends Fragment {
                 if (progress == 100) {
                     try {
 
-                        if (link.equals("https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp")) {
+                        if (link.equals(baseUrl + "/StudentFiles/StudentPage.jsp")) {
                             optionsDialog();
                         }
                     } catch (Exception e) {
@@ -206,20 +198,20 @@ public class WebviewFragment extends Fragment {
         }
         CharSequence colors[] = new CharSequence[]{"Alert Message", "Full Website", "Attendence", "Date Sheet", "Seating Plan", "Exam Marks", "CGPA/SGPA", "Open In Browser", "Change Password"};
             builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("WEBKIOSK-JUET");
+            builder.setTitle("WEBKIOSK");
             builder.setItems(colors, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case 0:
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
+                            link = baseUrl + "/StudentFiles/PersonalFiles/ShowAlertMessageSTUD.jsp";
                             myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
                             break;
                         case 1:
 
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/StudentPage.jsp";
+                            link = baseUrl + "/StudentFiles/StudentPage.jsp";
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -228,7 +220,7 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 2:
 
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/Academic/StudentAttendanceList.jsp";
+                            link = baseUrl + "/StudentFiles/Academic/StudentAttendanceList.jsp";
                                 myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -236,7 +228,7 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 3:
 
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewDateSheet.jsp";
+                            link = baseUrl + "/StudentFiles/Exam/StudViewDateSheet.jsp";
                             
                                 myWebView.loadUrl(link);
                             prev = link;
@@ -244,7 +236,7 @@ public class WebviewFragment extends Fragment {
 
                             break;
                         case 4:
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudViewSeatPlan.jsp";
+                            link = baseUrl + "/StudentFiles/Exam/StudViewSeatPlan.jsp";
                             
                                 myWebView.loadUrl(link);
                             prev = link;
@@ -252,7 +244,7 @@ public class WebviewFragment extends Fragment {
 
                             break;
                         case 5:
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudentEventMarksView.jsp";
+                            link = baseUrl + "/StudentFiles/Exam/StudentEventMarksView.jsp";
                             
                                 myWebView.loadUrl(link);
                             prev = link;
@@ -261,7 +253,7 @@ public class WebviewFragment extends Fragment {
                             break;
                         case 6:
 
-                            link = "https://webkiosk.juet.ac.in/StudentFiles/Exam/StudCGPAReport.jsp";
+                            link = baseUrl + "/StudentFiles/Exam/StudCGPAReport.jsp";
                             myWebView.loadUrl(link);
                             prev = link;
                             builder = null;
@@ -291,7 +283,7 @@ public class WebviewFragment extends Fragment {
                             change.setMessage("NOTE:Kindly Update your Password in Settings.\nAre You Sure You Want To Change Your Password?");
                             change.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    link = "https://webkiosk.juet.ac.in/CommonFiles/ChangePassword.jsp";
+                                    link = baseUrl + "/CommonFiles/ChangePassword.jsp";
                                     
                                         myWebView.loadUrl(link);
                                 }
@@ -318,10 +310,10 @@ public class WebviewFragment extends Fragment {
     public void sendIntentBrowser() {
         Context context = getActivity();
         SharedPreferences prefs = context.getSharedPreferences(getString(R.string.preferencefile), Context.MODE_PRIVATE);
-        final String Url = "https://webkiosk.juet.ac.in/CommonFiles/UserAction.jsp";
+        final String Url = baseUrl + "/CommonFiles/UserAction.jsp";
         String user = prefs.getString(getString(R.string.key_enrollment), "");
         String pass = prefs.getString(getString(R.string.key_password), "");
-        final String PostParam = "txtInst=Institute&InstCode=JUET&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
+        final String PostParam = "txtInst=Institute&InstCode="+new Constants(context).INST_CODE+"&txtUType=Member+Type&UserType=S&txtCode=Enrollment No&MemberCode=" + user + "&txtPIN=Password%2FPin&Password=" + pass + "&BTNSubmit=Submit";
 
         Uri webpage = Uri.parse(Url + "?" + PostParam);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);

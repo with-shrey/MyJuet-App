@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Juet</string>
+    <string name="app_name">My Jaypee</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -24,4 +24,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="Inst_codes">
+        <item>JUET</item>
+        <item>JUIT</item>
+        <item>JU-A</item>
+        <item>JIIT</item>
+        <item>JPBS</item>
+        <item>J128</item>
+    </string-array>
 </resources>
