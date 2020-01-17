@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mLogin = findViewById(R.id.btn_login);
         mLogin.setOnClickListener(this);
 
-        collegeName.setText("My Jaypee");
+        collegeName.setText("My Jaypee University");
 
         mDob.setOnClickListener(this);
     }
@@ -168,12 +168,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             });
         }
         else if(view== mDob){
-            DatePickerDialog dialog = new DatePickerDialog(this);
-            dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
-                mDob.setText(String.format("%02d", dayOfMonth)+"-"+String.format("%02d", month+1)+"-"+year);
-                dialog.dismiss();
-            });
-            dialog.show();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                DatePickerDialog dialog = new DatePickerDialog(this);
+                dialog.setOnDateSetListener((view1, year, month, dayOfMonth) -> {
+                    mDob.setText(String.format("%02d", dayOfMonth)+"-"+String.format("%02d", month+1)+"-"+year);
+                    dialog.dismiss();
+                });
+                dialog.show();
+            }else {
+                mDob.setFocusable(true);
+                mDob.requestFocus();
+            }
+
         }
     }
     ProgressDialog dialog;
