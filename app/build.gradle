@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 33
     defaultConfig {
         applicationId "app.myjuet.com.myjuet"
         minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 24
-        versionName '3.4.0'
+        targetSdkVersion 33
+        versionCode 25
+        versionName '3.4.1'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

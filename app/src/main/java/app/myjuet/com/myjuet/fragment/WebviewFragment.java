@@ -105,15 +105,20 @@ public class WebviewFragment extends Fragment {
             new Thread(() -> {
                 try {
 
-                            Pair<Connection.Response, Connection.Response> res = webUtilities.login(getContext(),user, dob, pass);
-                        StringBuilder cookieString = new StringBuilder();
-                        Map<String, String> cookies = res.first.cookies();
-                        for (Map.Entry<String, String> entry : cookies.entrySet()) {
-                            cookieString.append(entry.getKey()).append("=").append(entry.getValue()).append("; ");
-                        }
-                        CookieManager.getInstance().setCookie(baseUrl, cookieString.toString());
-                        link = baseUrl + "/StudentFiles/StudentPage.jsp";
-                        WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
+                    Pair<Connection.Response, Connection.Response> res = webUtilities.login(getContext(), user, dob, pass);
+                    StringBuilder cookieString = new StringBuilder();
+                    Map<String, String> cookies;
+                    if (new Constants(context).INST_CODE.equals("JUET")) {
+                        cookies = res.first.cookies();
+                    } else {
+                        cookies = res.second.cookies();
+                    }
+                    for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                        cookieString.append(entry.getKey()).append("=").append(entry.getValue()).append("; ");
+                    }
+                    CookieManager.getInstance().setCookie(baseUrl, cookieString.toString());
+                    link = baseUrl + "/StudentFiles/StudentPage.jsp";
+                    WebviewFragment.this.getActivity().runOnUiThread(() -> myWebView.loadUrl(link));
                 } catch (IOException e) {
                     e.printStackTrace();
                     link = baseUrl;

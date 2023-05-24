@@ -76,10 +76,10 @@ public class AuthRepository {
                         Runnable runnable = () -> {
                             mLoginStatus.setValue(Constants.Status.SUCCESS);
                         };
-                        if (new Constants(context).INST_CODE.equals("JUIT")) {
-                            loginCookies = res.second.cookies();
-                        } else {
+                        if (new Constants(context).INST_CODE.equals("JUET")) {
                             loginCookies = res.first.cookies();
+                        } else {
+                            loginCookies = res.second.cookies();
                         }
                         mAppExecutors.mainThread().execute(runnable);
                     }

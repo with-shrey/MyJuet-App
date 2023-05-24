@@ -40,6 +40,7 @@ import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
 
 import app.myjuet.com.myjuet.R;
 import app.myjuet.com.myjuet.adapters.CgpaAdapter;
@@ -241,12 +242,18 @@ public class SgpaCgpa extends Fragment {
                 String user = mSharedPreferencesUtil.getPreferences(Constants.ENROLLMENT, "").toUpperCase().trim();
                 String pass = mSharedPreferencesUtil.getPreferences(Constants.PASSWORD, "");
                 String dob = mSharedPreferencesUtil.getPreferences(Constants.DOB, "");
-                Pair<Connection.Response, Connection.Response> res = webUtilities.login(getContext(),user, dob, pass);
+                Pair<Connection.Response, Connection.Response> res = webUtilities.login(getContext(), user, dob, pass);
+                Map<String, String> cookies;
+                if (new Constants(getContext()).INST_CODE.equals("JUET")) {
+                    cookies = res.first.cookies();
+                } else {
+                    cookies = res.second.cookies();
+                }
 
-                 String Content =    Jsoup
+                String Content = Jsoup
                         .connect(new Constants(getContext()).BASE_URL + "/StudentFiles/Exam/StudCGPAReport.jsp")
-                        .cookies(res.first.cookies())
-                         .method(Connection.Method.GET)
+                        .cookies(cookies)
+                        .method(Connection.Method.GET)
                         .execute().body();
                 list.addAll(webUtilities.crawlCGPA(Content));
             } catch (Exception e) {
