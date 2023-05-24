@@ -63,7 +63,6 @@ public class AuthRepository {
             }else
                 try {
                     Pair<Connection.Response,Connection.Response> res = login(context, user, dob, pass);
-
                     Runnable wrongPasswordRunnable = () -> {
                         mLoginStatus.setValue(Constants.Status.WRONG_PASSWORD);
                     };
@@ -77,8 +76,12 @@ public class AuthRepository {
                         Runnable runnable = () -> {
                             mLoginStatus.setValue(Constants.Status.SUCCESS);
                         };
+                        if (new Constants(context).INST_CODE.equals("JUIT")) {
+                            loginCookies = res.second.cookies();
+                        } else {
                             loginCookies = res.first.cookies();
-                            mAppExecutors.mainThread().execute(runnable);
+                        }
+                        mAppExecutors.mainThread().execute(runnable);
                     }
 
                 } catch (IOException e) {

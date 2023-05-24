@@ -28,7 +28,6 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -44,6 +43,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import javax.inject.Inject;
@@ -60,7 +60,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-import static com.crashlytics.android.Crashlytics.log;
 import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
@@ -176,7 +175,6 @@ public class DrawerActivity extends AppCompatActivity implements
                             5);
                 } catch (IntentSender.SendIntentException e) {
                     e.printStackTrace();
-                    Crashlytics.logException(e);
                 }
                 // Request the update.
             } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
@@ -194,7 +192,6 @@ public class DrawerActivity extends AppCompatActivity implements
                             5);
                 } catch (IntentSender.SendIntentException e) {
                     e.printStackTrace();
-                    Crashlytics.logException(e);
                 }
                 // Request the update.
             }
@@ -220,7 +217,6 @@ public class DrawerActivity extends AppCompatActivity implements
                                             5);
                                 } catch (IntentSender.SendIntentException e) {
                                     e.printStackTrace();
-                                    Crashlytics.logException(e);
                                 }
                             }
                         });
@@ -230,12 +226,12 @@ public class DrawerActivity extends AppCompatActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 5) {
             if (resultCode != RESULT_OK) {
-                log("Update flow failed! Result code: " + resultCode);
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
                 checkUpdate();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     void setupAndLoadAds() {

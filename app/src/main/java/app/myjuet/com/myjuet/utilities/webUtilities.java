@@ -3,11 +3,10 @@ package app.myjuet.com.myjuet.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 
@@ -17,25 +16,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import javax.net.ssl.HttpsURLConnection;
 
 import app.myjuet.com.myjuet.data.AttendenceData;
 import app.myjuet.com.myjuet.data.AttendenceDetails;
 import app.myjuet.com.myjuet.data.SgpaData;
-import app.myjuet.com.myjuet.database.AppDatabase;
 import app.myjuet.com.myjuet.database.AttendenceDataDao;
 import app.myjuet.com.myjuet.database.AttendenceDetailsDao;
-
 
 
 @SuppressWarnings("StringBufferMayBeStringBuilder")
@@ -46,6 +39,7 @@ public class webUtilities extends AppCompatActivity {
     private static ArrayList<ArrayList<AttendenceDetails>> detailsmain = new ArrayList<>();
     private static ArrayList<AttendenceDetails> listDetails = new ArrayList<>();
     private static int[] count = new int[2];
+
     // Creating url and catching exception
     private static URL UrlCreator(String url) {
         URL link = null;
@@ -57,11 +51,11 @@ public class webUtilities extends AppCompatActivity {
         return link;
     }
 
-    public static boolean isConnected(Context context){
+    public static boolean isConnected(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return  activeNetwork != null &&
+        return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
     }
 
@@ -129,7 +123,7 @@ public class webUtilities extends AppCompatActivity {
         return datasg;
     }
 
-    public static void parseAttendencePage(Context mContext, AttendenceDataDao attendenceDataDao, Document doc){
+    public static void parseAttendencePage(Context mContext, AttendenceDataDao attendenceDataDao, Document doc) {
         Element table = doc.getElementById("table-1");
         if (table != null) {
             Elements tbodies = table.getElementsByTag("tbody");
@@ -185,7 +179,7 @@ public class webUtilities extends AppCompatActivity {
                             case 5:
                                 if (!columns.get(i).text().equals("&nbsp"))
                                     if (columns.get(i).children().size() > 0) {
-                                        attendenceData.setSubjectUrl(new Constants(mContext).BASE_URL+"/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
+                                        attendenceData.setSubjectUrl(new Constants(mContext).BASE_URL + "/StudentFiles/Academic/" + columns.get(i).children().get(0).attr("href"));
                                         attendenceData.setLecTut(columns.get(i).text().replace("&nbsp", "--"));
                                     }
                                 break;
@@ -198,7 +192,7 @@ public class webUtilities extends AppCompatActivity {
         }
     }
 
-    public static void parseAttendenceDetails(AttendenceData datum, AttendenceDataDao dataDao,AttendenceDetailsDao detailsDao, Document doc){
+    public static void parseAttendenceDetails(AttendenceData datum, AttendenceDataDao dataDao, AttendenceDetailsDao detailsDao, Document doc) {
         Element table = doc.getElementById("table-1");
         if (table != null) {
             Elements tbodies = table.getElementsByTag("tbody");
@@ -258,7 +252,7 @@ public class webUtilities extends AppCompatActivity {
         }
     }
 
-    public static Pair<Connection.Response,Connection.Response> login(Context mContext, String user, String dob, String pass) throws IOException {
+    public static Pair<Connection.Response, Connection.Response> login(Context mContext, String user, String dob, String pass) throws IOException {
         Connection.Response res1 = null;
         Connection.Response res = null;
         res1 = Jsoup
@@ -266,31 +260,32 @@ public class webUtilities extends AppCompatActivity {
                 .method(Connection.Method.GET)
                 .execute();
         Document doc = res1.parse();
+        Connection requestBuilder = Jsoup
+                .connect(new Constants(mContext).LOGIN_URL)
+                .cookies(res1.cookies())
+                .method(Connection.Method.POST);
         String captcha = "";
         try {
             captcha = doc.select(".noselect").first().text();
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
-        res = Jsoup
-                .connect(new Constants(mContext).LOGIN_URL)
-                .cookies(res1.cookies())
-                .data("txtInst", "Institute"
-                        , "InstCode", new Constants(mContext).INST_CODE
-                        , "x", ""
-                        , "txtuType", "Member+Type"
-                        , "UserType", "S"
-                        , "txtCode", "Enrollment+No"
-                        , "MemberCode", user
-                        , "DOB", "DOB"
-                        , "DATE1", dob
-                        , "txtPin", "Password%2FPin"
-                        , "Password", pass
-                        , "txtCodecaptcha", "Enter Captcha"
-                        , "txtcap", captcha
-                        , "BTNSubmit", "Submit"
-                )
-                .method(Connection.Method.POST)
+        requestBuilder = requestBuilder.data("txtInst", "Institute"
+                , "InstCode", new Constants(mContext).INST_CODE
+                , "x", ""
+                , "txtuType", "Member+Type"
+                , "UserType", "S"
+                , "txtCode", "Enrollment+No"
+                , "MemberCode", user
+                , "DOB", "DOB"
+                , "DATE1", dob
+                , "txtPin", "Password%2FPin"
+                , "Password", pass
+                , "txtCodecaptcha", "Enter Captcha"
+                , "txtcap", captcha
+                , "BTNSubmit", "Submit"
+        );
+        res = requestBuilder
                 .execute();
         return new Pair<>(res1, res);
     }

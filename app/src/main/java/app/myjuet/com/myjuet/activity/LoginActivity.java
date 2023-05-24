@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return "webkiosk.jiit.ac.in";
             case "JUIT":
                 SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
-                return "webkiosk.juit.ac.in";
+                return "webkiosk.juit.ac.in:9443";
             default:
                 SharedPreferencesUtil.getInstance(this).savePreferences(INSTITUTE_PROTOCOL, "https://");
                 return "webkiosk.juet.ac.in";

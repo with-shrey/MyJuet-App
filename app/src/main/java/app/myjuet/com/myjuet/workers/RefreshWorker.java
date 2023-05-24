@@ -21,6 +21,6 @@ public class RefreshWorker extends Worker {
     public Result doWork() {
        Intent intent = new Intent(mContext,RefreshService.class);
         ActivityCompat.startForegroundService(mContext,intent);
-        return Result.SUCCESS;
+        return Result.success();
     }
 }
