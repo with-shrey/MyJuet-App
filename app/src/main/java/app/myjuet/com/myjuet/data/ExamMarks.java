@@ -44,13 +44,13 @@ public class ExamMarks {
                 this.Test1 = 15;
                 this.T1 = columns.get(i).text();
             }else if (map.get(i) == Exam.T1){
-                this.Test1 = 25;
+                this.Test1 = 15;
                 this.T1 = columns.get(i).text();
             }else if (map.get(i) == Exam.TEST2){
                 this.Test2 = 25;
                 this.T2 = columns.get(i).text();
             }else if (map.get(i) == Exam.T2){
-                this.Test2 = 45;
+                this.Test2 = 25;
                 this.T2 = columns.get(i).text();
             }else if (map.get(i) == Exam.TEST3){
                 this.T3 = columns.get(i).text();
