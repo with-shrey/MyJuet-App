@@ -6,6 +6,7 @@ public enum Exam {
     TEST3,
     T1,
     T2,
+    T3,
     P1,
     P2,
 }

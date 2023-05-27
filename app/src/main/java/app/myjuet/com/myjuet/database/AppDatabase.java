@@ -17,7 +17,7 @@ import app.myjuet.com.myjuet.data.SeatingPlan;
 /**
  * Upgrade version in case of schema change
  */
-@Database(entities = {AttendenceData.class,AttendenceDetails.class, DateSheet.class, SeatingPlan.class, ExamMarks.class}, version = 6, exportSchema = false)
+@Database(entities = {AttendenceData.class, AttendenceDetails.class, DateSheet.class, SeatingPlan.class, ExamMarks.class}, version = 7, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private  static  AppDatabase mAppDatabase;
 
